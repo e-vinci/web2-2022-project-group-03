@@ -1,7 +1,7 @@
-import HomePage from '../Pages/HomePage';
+import Game from '../Pages/Game';
 
 const routes = {
-  '/': HomePage,
+  '/': Game,
 };
 
 export default routes;

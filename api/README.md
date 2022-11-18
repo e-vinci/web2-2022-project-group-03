@@ -62,12 +62,12 @@ Si c'est votre cas, n'hésitez pas à lire la suite.
 ## Utilisation du générateur d'application Express
 - A l'aide d'un générateur d'application, création d'une application Express, sans vues, dans le répertoire de projet `/basic-api` (NB : c'est lors de la création d'une MPA que les vues sont utilisées) : `npx express-generator --no-view basic-api`
 NB : le `--no-view` permet de ne pas avoir à effacer certains répertoires inutiles à une SPA comme `/views`.
-- Pour une API qui ne possède pas de serveur de fichiers statiques, on a pas besoin d'avoir un répertoire `public`, ni d'un serveur statique. On peut donc effacer le répertoire `/public` et supprimer le middleware de serveur de fichiers statiques de `app.js` : 
+- Pour une API qui ne possède pas de serveur de fichiers statiques, on a pas besoin d'avoir un répertoire `public`, ni d'un serveur statique. On peut donc effacer le répertoire `/public` et supprimer le middleware de serveur de fichiers statiques de `Game.js` : 
 ```js
 app.use(express.static(path.join(__dirname, 'public'))); 
 ```
 - On ne souhaite pas avoir de router **index**, donc on peut retirer ce router et le code associé 
-dans `app.js`.
+dans `Game.js`.
 - On souhaite présenter un exemple d'opérations RESTful pour couvrir toutes les opérations CRUD. On a donc rajouté le router `/router/pizzas.js`.
 - On souhaite pouvoir facilement sérialiser les ressources au sein d'un fichier JSON. Nous avons donc ajouté un fichier `/utils/json.js` offrant les opérations `serialise` et `parse` pour l'écriture d'un objet JS dans un fichier JSON et pour la création d'un objet JS à partir de données JSON contenu dans un fichier JSON. 
 
