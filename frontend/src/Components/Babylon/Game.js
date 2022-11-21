@@ -18,16 +18,16 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
-import Environment from "./environment";
+import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
+import Navigate from "../Router/Navigate";
 
 export default class Game {
     stateEnum = {
         START: 0,
         GAME: 1,
-        LOSE: 2,
-        CUTSCENE: 3
+        LOSE: 2
     }
 
     state;
@@ -47,8 +47,6 @@ export default class Game {
     player;
 
     gamescene;
-
-    cutscene;
 
     constructor() {
         this.canvas = this.createCanvas();
@@ -70,7 +68,14 @@ export default class Game {
     }
 
     createCanvas() {
+        const canvas = document.createElement("canvas");
+        canvas.id = "renderCanvas"
+
+        const main = document.querySelector("main");
+        main.appendChild(canvas);
+
         this.canvas = document.getElementById("renderCanvas");
+
         return this.canvas;
     }
 
@@ -86,9 +91,6 @@ export default class Game {
                     this.scene.render();
                     break;
                 case this.stateEnum.LOSE:
-                    this.scene.render();
-                    break;
-                case this.stateEnum.CUTSCENE:
                     this.scene.render();
                     break;
                 default: break;
@@ -123,8 +125,22 @@ export default class Game {
         startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
         guiMenu.addControl(startBtn);
 
+        const loginBtn = Button.CreateSimpleButton("login", "LOGIN");
+        loginBtn.width = 0.2
+        loginBtn.height = "40px";
+        loginBtn.color = "white";
+        loginBtn.top = "-14px";
+        loginBtn.thickness = 0;
+        loginBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        guiMenu.addControl(loginBtn);
+
         startBtn.onPointerDownObservable.add(() => {
             this.goToGame();
+            scene.detachControl();
+        });
+
+        loginBtn.onPointerDownObservable.add(() => {
+            Navigate("/login");
             scene.detachControl();
         });
 
@@ -141,47 +157,6 @@ export default class Game {
             finishedLoading = true;
         });
     }
-
-    /*async goToCutScene() {
-        this.engine.displayLoadingUI();
-        this.scene.detachControl();
-
-        this.cutScene = new Scene(this.engine);
-
-        const camera = new FreeCamera("camera1", new Vector3(0, 0, 0), this.cutScene);
-        camera.setTarget(Vector3.Zero());
-
-        this.cutScene.clearColor = new Color4(0, 0, 0, 1);
-
-        const cutScene = AdvancedDynamicTexture.CreateFullscreenUI("cutscene");
-
-        const next = Button.CreateSimpleButton("next", "NEXT");
-        next.color = "white";
-        next.thickness = 0;
-        next.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        next.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        next.width = "64px";
-        next.height = "64px";
-        next.top = "-3%";
-        next.left = "-12%";
-        cutScene.addControl(next);
-
-        next.onPointerUpObservable.add(() => {
-            this.goToGame();
-        });
-
-        await this.cutScene.whenReadyAsync();
-        this.engine.hideLoadingUI();
-        this.scene.dispose();
-        this.state = this.stateEnum.CUTSCENE;
-        this.scene = this.cutScene;
-
-        // eslint-disable-next-line
-        let finishedLoading = false;
-        await this.setUpGame().then(() => {
-            finishedLoading = true;
-        });
-    }*/
 
     async setUpGame() {
         const scene = new Scene(this.engine);
@@ -318,5 +293,3 @@ export default class Game {
         this.state = this.stateEnum.LOSE;
     }
 }
-// eslint-disable-next-line
-new Game();

@@ -17,7 +17,7 @@ export default class Environment {
             }
 
             case 2: {
-                const ground2 = Mesh.CreateCylinder("body", 3, 20, 20, 0, 0, this.scene);
+                const ground2 = Mesh.CreateCylinder("body", 10, 20, 20, 0, 0, this.scene);
                 ground2.scaling = new Vector3(1,.02,1);
                 break;
             }
