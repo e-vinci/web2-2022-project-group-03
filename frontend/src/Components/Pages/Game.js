@@ -124,7 +124,7 @@ export default class Game {
         guiMenu.addControl(startBtn);
 
         startBtn.onPointerDownObservable.add(() => {
-            this.goToCutScene();
+            this.goToGame();
             scene.detachControl();
         });
 
@@ -134,9 +134,15 @@ export default class Game {
         this.scene.dispose();
         this.scene = scene;
         this.state = this.stateEnum.START;
+
+        // eslint-disable-next-line
+        let finishedLoading = false;
+        await this.setUpGame().then(() => {
+            finishedLoading = true;
+        });
     }
 
-    async goToCutScene() {
+    /*async goToCutScene() {
         this.engine.displayLoadingUI();
         this.scene.detachControl();
 
@@ -175,7 +181,7 @@ export default class Game {
         await this.setUpGame().then(() => {
             finishedLoading = true;
         });
-    }
+    }*/
 
     async setUpGame() {
         const scene = new Scene(this.engine);
