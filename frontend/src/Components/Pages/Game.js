@@ -182,7 +182,7 @@ export default class Game {
         this.gamescene = scene;
 
         this.environment = new Environment(scene);
-        await this.environment.load();
+        await this.environment.load(2);
         await this.loadCharacterAssets(scene);
     }
 
@@ -260,7 +260,7 @@ export default class Game {
         scene.detachControl();
 
         const loseBtn = Button.CreateSimpleButton("lose", "LOSE");
-        loseBtn.width = 0.2
+        loseBtn.width = 0.2;
         loseBtn.height = "40px";
         loseBtn.color = "white";
         loseBtn.top = "-14px";

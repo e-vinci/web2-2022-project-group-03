@@ -35,7 +35,6 @@ function onFrontendLoad() {
     const uri = window.location.pathname;
     const componentToRender = routes[uri];
     if (!componentToRender) throw Error(`The ${uri} ressource does not exist.`);
-
     componentToRender();
   });
 }
