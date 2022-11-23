@@ -18,7 +18,7 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
-import Environment from "./environment";
+import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
 
@@ -26,8 +26,7 @@ export default class Game {
     stateEnum = {
         START: 0,
         GAME: 1,
-        LOSE: 2,
-        CUTSCENE: 3
+        LOSE: 2
     }
 
     state;
@@ -47,8 +46,6 @@ export default class Game {
     player;
 
     gamescene;
-
-    cutscene;
 
     constructor() {
         this.canvas = this.createCanvas();
@@ -70,7 +67,14 @@ export default class Game {
     }
 
     createCanvas() {
+        const canvas = document.createElement("canvas");
+        canvas.id = "renderCanvas"
+
+        const main = document.querySelector("main");
+        main.appendChild(canvas);
+
         this.canvas = document.getElementById("renderCanvas");
+
         return this.canvas;
     }
 
@@ -88,9 +92,6 @@ export default class Game {
                 case this.stateEnum.LOSE:
                     this.scene.render();
                     break;
-                case this.stateEnum.CUTSCENE:
-                    this.scene.render();
-                    break;
                 default: break;
             }
         });
@@ -101,78 +102,10 @@ export default class Game {
     }
 
     async goToStart() {
-        this.engine.displayLoadingUI();
-
-        this.scene.detachControl();
-
-        const scene = new Scene(this.engine);
-        scene.clearColor = new Color4(0,0,0,1);
-
-        const camera = new FreeCamera("camera1", new Vector3(0, 0, 0), scene);
-        camera.setTarget(Vector3.Zero());
-
-        const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        guiMenu.idealHeight = 720;
-
-        const startBtn = Button.CreateSimpleButton("start", "PLAY");
-        startBtn.width = 0.2
-        startBtn.height = "40px";
-        startBtn.color = "white";
-        startBtn.top = "-14px";
-        startBtn.thickness = 0;
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        guiMenu.addControl(startBtn);
-
-        startBtn.onPointerDownObservable.add(() => {
-            this.goToCutScene();
-            scene.detachControl();
-        });
-
-        await scene.whenReadyAsync();
-        this.engine.hideLoadingUI();
-
-        this.scene.dispose();
-        this.scene = scene;
-        this.state = this.stateEnum.START;
-    }
-
-    async goToCutScene() {
-        this.engine.displayLoadingUI();
-        this.scene.detachControl();
-
-        this.cutScene = new Scene(this.engine);
-
-        const camera = new FreeCamera("camera1", new Vector3(0, 0, 0), this.cutScene);
-        camera.setTarget(Vector3.Zero());
-
-        this.cutScene.clearColor = new Color4(0, 0, 0, 1);
-
-        const cutScene = AdvancedDynamicTexture.CreateFullscreenUI("cutscene");
-
-        const next = Button.CreateSimpleButton("next", "NEXT");
-        next.color = "white";
-        next.thickness = 0;
-        next.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        next.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        next.width = "64px";
-        next.height = "64px";
-        next.top = "-3%";
-        next.left = "-12%";
-        cutScene.addControl(next);
-
-        next.onPointerUpObservable.add(() => {
-            this.goToGame();
-        });
-
-        await this.cutScene.whenReadyAsync();
-        this.engine.hideLoadingUI();
-        this.scene.dispose();
-        this.state = this.stateEnum.CUTSCENE;
-        this.scene = this.cutScene;
-
         // eslint-disable-next-line
         let finishedLoading = false;
         await this.setUpGame().then(() => {
+            this.goToGame();
             finishedLoading = true;
         });
     }
@@ -182,7 +115,8 @@ export default class Game {
         this.gamescene = scene;
 
         this.environment = new Environment(scene);
-        await this.environment.load();
+        const { level } = this.getQueryParams(window.location.href);
+        await this.environment.load(parseInt(level, 10) || 1);
         await this.loadCharacterAssets(scene);
     }
 
@@ -260,7 +194,7 @@ export default class Game {
         scene.detachControl();
 
         const loseBtn = Button.CreateSimpleButton("lose", "LOSE");
-        loseBtn.width = 0.2
+        loseBtn.width = 0.2;
         loseBtn.height = "40px";
         loseBtn.color = "white";
         loseBtn.top = "-14px";
@@ -311,6 +245,16 @@ export default class Game {
         this.scene = scene;
         this.state = this.stateEnum.LOSE;
     }
+
+    // eslint-disable-next-line class-methods-use-this
+    getQueryParams(url) {
+        const paramArr = url.slice(url.indexOf('?') + 1).split('&');
+        const params = {};
+        // eslint-disable-next-line array-callback-return
+        paramArr.map(param => {
+            const [key, val] = param.split('=');
+            params[key] = decodeURIComponent(val);
+        })
+        return params;
+    }
 }
-// eslint-disable-next-line
-new Game();
