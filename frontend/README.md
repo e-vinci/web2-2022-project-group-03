@@ -40,7 +40,7 @@ Pour plus d'info sur un package, ou pour trouver un package traitant d'un sujet 
 - Attention, quand vous utilisez des assets au sein de votre application, comme des images, l'URL d'un asset après le build de votre application n'est pas la même qu'avant le build. 
 - Pour bien gérer les URL au sein de votre JavaScript, vous devez d'abord importer vos assets. Vous trouverez un exemple de comment ajouter des assets à une scène de jeux dans `/Components/Game/GameScene.js` : 
 ```javascript
-import starAsset from "../../assets/star.png";
+import starAsset from "../../models/star.png";
 // ...
 this.load.image("sky", skyAsset); // l'URL de star.png sera la bonne lors du build
 ```

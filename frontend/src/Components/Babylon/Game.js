@@ -7,14 +7,12 @@ import {
     Engine,
     FreeCamera,
     HemisphericLight,
-    Matrix,
-    Mesh,
+    Matrix, Mesh,
     MeshBuilder,
     PointLight,
     Quaternion,
     Scene,
-    ShadowGenerator,
-    StandardMaterial,
+    ShadowGenerator, StandardMaterial,
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
@@ -116,7 +114,7 @@ export default class Game {
         const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI("UI");
         guiMenu.idealHeight = 720;
 
-        const startBtn = Button.CreateSimpleButton("start", "PLAY");
+        const startBtn = Button.CreateSimpleButton("start", "NEW GAME");
         startBtn.width = 0.2
         startBtn.height = "40px";
         startBtn.color = "white";
@@ -127,7 +125,7 @@ export default class Game {
 
         const loginBtn = Button.CreateSimpleButton("login", "LOGIN");
         loginBtn.width = 0.2
-        loginBtn.height = "40px";
+        loginBtn.height = "70px";
         loginBtn.color = "white";
         loginBtn.top = "-14px";
         loginBtn.thickness = 0;
