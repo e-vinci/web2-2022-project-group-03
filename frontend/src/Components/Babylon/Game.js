@@ -1,3 +1,4 @@
+/* eslint-disable */
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF";
@@ -8,16 +9,16 @@ import {
     FreeCamera,
     HemisphericLight,
     Matrix,
-    Mesh,
     MeshBuilder,
     PointLight,
     Quaternion,
     Scene,
+    SceneLoader,
     ShadowGenerator,
-    StandardMaterial,
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
+import player from '../../models/playerBabylonDoc.glb';
 import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
@@ -130,34 +131,17 @@ export default class Game {
 
             outer.rotationQuaternion = new Quaternion(0, 1, 0, 0);
 
-            const box = MeshBuilder.CreateBox("Small1", {
-                width: 0.5,
-                depth: 0.5,
-                height: 0.25,
-                faceColors: [
-                    new Color4(0, 0, 0, 1),
-                    new Color4(0, 0, 0, 1),
-                    new Color4(0, 0, 0, 1),
-                    new Color4(0, 0, 0, 1),
-                    new Color4(0, 0, 0, 1),
-                    new Color4(0, 0, 0, 1)
-                ]
-            }, scene);
-
-            box.position.y = 1.5;
-            box.position.z = 1;
-
-            const body = Mesh.CreateCylinder("body", 3, 2, 2, 0, 0, scene);
-            const bodymtl = new StandardMaterial("red", scene);
-            bodymtl.diffuseColor = new Color3(.8,.5,.5);
-            body.material = bodymtl;
-            body.isPickable = false;
-            body.bakeTransformIntoVertices(Matrix.Translation(0, 1.5, 0));
-
-            box.parent = body;
-            body.parent = outer;
-
-            return { mesh: outer };
+            return SceneLoader.ImportMeshAsync(null, player).then((result) => {
+                const body = result.meshes[0];
+                body.parent = outer;
+                body.isPickable = false;
+                body.getChildMeshes().forEach(m => {
+                    m.isPickable = false;
+                });
+                return {
+                    mesh: outer,
+                }
+            });
         }
         return loadCharacter().then(assets => {
             this.assets = assets;
@@ -205,9 +189,9 @@ export default class Game {
         this.input = new PlayerInput(scene);
 
         await this.initializeGameAsync(scene);
-
+        scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
         await scene.whenReadyAsync();
-        scene.getMeshByName("outer").position = new Vector3(0,3,0);
+        scene.getMeshByName("outer").position = new Vector3(0,0,0);
 
         this.state = this.stateEnum.GAME;
         this.scene = scene;
