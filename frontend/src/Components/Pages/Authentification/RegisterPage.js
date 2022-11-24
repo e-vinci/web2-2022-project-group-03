@@ -1,4 +1,8 @@
+import {clearPage} from "../../../utils/render";
+
 const RegisterPage = () => {
+  clearPage();
+
   const main = document.querySelector("main");
 
   const section = document.createElement("section");
@@ -38,7 +42,13 @@ const RegisterPage = () => {
   termsOfUseCheckbox.setAttribute("value", "termsOfUse");
 
   const termsOfUseLabel = document.createElement("label");
-  termsOfUseLabel.innerText = "I agree to the Terms of Use";
+  termsOfUseLabel.innerText = "I agree to the ";
+
+  const linkTermsOfUse = document.createElement("a");
+  linkTermsOfUse.setAttribute("href", "https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use");
+  linkTermsOfUse.innerText = "Terms of Use";
+
+  termsOfUseLabel.appendChild(linkTermsOfUse);
 
   const submitButton = document.createElement("button");
   submitButton.setAttribute("type", "submit");
