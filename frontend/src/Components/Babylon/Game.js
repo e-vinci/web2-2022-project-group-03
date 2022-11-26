@@ -190,8 +190,6 @@ export default class Game {
             scene.detachControl();
         });
 
-        this.ui = new Hud(scene);
-
         this.input = new PlayerInput(scene);
 
         await this.initializeGameAsync(scene);
