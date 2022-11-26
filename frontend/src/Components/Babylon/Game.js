@@ -46,6 +46,8 @@ export default class Game {
 
     player;
 
+    ui;
+
     gamescene;
 
     constructor() {
@@ -112,7 +114,9 @@ export default class Game {
         this.gamescene = scene;
 
         this.environment = new Environment(scene);
+
         const { level } = this.getQueryParams(window.location.href);
+
         await this.environment.load(parseInt(level, 10) || 1);
         await this.loadCharacterAssets(scene);
     }
@@ -186,12 +190,15 @@ export default class Game {
             scene.detachControl();
         });
 
+        this.ui = new Hud(scene);
+
         this.input = new PlayerInput(scene);
 
         await this.initializeGameAsync(scene);
+
         scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
+
         await scene.whenReadyAsync();
-        scene.getMeshByName("outer").position = new Vector3(0,0,0);
 
         this.state = this.stateEnum.GAME;
         this.scene = scene;

@@ -1,13 +1,11 @@
 /* eslint-disable */
 import laptop from '../../models/laptop.glb';
 import environnement from '../../models/envSetting.glb';
-import lanternMesh from '../../models/lantern.glb';
-import {SceneLoader, TransformNode} from "@babylonjs/core";
+import { SceneLoader } from "@babylonjs/core";
 
 export default class Environment {
     scene;
-    lanternObjs;
-    lightmtl;
+
     constructor(scene) {
         this.scene = scene;
     }
@@ -26,27 +24,26 @@ export default class Environment {
         assets.allMeshes.forEach(m => {
             m.receiveShadows = true;
             m.checkCollisions = true;
+
+
+            if (m.name === "ground") {
+                m.checkCollisions = false;
+                m.isPickable = false;
+            }
+            if (m.name.includes("stairs") || m.name === "cityentranceground" || m.name === "fishingground.001" || m.name.includes("lilyflwr")) {
+                m.checkCollisions = false;
+                m.isPickable = false;
+            }
+            if (m.name.includes("collision")) {
+                m.isVisible = false;
+                m.isPickable = true;
+            }
+            if (m.name.includes("Trigger")) {
+                m.isVisible = false;
+                m.isPickable = false;
+                m.checkCollisions = false;
+            }
         });
-
-        assets.lantern.isVisible = false;
-        const lanternHolder = new TransformNode("lanternHolder", this.scene);
-        for (let i = 0; i < 22; i++) {
-            let lanternInstance = assets.lantern.clone("lantern" + i);
-            lanternInstance.isVisible = true;
-            lanternInstance.setParent(lanternHolder);
-
-            let newLantern = new Lantern(
-                this.lightmtl,
-                lanternInstance,
-                this.scene,
-                assets.env
-                    .getChildTransformNodes(false)
-                    .find(m => m.name === "lantern " + i)
-                    .getAbsolutePosition());
-            
-            this.lanternObjs.push(newLantern);
-        }
-        assets.lantern.dispose();
     }
 
     async loadAssetLevel1() {
@@ -54,15 +51,9 @@ export default class Environment {
         let env = result.meshes[0];
         let allMeshes = env.getChildMeshes();
 
-        const res = await SceneLoader.ImportMeshAsync(null, lanternMesh)
-        let lantern = res.meshes[0].getChildren()[0];
-        lantern.parent = null;
-        res.meshes[0].dispose();
-
         return {
             env: env,
-            allMeshes: allMeshes,
-            lantern: lantern
+            allMeshes: allMeshes
         }
     }
 
