@@ -23,6 +23,7 @@ import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
 import Navigate from "../Router/Navigate";
+import Hud from "./Hud";
 
 export default class Game {
     stateEnum = {
@@ -47,8 +48,6 @@ export default class Game {
     player;
 
     ui;
-
-    gamescene;
 
     constructor() {
         this.canvas = this.createCanvas();
@@ -75,7 +74,7 @@ export default class Game {
         const main = document.querySelector("main");
         main.appendChild(canvas);
 
-        this.canvas = document.getElementById("renderCanvas");
+        this.canvas = canvas;
 
         return this.canvas;
     }
@@ -101,6 +100,7 @@ export default class Game {
     }
 
     async goToStart() {
+        this.engine.displayLoadingUI();
         // eslint-disable-next-line
         let finishedLoading = false;
         await this.setUpGame().then(() => {
@@ -111,13 +111,14 @@ export default class Game {
 
     async setUpGame() {
         const scene = new Scene(this.engine);
-        this.gamescene = scene;
+        this.scene = scene;
 
         this.environment = new Environment(scene);
 
         const { level } = this.getQueryParams(window.location.href);
 
         await this.environment.load(parseInt(level, 10) || 1);
+
         await this.loadCharacterAssets(scene);
     }
 
@@ -162,7 +163,6 @@ export default class Game {
         light.radius = 1;
 
         const shadowGenerator = new ShadowGenerator(1024, light);
-        shadowGenerator.darkness = 0.4;
 
         this.player = new Player(this.assets, scene, shadowGenerator, this.input, this.canvas);
         // eslint-disable-next-line
@@ -170,9 +170,11 @@ export default class Game {
     }
 
     async goToGame() {
-        const scene = this.gamescene;
+        document.querySelector("canvas").focus();
+        this.scene.detachControl();
+        const scene = this.scene;
 
-        scene.clearColor = new Color4(0.01568627450980392, 0.01568627450980392, 0.20392156862745098);
+        this.ui = new Hud(scene);
 
         const playerUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
@@ -187,10 +189,9 @@ export default class Game {
 
         loseBtn.onPointerDownObservable.add(() => {
             this.goToLose();
-            scene.detachControl();
         });
 
-        this.input = new PlayerInput(scene);
+        this.input = new PlayerInput(scene, this.ui);
 
         await this.initializeGameAsync(scene);
 
@@ -207,7 +208,6 @@ export default class Game {
     async goToLose() {
         this.engine.displayLoadingUI();
 
-        this.scene.detachControl();
         const scene = new Scene(this.engine);
         scene.clearColor = new Color4(0, 0, 0, 1);
         const camera = new FreeCamera("camera1", new Vector3(0, 0, 0), scene);
