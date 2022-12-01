@@ -25,7 +25,6 @@ const LoginPage = () => {
     sectionSide.appendChild(menu);
 
     const form = document.createElement('form');
-    form.classList.add('form-login');
     menu.appendChild(form);
 
     const inputUsername = document.createElement('input');
