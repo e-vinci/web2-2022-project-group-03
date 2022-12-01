@@ -1,0 +1,18 @@
+### Login an unknown user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"nobody",
+  "password":"nobody"
+}
+
+### Login default user
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"michele",
+  "password":"michele"
+}
+
