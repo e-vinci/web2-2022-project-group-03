@@ -7,68 +7,73 @@ const RegisterPage = async () => {
 
     const main = document.querySelector("main");
 
-    const section = document.createElement("section");
-    main.appendChild(section);
+    const sectionImage = document.createElement("section");
+    sectionImage.classList.add("image");
+    main.appendChild(sectionImage);
 
-    const logo = document.createElement("img");
-    logo.src = ""; // TODO : Add logo
+    const sectionSide = document.createElement("section");
+    sectionSide.classList.add("side");
+    sectionImage.appendChild(sectionSide);
 
-    section.appendChild(logo);
+    const title = document.createElement("h5");
+    title.classList.add("title");
+    title.textContent = "NOM";
+    sectionSide.appendChild(title);
+
+    const menu = document.createElement("div");
+    menu.classList.add("menu");
+    sectionSide.appendChild(menu);
 
     const form = document.createElement("form");
-    form.setAttribute("method", "post");
+    form.classList.add("form-register");
+    menu.appendChild(form);
 
-    const usernameInput = document.createElement("input");
-    usernameInput.setAttribute("type", "text");
-    usernameInput.setAttribute("name", "username");
-    usernameInput.setAttribute("placeholder", "Username");
-    usernameInput.setAttribute("required", "required");
+    const inputUsername = document.createElement("input");
+    inputUsername.setAttribute("type", "text");
+    inputUsername.setAttribute("name", "username");
+    inputUsername.setAttribute("placeholder", "USERNAME");
+    form.appendChild(inputUsername);
 
-    const emailInput = document.createElement("input");
-    emailInput.setAttribute("type", "email");
-    emailInput.setAttribute("name", "email");
-    emailInput.setAttribute("placeholder", "Email");
-    emailInput.setAttribute("required", "required");
+    const inputEmail = document.createElement("input");
+    inputEmail.setAttribute("type", "email");
+    inputEmail.setAttribute("name", "email");
+    inputEmail.setAttribute("placeholder", "EMAIL");
+    form.appendChild(inputEmail);
 
-    const passwordInput = document.createElement("input");
-    passwordInput.setAttribute("type", "password");
-    passwordInput.setAttribute("name", "password");
-    passwordInput.setAttribute("placeholder", "Password");
-    passwordInput.setAttribute("required", "required");
+    const inputPassword = document.createElement("input");
+    inputPassword.setAttribute("type", "password");
+    inputPassword.setAttribute("name", "password");
+    inputPassword.setAttribute("placeholder", "PASSWORD");
+    form.appendChild(inputPassword);
 
-    const passwordConfirmationInput = document.createElement("input");
-    passwordConfirmationInput.setAttribute("type", "password");
-    passwordConfirmationInput.setAttribute("name", "passwordConfirmation");
-    passwordConfirmationInput.setAttribute("placeholder", "Password Confirmation");
-    passwordConfirmationInput.setAttribute("required", "required");
+    const inputPasswordConfirm = document.createElement("input");
+    inputPasswordConfirm.setAttribute("type", "password");
+    inputPasswordConfirm.setAttribute("name", "passwordConfirm");
+    inputPasswordConfirm.setAttribute("placeholder", "PASSWORD");
+    form.appendChild(inputPasswordConfirm);
 
-    const termsOfUseCheckbox = document.createElement("input");
-    termsOfUseCheckbox.setAttribute("type", "checkbox");
-    termsOfUseCheckbox.setAttribute("name", "termsOfUse");
-    termsOfUseCheckbox.setAttribute("required", "required");
+    const alreadyButton = document.createElement("button");
+    alreadyButton.classList.add("nav-button");
+    alreadyButton.setAttribute("id", "regToLog");
+    alreadyButton.textContent = "ALREADY HAVE AN ACCOUNT ?";
+    alreadyButton.addEventListener("click", () => {
+        Navigate("/login");
+    });
+    form.appendChild(alreadyButton);
 
-    const termsOfUseLabel = document.createElement("label");
-    termsOfUseLabel.innerText = "I agree to the ";
+    const button = document.createElement("button");
+    button.classList.add("nav-button");
+    button.setAttribute("type", "submit");
+    button.textContent = "REGISTER";
+    form.appendChild(button);
 
-    const linkTermsOfUse = document.createElement("a");
-    linkTermsOfUse.setAttribute("href", "https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use");
-    linkTermsOfUse.innerText = "Terms of Use";
-
-    termsOfUseLabel.appendChild(linkTermsOfUse);
-
-    const submitButton = document.createElement("button");
-    submitButton.setAttribute("type", "submit");
-    submitButton.innerText = "Register";
-
-    form.appendChild(usernameInput);
-    form.appendChild(emailInput);
-    form.appendChild(passwordInput);
-    form.appendChild(passwordConfirmationInput);
-    form.appendChild(termsOfUseCheckbox);
-    form.appendChild(termsOfUseLabel);
-    form.appendChild(submitButton);
-
-    section.appendChild(form);
+    const backButton = document.createElement("button");
+    backButton.classList.add("nav-button");
+    backButton.textContent = "BACK";
+    backButton.addEventListener("click", () => {
+        Navigate("/");
+    });
+    menu.appendChild(backButton);
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -79,14 +84,10 @@ const RegisterPage = async () => {
         const { username, email, password, passwordConfirmation, termsOfUse } = data;
 
         if (termsOfUse === undefined) {
-            // TODO : Display error message
-            alert("You must agree to the Terms of Use");
             return;
         }
 
         if (password !== passwordConfirmation) {
-            // TODO: Display error message
-            alert("Passwords do not match");
             return;
         }
 

@@ -7,47 +7,52 @@ const LoginPage = () => {
 
     const main = document.querySelector('main');
 
-    const section = document.createElement('section');
-    main.appendChild(section);
+    const sectionImage = document.createElement('section');
+    sectionImage.classList.add('image');
+    main.appendChild(sectionImage);
 
-    const logo = document.createElement('img');
-    logo.src = ''; // TODO : Add logo
+    const sectionSide = document.createElement('section');
+    sectionSide.classList.add('side');
+    sectionImage.appendChild(sectionSide);
 
-    section.appendChild(logo);
+    const title = document.createElement('h5');
+    title.classList.add('title');
+    title.textContent = 'NOM';
+    sectionSide.appendChild(title);
+
+    const menu = document.createElement('div');
+    menu.classList.add('menu');
+    sectionSide.appendChild(menu);
 
     const form = document.createElement('form');
-    form.setAttribute('method', 'post');
+    form.classList.add('form-login');
+    menu.appendChild(form);
 
-    const usernameInput = document.createElement('input');
-    usernameInput.setAttribute('type', 'text');
-    usernameInput.setAttribute('name', 'username');
-    usernameInput.setAttribute('placeholder', 'Username');
-    usernameInput.setAttribute('required', 'required');
+    const inputUsername = document.createElement('input');
+    inputUsername.setAttribute('type', 'text');
+    inputUsername.setAttribute('name', 'username');
+    inputUsername.setAttribute('placeholder', 'USERNAME');
+    form.appendChild(inputUsername);
 
-    const passwordInput = document.createElement('input');
-    passwordInput.setAttribute('type', 'password');
-    passwordInput.setAttribute('name', 'password');
-    passwordInput.setAttribute('placeholder', 'Password');
-    passwordInput.setAttribute('required', 'required');
+    const inputPassword = document.createElement('input');
+    inputPassword.setAttribute('type', 'password');
+    inputPassword.setAttribute('name', 'password');
+    inputPassword.setAttribute('placeholder', 'PASSWORD');
+    form.appendChild(inputPassword);
 
-    const rememberMeCheckbox = document.createElement('input');
-    rememberMeCheckbox.setAttribute('type', 'checkbox');
-    rememberMeCheckbox.setAttribute('name', 'rememberMe');
+    const loginButton = document.createElement('input');
+    loginButton.setAttribute('type', 'submit');
+    loginButton.setAttribute('value', 'LOGIN');
+    loginButton.classList.add('nav-button');
+    form.appendChild(loginButton);
 
-    const rememberMeLabel = document.createElement('label');
-    rememberMeLabel.innerText = 'Remember me';
-
-    const submitButton = document.createElement('button');
-    submitButton.setAttribute('type', 'submit');
-    submitButton.innerText = 'Login';
-
-    form.appendChild(usernameInput);
-    form.appendChild(passwordInput);
-    form.appendChild(rememberMeCheckbox);
-    form.appendChild(rememberMeLabel);
-    form.appendChild(submitButton);
-
-    section.appendChild(form);
+    const backButton = document.createElement("button");
+    backButton.classList.add("nav-button");
+    backButton.textContent = "BACK";
+    backButton.addEventListener("click", () => {
+        Navigate("/");
+    });
+    menu.appendChild(backButton);
 
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
