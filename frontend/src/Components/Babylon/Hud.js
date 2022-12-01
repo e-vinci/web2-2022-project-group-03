@@ -1,7 +1,6 @@
 import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
 
 export default class Hud {
-
     time;
 
     timeStopped;
@@ -19,7 +18,6 @@ export default class Hud {
     pauseMenu;
 
     constructor(scene) {
-
         this.scene = scene;
 
         const playerUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
@@ -38,7 +36,6 @@ export default class Hud {
         clockTime.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
         clockTime.fontSize = "48px";
         clockTime.color = "white";
-        clockTime.text = "11:00";
         clockTime.resizeToFit = true;
         clockTime.height = "96px";
         clockTime.width = "220px";
@@ -69,7 +66,7 @@ export default class Hud {
     }
 
     updateHud() {
-        if (!this.timeStopped && this.time != null) {
+        if (!this.gamePaused && this.time != null && !this.timeStopped) {
             this.time += 1;
             this.clockTime.text = this.time;
         }

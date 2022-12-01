@@ -18,7 +18,7 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
-import player from '../../models/playerDamien.glb';
+import player from '../../models/playerBabylonDoc.glb';
 import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
@@ -125,14 +125,13 @@ export default class Game {
     async loadCharacterAssets(scene){
         async function loadCharacter(){
             const outer = MeshBuilder.CreateBox("outer", { width: 1, depth: 1, height: 2 }, scene);
-            outer.isVisible = true;
+            outer.isVisible = false;
             outer.isPickable = false;
             outer.checkCollisions = true;
 
             outer.bakeTransformIntoVertices(Matrix.Translation(0, 1, 0))
 
-            outer.ellipsoid = new Vector3(1, 1.5, 1);
-            outer.ellipsoidOffset = new Vector3(0, 1.5, 0);
+            outer.ellipsoidOffset = new Vector3(0, 1, 0);
 
             outer.rotationQuaternion = new Quaternion(0, 1, 0, 0);
 
@@ -157,7 +156,7 @@ export default class Game {
         // eslint-disable-next-line
         const light0 = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), scene);
 
-        const light = new PointLight("sparklight", new Vector3(0, 0, 0), scene);
+        const light = new PointLight("sparklight", new Vector3(0, -1, 0), scene);
         light.diffuse = new Color3(0.08627450980392157, 0.10980392156862745, 0.15294117647058825);
         light.intensity = 35;
         light.radius = 1;
@@ -167,9 +166,6 @@ export default class Game {
         this.player = new Player(this.assets, scene, shadowGenerator, this.input, this.canvas);
         // eslint-disable-next-line
         const camera = this.player.activatePlayerCamera();
-
-        scene.getMeshByName("outer").position
-
     }
 
     async goToGame() {
@@ -202,6 +198,10 @@ export default class Game {
         // scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
         scene.getMeshByName("outer").position = new Vector3(0,4,0);
         this.ui.startTimer();
+
+        setInterval(() => {
+            this.ui.updateHud();
+        }, 1000);
 
         this.state = this.stateEnum.GAME;
         this.scene = scene;

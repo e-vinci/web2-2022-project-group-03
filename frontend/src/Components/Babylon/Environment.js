@@ -1,6 +1,6 @@
 /* eslint-disable */
 import environnement from '../../models/envSetting.glb';
-import damien from '../../models/scene1.glb';
+import damien from '../../models/TEST2.glb';
 import { SceneLoader } from "@babylonjs/core";
 
 export default class Environment {
@@ -41,6 +41,9 @@ export default class Environment {
                 m.isVisible = false;
                 m.isPickable = false;
                 m.checkCollisions = false;
+            }
+            if (m.name.includes("ramp")) {
+                m.isVisible = false;
             }
         });
     }

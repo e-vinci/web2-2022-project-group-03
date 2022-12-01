@@ -16,11 +16,11 @@ export default class Player extends TransformNode {
 
     mesh;
 
-    static PLAYER_SPEED = 0.5;
+    static PLAYER_SPEED = 0.2;
 
-    static JUMP_FORCE = 0.8;
+    static JUMP_FORCE = 0.5;
 
-    static GRAVITY = -2.8;
+    static GRAVITY = -2.3;
 
     deltaTime = 0;
 
@@ -50,19 +50,6 @@ export default class Player extends TransformNode {
         this.mesh.actionManager = new ActionManager(this.scene);
 
         this.camera.target = this.mesh;
-
-        /*
-        this.mesh.actionManager.registerAction(
-            new ExecuteCodeAction({
-                    trigger: ActionManager.OnIntersectionEnterTrigger,
-                    parameter: this.scene.getMeshByName("ground")
-                },
-                () => {
-                    this.mesh.position.copyFrom(this.lastGroundPos);
-                }
-            )
-        );
-        */
 
         shadowGenerator.addShadowCaster(assets.mesh);
 
@@ -133,22 +120,22 @@ export default class Player extends TransformNode {
         const ray4 = new Ray(raycast4, Vector3.Up().scale(-1), 1.5);
         const pick4 = this.scene.pickWithRay(ray4, predicate);
 
-        if (pick.hit && !pick.getNormal().equals(Vector3.Up())) {
-            if(pick.pickedMesh.name.includes("stair")) {
+        if (pick.hit) {
+            if(pick.pickedMesh.name.includes("ramp")) {
                 return true;
             }
         } else if (pick2.hit && !pick2.getNormal().equals(Vector3.Up())) {
-            if(pick2.pickedMesh.name.includes("stair")) {
+            if(pick2.pickedMesh.name.includes("ramp")) {
                 return true;
             }
         }
         else if (pick3.hit && !pick3.getNormal().equals(Vector3.Up())) {
-            if(pick3.pickedMesh.name.includes("stair")) {
+            if(pick3.pickedMesh.name.includes("ramp")) {
                 return true;
             }
         }
         else if (pick4.hit && !pick4.getNormal().equals(Vector3.Up())) {
-            if(pick4.pickedMesh.name.includes("stair")) {
+            if(pick4.pickedMesh.name.includes("ramp")) {
                 return true;
             }
         }
