@@ -1,6 +1,6 @@
 /* eslint-disable */
-import laptop from '../../models/laptop.glb';
 import environnement from '../../models/envSetting.glb';
+import damien from '../../models/laptop.glb';
 import { SceneLoader } from "@babylonjs/core";
 
 export default class Environment {
@@ -24,7 +24,6 @@ export default class Environment {
         assets.allMeshes.forEach(m => {
             m.receiveShadows = true;
             m.checkCollisions = true;
-
 
             if (m.name === "ground") {
                 m.checkCollisions = false;
@@ -58,7 +57,7 @@ export default class Environment {
     }
 
     async loadAssetLevel2() {
-        const result = await SceneLoader.ImportMeshAsync(null, laptop);
+        const result = await SceneLoader.ImportMeshAsync(null, damien);
         let env = result.meshes[0];
         let allMeshes = env.getChildMeshes();
 

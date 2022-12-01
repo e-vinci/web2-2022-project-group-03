@@ -167,6 +167,9 @@ export default class Game {
         this.player = new Player(this.assets, scene, shadowGenerator, this.input, this.canvas);
         // eslint-disable-next-line
         const camera = this.player.activatePlayerCamera();
+
+        scene.getMeshByName("outer").position
+
     }
 
     async goToGame() {
@@ -194,10 +197,10 @@ export default class Game {
         this.input = new PlayerInput(scene, this.ui);
 
         await this.initializeGameAsync(scene);
-
-        scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
-
         await scene.whenReadyAsync();
+        // scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
+
+        this.ui.startTimer();
 
         this.state = this.stateEnum.GAME;
         this.scene = scene;
