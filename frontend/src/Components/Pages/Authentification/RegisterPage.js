@@ -25,7 +25,6 @@ const RegisterPage = async () => {
     sectionSide.appendChild(menu);
 
     const form = document.createElement("form");
-    form.classList.add("form-register");
     menu.appendChild(form);
 
     const inputUsername = document.createElement("input");
@@ -82,10 +81,6 @@ const RegisterPage = async () => {
         const data = Object.fromEntries(formData);
 
         const { username, email, password, passwordConfirmation, termsOfUse } = data;
-
-        if (termsOfUse === undefined) {
-            return;
-        }
 
         if (password !== passwordConfirmation) {
             return;
