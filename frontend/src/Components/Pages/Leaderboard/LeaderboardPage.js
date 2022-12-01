@@ -1,4 +1,8 @@
+import {clearPage} from "../../../utils/render";
+
 const LeaderboardPage = () => {
+    clearPage();
+
     const users = fetch('http://localhost:3000/leaderboard', {
         method: 'GET',
         headers: {
@@ -20,7 +24,7 @@ const LeaderboardPage = () => {
             <tbody>
     `;
 
-    for (let i = 0; i < users.length; i++) {
+    for (let i = 0; i < users.length; i + 1) {
         table += `
             <tr>
                 <td>${i + 1}</td>

@@ -18,7 +18,7 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
-import Environment from "./Environment";
+import Environment from "./environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
 
