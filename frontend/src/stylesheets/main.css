@@ -62,9 +62,17 @@ input {
 
 #terms, #regToLog {
     font-size: 30px;
+    max-width: 270px;
+    padding: 10px 6px 1px 0;
 }
 
 .menu {
     padding-left: 20px;
     padding-top: 10px;
+}
+
+#renderCanvas {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
 }
