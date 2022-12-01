@@ -21,12 +21,12 @@ router.post('/levels/:levelId', (req, res) => {
   return res.json(leaderboard.filter((element) => element.level === levelId).sort((a, b) => a.time - b.time));
 });
 
-router.post('/users/:user_uuid', (req, res) => {
+router.post('/users/:user_id', (req, res) => {
   const leaderboard = parse(jsonDbPath);
 
-  const { user_uuid } = req.params;
+  const { user_id } = req.params;
 
-  return res.json(leaderboard.filter((element) => element.user_uuid === user_uuid).sort((a, b) => a.time - b.time));
+  return res.json(leaderboard.filter((element) => element.user_id === user_id).sort((a, b) => a.time - b.time));
 });
 
 module.exports = router;
