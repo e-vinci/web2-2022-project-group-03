@@ -15,7 +15,7 @@ router.post('/register', async (req, res) => {
   const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
   const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
 
-  if (!username || !password) return res.sendStatus(400);
+  if (!username || !password) return res.status(400).json({ message: 'Nom d\'utilisateur ou mot de passe manquant !' });
 
   const checker = new Checker();
   checker.min_length = 8;
@@ -26,14 +26,14 @@ router.post('/register', async (req, res) => {
     checker.errors.forEach((error) => {
       errors.push({ error: error.message });
     });
-    return res.json({ errors });
+    return res.status(400).json({ error: 'Votre mot de passe doit contenir au moins 8 caractères et pas être obvious' });
   }
 
   const users = parse(jsonDbPath);
 
   // eslint-disable-next-line consistent-return
   users.forEach((user) => {
-    if (user.username === username) return res.sendStatus(409);
+    if (user.username === username) return res.status(409).json({ error: 'Ce nom d\'utilisateur est déjà utilisé' });
   });
 
   const authenticatedUser = await register(username, password);
@@ -47,11 +47,11 @@ router.post('/login', async (req, res) => {
   const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
   const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
 
-  if (!username || !password) return res.sendStatus(400);
+  if (!username || !password) return res.status(400).json({ error: 'Nom d\'utilisateur ou mot de passe manquant !' });
 
   const authenticatedUser = await login(username, password);
 
-  if (!authenticatedUser) return res.sendStatus(401);
+  if (!authenticatedUser) return res.status(401).json({ error: 'Mauvais identifiant ou mot de passe !' });
 
   return res.json(authenticatedUser);
 });

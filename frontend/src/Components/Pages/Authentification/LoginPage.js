@@ -31,13 +31,20 @@ const LoginPage = () => {
     inputUsername.setAttribute('type', 'text');
     inputUsername.setAttribute('name', 'username');
     inputUsername.setAttribute('placeholder', 'USERNAME');
+    inputUsername.setAttribute('required', 'required');
     form.appendChild(inputUsername);
 
     const inputPassword = document.createElement('input');
     inputPassword.setAttribute('type', 'password');
     inputPassword.setAttribute('name', 'password');
     inputPassword.setAttribute('placeholder', 'PASSWORD');
+    inputPassword.setAttribute('required', 'required');
     form.appendChild(inputPassword);
+
+    const rememberMeInput = document.createElement('input');
+    rememberMeInput.setAttribute('type', 'checkbox');
+    rememberMeInput.setAttribute('name', 'rememberMe');
+    form.appendChild(rememberMeInput);
 
     const loginButton = document.createElement('input');
     loginButton.setAttribute('type', 'submit');
@@ -53,13 +60,16 @@ const LoginPage = () => {
     });
     menu.appendChild(backButton);
 
+    // eslint-disable-next-line consistent-return
     form.addEventListener('submit', async (event) => {
         event.preventDefault();
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
 
-        const {username, password, rememberMe} = data;
+        console.log(data);
+
+        const { username, password, rememberMe } = data;
 
         const options = {
             method: 'POST',
@@ -72,9 +82,13 @@ const LoginPage = () => {
             })
         }
 
-        const response = await fetch('http://localhost:3000/api/auth/login', options);
+        const response = await fetch('/api/auth/login', options);
 
-        if (!response.ok) throw new Error(`fetch error: ${response.status}`);
+        if (response.status !== 200) {
+            const result = await response.json();
+            console.log(result.error);
+            return;
+        }
 
         const authenticatedUser = await response.json();
 
