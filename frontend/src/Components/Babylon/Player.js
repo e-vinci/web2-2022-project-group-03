@@ -2,7 +2,7 @@ import {
     TransformNode,
     ArcRotateCamera,
     Vector3,
-    Quaternion, Ray, ActionManager, ExecuteCodeAction
+    Quaternion, Ray, ActionManager
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -16,9 +16,9 @@ export default class Player extends TransformNode {
 
     mesh;
 
-    static PLAYER_SPEED = 1;
+    static PLAYER_SPEED = 0.5;
 
-    static JUMP_FORCE = 1.5;
+    static JUMP_FORCE = 0.8;
 
     static GRAVITY = -2.8;
 
@@ -51,6 +51,7 @@ export default class Player extends TransformNode {
 
         this.camera.target = this.mesh;
 
+        /*
         this.mesh.actionManager.registerAction(
             new ExecuteCodeAction({
                     trigger: ActionManager.OnIntersectionEnterTrigger,
@@ -61,6 +62,7 @@ export default class Player extends TransformNode {
                 }
             )
         );
+        */
 
         shadowGenerator.addShadowCaster(assets.mesh);
 

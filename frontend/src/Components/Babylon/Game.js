@@ -18,7 +18,7 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
-import player from '../../models/playerBabylonDoc.glb';
+import player from '../../models/playerDamien.glb';
 import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
@@ -124,12 +124,12 @@ export default class Game {
 
     async loadCharacterAssets(scene){
         async function loadCharacter(){
-            const outer = MeshBuilder.CreateBox("outer", { width: 2, depth: 1, height: 3 }, scene);
-            outer.isVisible = false;
+            const outer = MeshBuilder.CreateBox("outer", { width: 1, depth: 1, height: 2 }, scene);
+            outer.isVisible = true;
             outer.isPickable = false;
             outer.checkCollisions = true;
 
-            outer.bakeTransformIntoVertices(Matrix.Translation(0, 1.5, 0))
+            outer.bakeTransformIntoVertices(Matrix.Translation(0, 1, 0))
 
             outer.ellipsoid = new Vector3(1, 1.5, 1);
             outer.ellipsoidOffset = new Vector3(0, 1.5, 0);
@@ -198,8 +198,9 @@ export default class Game {
 
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
-        // scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
 
+        // scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
+        scene.getMeshByName("outer").position = new Vector3(0,4,0);
         this.ui.startTimer();
 
         this.state = this.stateEnum.GAME;
