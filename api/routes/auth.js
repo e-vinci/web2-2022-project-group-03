@@ -4,6 +4,8 @@ const router = express.Router();
 
 const path = require("node:path");
 
+const Checker = require('password-checker');
+
 const { register, login } = require('../models/auth');
 const { parse } = require("../utils/json");
 
@@ -14,6 +16,18 @@ router.post('/register', async (req, res) => {
   const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
 
   if (!username || !password) return res.sendStatus(400);
+
+  const checker = new Checker();
+  checker.min_length = 8;
+  checker.disallowPasswords(true, true, 3);
+
+  if (!checker.check(password)) {
+    const errors = [];
+    checker.errors.forEach((error) => {
+      errors.push({ error: error.message });
+    });
+    return res.json({ errors });
+  }
 
   const users = parse(jsonDbPath);
 
