@@ -21,6 +21,7 @@ import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
 import Environment from "./environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
+import Navigate from "../Router/Navigate";
 
 export default class Game {
     stateEnum = {
@@ -115,8 +116,11 @@ export default class Game {
         this.gamescene = scene;
 
         this.environment = new Environment(scene);
+        
         const { level } = this.getQueryParams(window.location.href);
+        
         await this.environment.load(parseInt(level, 10) || 1);
+        
         await this.loadCharacterAssets(scene);
     }
 
@@ -244,17 +248,5 @@ export default class Game {
         this.scene.dispose();
         this.scene = scene;
         this.state = this.stateEnum.LOSE;
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    getQueryParams(url) {
-        const paramArr = url.slice(url.indexOf('?') + 1).split('&');
-        const params = {};
-        // eslint-disable-next-line array-callback-return
-        paramArr.map(param => {
-            const [key, val] = param.split('=');
-            params[key] = decodeURIComponent(val);
-        })
-        return params;
     }
 }
