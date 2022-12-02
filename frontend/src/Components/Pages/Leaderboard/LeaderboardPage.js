@@ -1,20 +1,45 @@
-import { clearPage } from "../../../utils/render";
-import Navigate from "../../Router/Navigate";
+import {clearPage} from "../../../utils/render";
 
 const LeaderboardPage = () => {
     clearPage();
+    
+    const users = fetch('http://localhost:3000/leaderboard', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
 
-    const main = document.querySelector("main");
-    main.innerHTML = `
-        <h1>Nous voila sur le leaderboard</h1>
-        <button>Retour</button>
+    const main = document.querySelector('main');
+
+    let table = `
+        <table>
+            <thead>
+                <tr>
+                    <th>Rang</th>
+                    <th>Nom</th>
+                    <th>Temps</th>
+                </tr>
+            </thead>
+            <tbody>
     `;
 
-    const button = document.querySelector("button");
+    for (let i = 0; i < users.length; i + 1) {
+        table += `
+            <tr>
+                <td>${i + 1}</td>
+                <td>${users[i].name}</td>
+                <td>${users[i].time}</td>
+            </tr>
+        `;
+    }
 
-    button.addEventListener("click", () => {
-        Navigate("/");
-    });
-};
+    table += `
+            </tbody>
+        </table>
+    `;
+
+    main.innerHTML = table;
+}
 
 export default LeaderboardPage;
