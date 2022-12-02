@@ -8,7 +8,7 @@ const { parse } = require("../utils/json");
 const jsonDbPath = path.join(__dirname, '/../data/levels.json');
 // eslint-disable-next-line consistent-return
 router.post('/set', (req, res) => {
-  const { username, level } = req.body;
+  const { username } = req.body;
 
   if (!username) return res.status(400).json({ error: 'Username missing !' });
 
@@ -17,7 +17,7 @@ router.post('/set', (req, res) => {
   levels.forEach((element) => {
     if (element.username === username) {
       // eslint-disable-next-line no-param-reassign
-      element.level = level;
+      element.level += 1;
     }
   });
 });
