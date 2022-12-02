@@ -37,10 +37,8 @@ const HomePage = () => {
         const resumeGameButton = document.createElement('button');
         resumeGameButton.classList.add('nav-button');
         resumeGameButton.innerText = 'RESUME';
-        resumeGameButton.addEventListener('click', () => {
-            Navigate('/game?level=1');
-
-            // TODO: add logic to get the level the authenticated user was on
+        resumeGameButton.addEventListener('click', async () => {
+            Navigate(`/game`);
         });
         menu.appendChild(resumeGameButton);
     } else {
