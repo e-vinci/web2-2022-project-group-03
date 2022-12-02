@@ -18,7 +18,7 @@ import {
     Vector3
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
-import Environment from "./Environment";
+import Environment from "./environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
 import Navigate from "../Router/Navigate";
@@ -103,57 +103,10 @@ export default class Game {
     }
 
     async goToStart() {
-        this.engine.displayLoadingUI();
-
-        this.scene.detachControl();
-
-        const scene = new Scene(this.engine);
-        scene.clearColor = new Color4(0,0,0,1);
-
-        const camera = new FreeCamera("camera1", new Vector3(0, 0, 0), scene);
-        camera.setTarget(Vector3.Zero());
-
-        const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        guiMenu.idealHeight = 720;
-
-        const startBtn = Button.CreateSimpleButton("start", "PLAY");
-        startBtn.width = 0.2
-        startBtn.height = "40px";
-        startBtn.color = "white";
-        startBtn.top = "-14px";
-        startBtn.thickness = 0;
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        guiMenu.addControl(startBtn);
-
-        const loginBtn = Button.CreateSimpleButton("login", "LOGIN");
-        loginBtn.width = 0.2
-        loginBtn.height = "40px";
-        loginBtn.color = "white";
-        loginBtn.top = "-14px";
-        loginBtn.thickness = 0;
-        loginBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        guiMenu.addControl(loginBtn);
-
-        startBtn.onPointerDownObservable.add(() => {
-            this.goToGame();
-            scene.detachControl();
-        });
-
-        loginBtn.onPointerDownObservable.add(() => {
-            Navigate("/login");
-            scene.detachControl();
-        });
-
-        await scene.whenReadyAsync();
-        this.engine.hideLoadingUI();
-
-        this.scene.dispose();
-        this.scene = scene;
-        this.state = this.stateEnum.START;
-
         // eslint-disable-next-line
         let finishedLoading = false;
         await this.setUpGame().then(() => {
+            this.goToGame();
             finishedLoading = true;
         });
     }
@@ -163,7 +116,11 @@ export default class Game {
         this.gamescene = scene;
 
         this.environment = new Environment(scene);
-        await this.environment.load(2);
+        
+        const { level } = this.getQueryParams(window.location.href);
+        
+        await this.environment.load(parseInt(level, 10) || 1);
+        
         await this.loadCharacterAssets(scene);
     }
 
