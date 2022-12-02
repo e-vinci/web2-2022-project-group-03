@@ -51,6 +51,14 @@ const HomePage = () => {
             Navigate('/register');
         });
         menu.appendChild(signupButton);
+
+        const signinButton = document.createElement('button');
+        signinButton.classList.add('nav-button');
+        signinButton.innerText = 'SIGN IN';
+        signinButton.addEventListener('click', () => {
+            Navigate('/login');
+        });
+        menu.appendChild(signinButton);
     }
 
     const leaderboardButton = document.createElement("button");

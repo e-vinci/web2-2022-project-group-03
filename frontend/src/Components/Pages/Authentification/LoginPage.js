@@ -46,6 +46,15 @@ const LoginPage = () => {
     rememberMeInput.setAttribute('name', 'rememberMe');
     form.appendChild(rememberMeInput);
 
+    const donthaveButton = document.createElement("button");
+    donthaveButton.classList.add("nav-button");
+    donthaveButton.setAttribute("id", "regToLog");
+    donthaveButton.textContent = "DONT HAVE AN ACCOUNT ?";
+    donthaveButton.addEventListener("click", () => {
+        Navigate("/register");
+    });
+    form.appendChild(donthaveButton);
+
     const loginButton = document.createElement('input');
     loginButton.setAttribute('type', 'submit');
     loginButton.setAttribute('value', 'LOGIN');
