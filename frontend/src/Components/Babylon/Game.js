@@ -24,6 +24,7 @@ import Player from "./Player";
 import PlayerInput from "./inputController";
 import Navigate from "../Router/Navigate";
 import Hud from "./Hud";
+import {getAuthenticatedUser} from "../../utils/auths";
 
 export default class Game {
     stateEnum = {
@@ -115,9 +116,19 @@ export default class Game {
 
         this.environment = new Environment(scene);
 
-        const { level } = this.getQueryParams(window.location.href);
+        const response = await fetch('/api/users/get', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: getAuthenticatedUser().username,
+            }),
+        });
 
-        await this.environment.load(parseInt(level, 10) || 1);
+        const result = await response.json();
+
+        await this.environment.load(parseInt(result.level, 10) || 1);
 
         await this.loadCharacterAssets(scene);
     }
@@ -232,17 +243,5 @@ export default class Game {
         this.scene.dispose();
         this.scene = scene;
         this.state = this.stateEnum.LOSE;
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    getQueryParams(url) {
-        const paramArr = url.slice(url.indexOf('?') + 1).split('&');
-        const params = {};
-        // eslint-disable-next-line array-callback-return
-        paramArr.map(param => {
-            const [key, val] = param.split('=');
-            params[key] = decodeURIComponent(val);
-        })
-        return params;
     }
 }
