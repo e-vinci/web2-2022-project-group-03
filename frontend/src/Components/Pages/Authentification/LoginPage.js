@@ -55,6 +55,9 @@ const LoginPage = () => {
     });
     form.appendChild(donthaveButton);
 
+    const br = document.createElement("br");
+    form.appendChild(br);
+
     const loginButton = document.createElement('input');
     loginButton.setAttribute('type', 'submit');
     loginButton.setAttribute('value', 'LOGIN');
