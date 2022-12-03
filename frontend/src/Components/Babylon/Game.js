@@ -19,7 +19,7 @@ import {
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
 import player from '../../models/playerBabylonDoc.glb';
-import Environment from "./environment";
+import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
 import Navigate from "../Router/Navigate";
@@ -116,6 +116,7 @@ export default class Game {
 
         this.environment = new Environment(scene);
 
+        /*
         const response = await fetch('/api/users/get', {
             method: 'POST',
             headers: {
@@ -127,8 +128,11 @@ export default class Game {
         });
 
         const result = await response.json();
+        */
 
-        await this.environment.load(parseInt(result.level, 10) || 1);
+        // await this.environment.load(parseInt(result.level, 10) || 1);
+
+        await this.environment.load(1);
         
         await this.loadCharacterAssets(scene);
     }

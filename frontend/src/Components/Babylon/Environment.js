@@ -49,7 +49,7 @@ export default class Environment {
     }
 
     async loadAssetLevel1() {
-        const result = await SceneLoader.ImportMeshAsync(null, environnement);
+        const result = await SceneLoader.ImportMeshAsync(null, damien);
         let env = result.meshes[0];
         let allMeshes = env.getChildMeshes();
 
@@ -60,7 +60,7 @@ export default class Environment {
     }
 
     async loadAssetLevel2() {
-        const result = await SceneLoader.ImportMeshAsync(null, damien);
+        const result = await SceneLoader.ImportMeshAsync(null, environnement);
         let env = result.meshes[0];
         let allMeshes = env.getChildMeshes();
 
