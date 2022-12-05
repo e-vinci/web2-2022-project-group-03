@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const path = require("node:path");
 
-const { parse } = require("../utils/json");
+const { parse, serialize} = require("../utils/json");
 
 const jsonDbPath = path.join(__dirname, '/../data/levels.json');
 // eslint-disable-next-line consistent-return
@@ -36,6 +36,15 @@ router.post('/get', (req, res) => {
       return res.status(200).json(level);
     }
   });
+
+  const newLevel = {
+    username,
+    level: 1,
+  };
+
+  levels.push(newLevel);
+  serialize(jsonDbPath, levels);
+  return res.status(200).json(newLevel);
 });
 
 module.exports = router;
