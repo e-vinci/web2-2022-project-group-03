@@ -5,7 +5,6 @@ import {
     Quaternion, Ray, ActionManager, ExecuteCodeAction
 } from "@babylonjs/core";
 import { getAuthenticatedUser } from "../../utils/auths";
-import Navigate from "../Router/Navigate";
 
 export default class Player extends TransformNode {
     camera;
@@ -63,8 +62,9 @@ export default class Player extends TransformNode {
                     trigger: ActionManager.OnIntersectionEnterTrigger,
                     parameter: this.scene.getMeshByName("ramp"),
                 },
-                () => {
-                    fetch('/users/set', {
+                async () => {
+
+                    fetch('/api/users/set', {
                         method: "POST",
                         headers: {
                             "Content-type": "application/json"
@@ -73,7 +73,21 @@ export default class Player extends TransformNode {
                             username: getAuthenticatedUser().username
                         })
                     });
-                    Navigate('/game');
+
+                    const response = await fetch('/api/users/get', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: getAuthenticatedUser().username,
+                        }),
+                    });
+
+                    const result = await response.json();
+                    console.log(result);
+
+                    document.location.reload();
                 },
             ),
         );
