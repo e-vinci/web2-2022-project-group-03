@@ -25,15 +25,15 @@ const HomePage = () => {
     menu.classList.add("menu");
     sectionSide.appendChild(menu);
 
-    const newGameButton = document.createElement("button");
-    newGameButton.classList.add("nav-button");
-    newGameButton.textContent = "NEW GAME";
-    newGameButton.addEventListener("click", () => {
-        Navigate("/game");
-    });
-    menu.appendChild(newGameButton);
-
     if (isAuthenticated()) {
+        const newGameButton = document.createElement("button");
+        newGameButton.classList.add("nav-button");
+        newGameButton.textContent = "NEW GAME";
+        newGameButton.addEventListener("click", () => {
+            Navigate("/game");
+        });
+        menu.appendChild(newGameButton);
+
         const resumeGameButton = document.createElement('button');
         resumeGameButton.classList.add('nav-button');
         resumeGameButton.innerText = 'RESUME';

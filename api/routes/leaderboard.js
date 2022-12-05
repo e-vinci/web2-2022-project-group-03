@@ -13,20 +13,15 @@ router.post('/', (req, res) => {
   return res.json(leaderboard.sort((a, b) => a.time - b.time));
 });
 
-router.post('/levels/:levelId', (req, res) => {
+router.post('/add', (req, res) => {
   const leaderboard = parse(jsonDbPath);
+  const { username, level, time } = req.body;
 
-  const { levelId } = req.params;
+  leaderboard.push({ username, level, time });
 
-  return res.json(leaderboard.filter((element) => element.level === levelId).sort((a, b) => a.time - b.time));
-});
+  serialize(jsonDbPath, leaderboard);
 
-router.post('/users/:user_id', (req, res) => {
-  const leaderboard = parse(jsonDbPath);
-
-  const { user_id } = req.params;
-
-  return res.json(leaderboard.filter((element) => element.user_id === user_id).sort((a, b) => a.time - b.time));
+  return res.sendStatus(200);
 });
 
 module.exports = router;

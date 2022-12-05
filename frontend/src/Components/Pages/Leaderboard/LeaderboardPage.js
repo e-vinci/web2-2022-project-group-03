@@ -2,9 +2,9 @@ import {clearPage} from "../../../utils/render";
 
 const LeaderboardPage = () => {
     clearPage();
-    
-    const users = fetch('http://localhost:3000/leaderboard', {
-        method: 'GET',
+
+    const users = fetch('/leaderboard', {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
