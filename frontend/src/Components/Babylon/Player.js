@@ -55,41 +55,6 @@ export default class Player extends TransformNode {
         shadowGenerator.addShadowCaster(assets.mesh);
 
         this.input = input;
-
-        this.mesh.actionManager.registerAction(
-            new ExecuteCodeAction(
-                {
-                    trigger: ActionManager.OnIntersectionEnterTrigger,
-                    parameter: this.scene.getMeshByName("ramp"),
-                },
-                async () => {
-                    fetch('/api/users/set', {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username
-                        })
-                    });
-
-                    const response = await fetch('/api/users/get', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username,
-                        }),
-                    });
-
-                    const result = await response.json();
-                    console.log(result);
-
-                    document.location.reload();
-                },
-            ),
-        );
     }
 
     updateFromControls() {

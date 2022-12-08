@@ -3,9 +3,11 @@ import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF";
 import {
+    ActionManager,
     Color3,
     Color4,
     Engine,
+    ExecuteCodeAction,
     FreeCamera,
     HemisphericLight,
     Matrix,
@@ -17,7 +19,7 @@ import {
     ShadowGenerator,
     Vector3
 } from "@babylonjs/core";
-import {AdvancedDynamicTexture, Button, Control} from "@babylonjs/gui";
+import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel} from "@babylonjs/gui";
 import player from '../../models/playerBabylonDoc.glb';
 import Environment from "./Environment";
 import Player from "./Player";
@@ -180,26 +182,10 @@ export default class Game {
     }
 
     async goToGame() {
-        document.querySelector("canvas").focus();
         this.scene.detachControl();
         const scene = this.scene;
 
         this.ui = new Hud(scene);
-
-        const playerUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-
-        const loseBtn = Button.CreateSimpleButton("lose", "LOSE");
-        loseBtn.width = 0.2;
-        loseBtn.height = "40px";
-        loseBtn.color = "white";
-        loseBtn.top = "-14px";
-        loseBtn.thickness = 0;
-        loseBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
-        playerUI.addControl(loseBtn);
-
-        loseBtn.onPointerDownObservable.add(() => {
-            this.goToLose();
-        });
 
         this.input = new PlayerInput(scene, this.ui);
 
@@ -214,34 +200,85 @@ export default class Game {
             this.ui.updateHud();
         }, 1000);
 
+        this.createEndLevelMenu();
+
         this.state = this.stateEnum.GAME;
         this.scene = scene;
         this.engine.hideLoadingUI();
         this.scene.attachControl();
     }
 
-    async goToLose() {
-        this.engine.displayLoadingUI();
+    createEndLevelMenu() {
+        const endLevelUI = AdvancedDynamicTexture.CreateFullscreenUI("EndUI");
+        endLevelUI.idealHeight = 720;
 
-        const scene = new Scene(this.engine);
-        scene.clearColor = new Color4(0, 0, 0, 1);
-        const camera = new FreeCamera("camera1", new Vector3(0, 0, 0), scene);
-        camera.setTarget(Vector3.Zero());
+        const stackPanel = new StackPanel();
+        stackPanel.width = .83;
 
-        const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI("UI");
-        const mainBtn = Button.CreateSimpleButton("mainmenu", "MAIN MENU");
-        mainBtn.width = 0.2;
-        mainBtn.height = "40px";
-        mainBtn.color = "white";
-        guiMenu.addControl(mainBtn);
-        mainBtn.onPointerUpObservable.add(() => {
+        const endLevelMenu = new Rectangle();
+        endLevelMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        endLevelMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        endLevelMenu.height = 0.8;
+        endLevelMenu.width = 0.5;
+        endLevelMenu.thickness = 0;
+        endLevelMenu.isVisible = false;
+        stackPanel.addControl(endLevelMenu);
+
+        const nextBtn = Button.CreateSimpleButton("next", "NEXT LEVEL");
+        nextBtn.width = 0.2;
+        nextBtn.height = "40px";
+        nextBtn.color = "white";
+        nextBtn.top = "-14px";
+        nextBtn.thickness = 0;
+        nextBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        stackPanel.addControl(nextBtn);
+
+        nextBtn.onPointerDownObservable.add(() => {
+            this.engine.displayLoadingUI();
+            endLevelMenu.isVisible = false;
+            this.ui.gamePaused = false;
+
+            document.location.reload();
+        });
+
+        const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
+        quitBtn.width = 0.2;
+        quitBtn.height = "40px";
+        quitBtn.color = "white";
+        quitBtn.top = "-14px";
+        quitBtn.thickness = 0;
+        quitBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        stackPanel.addControl(quitBtn);
+
+        quitBtn.onPointerDownObservable.add(() => {
+            endLevelMenu.isVisible = false;
+            this.ui.gamePaused = false;
+
             Navigate('/');
         });
 
-        await scene.whenReadyAsync();
-        this.engine.hideLoadingUI();
-        this.scene.dispose();
-        this.scene = scene;
-        this.state = this.stateEnum.LOSE;
+        this.assets.mesh.actionManager.registerAction(
+            new ExecuteCodeAction(
+                {
+                    trigger: ActionManager.OnIntersectionEnterTrigger,
+                    parameter: this.scene.getMeshByName("ramp"),
+                },
+                async () => {
+                    endLevelUI.addControl(stackPanel);
+                    endLevelMenu.isVisible = true;
+                    this.ui.gamePaused = true;
+
+                    await fetch('/api/users/set', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username: getAuthenticatedUser().username
+                        })
+                    });
+                },
+            ),
+        );
     }
 }

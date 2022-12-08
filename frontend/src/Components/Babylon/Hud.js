@@ -48,7 +48,7 @@ export default class Hud {
         pauseBtn.width = "48px";
         pauseBtn.height = "86px";
         pauseBtn.thickness = 0;
-        pauseBtn.verticalAlignment = 0;
+        pauseBtn.verticalAlignment = 1;
         pauseBtn.horizontalAlignment = 1;
         pauseBtn.top = "-16px";
         playerUI.addControl(pauseBtn);
