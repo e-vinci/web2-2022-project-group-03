@@ -1,7 +1,7 @@
 import Navigate from "../../Router/Navigate";
 
 import { clearPage } from "../../../utils/render";
-import { isAuthenticated } from "../../../utils/auths";
+import {getAuthenticatedUser, isAuthenticated} from "../../../utils/auths";
 
 const HomePage = () => {
     clearPage();
@@ -29,7 +29,29 @@ const HomePage = () => {
         const newGameButton = document.createElement("button");
         newGameButton.classList.add("nav-button");
         newGameButton.textContent = "NEW GAME";
-        newGameButton.addEventListener("click", () => {
+        newGameButton.addEventListener("click", async () => {
+            const requestGet = await fetch('/api/users/get', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: getAuthenticatedUser().username
+                })
+            });
+            const result = await requestGet.json();
+            if (result.level > 1) {
+                const requestReset = await fetch('/api/users/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: getAuthenticatedUser().username
+                    })
+                });
+                await requestReset.json();
+            }
             Navigate("/game");
         });
         menu.appendChild(newGameButton);

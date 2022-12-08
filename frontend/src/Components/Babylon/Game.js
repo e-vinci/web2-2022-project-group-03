@@ -129,7 +129,7 @@ export default class Game {
         const result = await response.json();
 
         await this.environment.load(parseInt(result.level, 10) || 1);
-        
+
         await this.loadCharacterAssets(scene);
     }
 
