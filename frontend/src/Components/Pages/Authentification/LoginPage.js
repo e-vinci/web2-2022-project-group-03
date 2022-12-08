@@ -25,6 +25,7 @@ const LoginPage = () => {
     sectionSide.appendChild(menu);
 
     const form = document.createElement('form');
+    form.setAttribute('id','flexForm');
     menu.appendChild(form);
 
     const inputUsername = document.createElement('input');
@@ -41,10 +42,20 @@ const LoginPage = () => {
     inputPassword.setAttribute('required', 'required');
     form.appendChild(inputPassword);
 
+    const div2 = document.createElement('div');
+    div2.setAttribute('name','divRememnberMe');
+    div2.setAttribute('id', 'div2');
+    form.appendChild(div2);
+
     const rememberMeInput = document.createElement('input');
     rememberMeInput.setAttribute('type', 'checkbox');
     rememberMeInput.setAttribute('name', 'rememberMe');
-    form.appendChild(rememberMeInput);
+    div2.appendChild(rememberMeInput);
+
+    const textRemember = document.createElement('p');
+    textRemember.setAttribute('type', 'text');
+    textRemember.textContent = 'Remember me';
+    div2.appendChild(textRemember);
 
     const donthaveButton = document.createElement("button");
     donthaveButton.classList.add("nav-button");
@@ -54,9 +65,6 @@ const LoginPage = () => {
         Navigate("/register");
     });
     form.appendChild(donthaveButton);
-
-    const br = document.createElement("br");
-    form.appendChild(br);
 
     const loginButton = document.createElement('input');
     loginButton.setAttribute('type', 'submit');
@@ -80,7 +88,7 @@ const LoginPage = () => {
         const data = Object.fromEntries(formData);
 
         console.log(data);
-
+        
         const { username, password, rememberMe } = data;
 
         const options = {
