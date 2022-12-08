@@ -3,6 +3,7 @@ import LoginPage from "../Pages/Authentification/LoginPage";
 import RegisterPage from "../Pages/Authentification/RegisterPage";
 import GamePage from "../Pages/Game/GamePage";
 import LeaderboardPage from "../Pages/Leaderboard/LeaderboardPage";
+import Logout from "../Logout/Logout";
 
 
 const routes = {
@@ -11,6 +12,7 @@ const routes = {
   '/register': RegisterPage,
   '/game': GamePage,
   '/leaderboard': LeaderboardPage,
+  '/logout': Logout,
 };
 
 export default routes;
