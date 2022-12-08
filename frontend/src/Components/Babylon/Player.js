@@ -64,7 +64,7 @@ export default class Player extends TransformNode {
                     parameter: this.scene.getMeshByName("ramp"),
                 },
                 () => {
-                    fetch('/users/set', {
+                    fetch('/api/users/set', {
                         method: "POST",
                         headers: {
                             "Content-type": "application/json"
