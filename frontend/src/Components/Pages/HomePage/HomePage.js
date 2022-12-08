@@ -41,6 +41,17 @@ const HomePage = () => {
             Navigate(`/game`);
         });
         menu.appendChild(resumeGameButton);
+
+        const br = document.createElement("br");
+        menu.appendChild(br);
+
+        const logoutButton = document.createElement("button");
+        logoutButton.classList.add('nav-button');
+        logoutButton.innerText = 'LOGOUT';
+        logoutButton.addEventListener('click', () => {
+            Navigate('/logout');
+        });
+        menu.appendChild(logoutButton);
     } else {
         const signupButton = document.createElement('button');
         signupButton.classList.add('nav-button');
