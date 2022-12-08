@@ -116,7 +116,6 @@ export default class Game {
 
         this.environment = new Environment(scene);
 
-        /*
         const response = await fetch('/api/users/get', {
             method: 'POST',
             headers: {
@@ -128,11 +127,8 @@ export default class Game {
         });
 
         const result = await response.json();
-        */
 
-        // await this.environment.load(parseInt(result.level, 10) || 1);
-
-        await this.environment.load(1);
+        await this.environment.load(parseInt(result.level, 10) || 1);
         
         await this.loadCharacterAssets(scene);
     }

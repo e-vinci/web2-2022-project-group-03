@@ -1,4 +1,5 @@
 import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
+import Navigate from "../Router/Navigate";
 
 export default class Hud {
     time;
@@ -105,7 +106,7 @@ export default class Hud {
         resumeBtn.cornerRadius = 14;
         resumeBtn.fontSize = "12px";
         resumeBtn.textBlock.resizeToFit = true;
-        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(resumeBtn);
 
@@ -128,8 +129,12 @@ export default class Hud {
         quitBtn.cornerRadius = 14;
         quitBtn.fontSize = "12px";
         resumeBtn.textBlock.resizeToFit = true;
-        quitBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT;
+        quitBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         quitBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(quitBtn);
+
+        quitBtn.onPointerDownObservable.add(() => {
+            Navigate('/');
+        })
     }
 }

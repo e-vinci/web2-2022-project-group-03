@@ -14,7 +14,14 @@ export default class PlayerInput {
 
     jumpKeyDown;
 
-    constructor(scene) {
+    ui;
+
+    scene;
+
+    constructor(scene, ui) {
+        this.scene = scene;
+        this.ui = ui;
+
         scene.actionManager = new ActionManager(scene);
 
         this.inputMap = {};
@@ -31,11 +38,11 @@ export default class PlayerInput {
     }
 
     updateFromKeyboard() {
-        if (this.inputMap["ArrowUp"]) {
+        if (this.inputMap["ArrowUp"] && !this.ui.gamePaused) {
             this.vertical = Scalar.Lerp(this.vertical, 1, 0.2);
             this.verticalAxis = 1;
 
-        } else if (this.inputMap["ArrowDown"]) {
+        } else if (this.inputMap["ArrowDown"] && !this.ui.gamePaused) {
             this.vertical = Scalar.Lerp(this.vertical, -1, 0.2);
             this.verticalAxis = -1;
         } else {
@@ -43,11 +50,11 @@ export default class PlayerInput {
             this.verticalAxis = 0;
         }
 
-        if (this.inputMap["ArrowLeft"]) {
+        if (this.inputMap["ArrowLeft"] && !this.ui.gamePaused) {
             this.horizontal = Scalar.Lerp(this.horizontal, -1, 0.2);
             this.horizontalAxis = -1;
 
-        } else if (this.inputMap["ArrowRight"]) {
+        } else if (this.inputMap["ArrowRight"] && !this.ui.gamePaused) {
             this.horizontal = Scalar.Lerp(this.horizontal, 1, 0.2);
             this.horizontalAxis = 1;
         }
@@ -56,7 +63,7 @@ export default class PlayerInput {
             this.horizontalAxis = 0;
         }
 
-        if (this.inputMap[" "]) {
+        if (this.inputMap[" "] && !this.ui.gamePaused) {
             this.jumpKeyDown = true;
         } else {
             this.jumpKeyDown = false;

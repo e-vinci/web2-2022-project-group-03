@@ -32,7 +32,7 @@ router.post('/register', async (req, res) => {
     checker.errors.forEach((error) => {
       errors.push({ error: error.message });
     });
-    return res.status(400).json({ error: 'Your password must be 8 characters and not obvious !' });
+    return res.status(400).json({ error: 'Your password must be atleast 8 characters and contains symbols and numbers !' });
   }
 
   const users = parse(jsonDbPath);

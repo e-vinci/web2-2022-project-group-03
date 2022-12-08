@@ -129,7 +129,7 @@ const RegisterPage = async () => {
 
         if (response.status !== 200) {
             const result = await response.json();
-            console.log(result.error);
+            alert(result.error);
             return;
         }
 
