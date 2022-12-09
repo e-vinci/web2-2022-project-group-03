@@ -101,13 +101,8 @@ const RegisterPage = async () => {
 
         const { username, email, password, passwordConfirm , termsOfUse } = data;
 
-        if (termsOfUse !== "on") {
-            alert("You must accept the terms of use");
-            return;
-        }
-
         if (password !== passwordConfirm) {
-            alert("Passwords do not match");
+            showErrorMessage("Passwords do not match", main);
             return;
         }
 
@@ -129,7 +124,7 @@ const RegisterPage = async () => {
 
         if (response.status !== 200) {
             const result = await response.json();
-            alert(result.error);
+            showErrorMessage(result.message, main);
             return;
         }
 
@@ -139,6 +134,25 @@ const RegisterPage = async () => {
 
         Navigate("/");
     });
+}
+
+function showErrorMessage(message, element) {
+    const div = document.createElement('div');
+    div.classList.add('alert');
+    element.appendChild(div);
+
+    const span = document.createElement('span');
+    span.textContent = message;
+    span.classList.add('msg');
+    div.appendChild(span);
+
+    div.classList.add('show');
+    div.classList.remove('hide');
+    div.classList.add('showAlert');
+    setTimeout(() => {
+        div.classList.remove('show');
+        div.classList.add('hide');
+    }, 5000);
 }
 
 export default RegisterPage;
