@@ -44,25 +44,6 @@ export default class Hud {
         stackPanel.addControl(clockTime);
         this.clockTime = clockTime;
 
-        const pauseBtn = Button.CreateSimpleButton("pauseBtn", "PAUSE");
-        pauseBtn.width = "48px";
-        pauseBtn.height = "86px";
-        pauseBtn.thickness = 0;
-        pauseBtn.verticalAlignment = 1;
-        pauseBtn.horizontalAlignment = 1;
-        pauseBtn.top = "-16px";
-        playerUI.addControl(pauseBtn);
-        pauseBtn.zIndex = 10;
-        this.pauseBtn = pauseBtn;
-
-        pauseBtn.onPointerDownObservable.add(() => {
-            this.pauseMenu.isVisible = true;
-            playerUI.addControl(this.pauseMenu);
-            this.pauseBtn.isHitTestVisible = false;
-
-            this.gamePaused = true;
-        });
-
         this.createPauseMenu();
     }
 
@@ -98,15 +79,11 @@ export default class Hud {
         pauseMenu.addControl(stackPanel);
 
         const resumeBtn = Button.CreateSimpleButton("resume", "RESUME");
-        resumeBtn.width = 0.18;
-        resumeBtn.height = "44px";
+        resumeBtn.width = 0.2;
+        resumeBtn.height = "40px";
         resumeBtn.color = "white";
-        resumeBtn.fontFamily = "Viga";
-        resumeBtn.paddingBottom = "14px";
-        resumeBtn.cornerRadius = 14;
-        resumeBtn.fontSize = "12px";
-        resumeBtn.textBlock.resizeToFit = true;
-        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        resumeBtn.top = "-14px";
+        resumeBtn.thickness = 0;
         resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(resumeBtn);
 
@@ -121,15 +98,11 @@ export default class Hud {
         });
 
         const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
-        quitBtn.width = 0.18;
-        quitBtn.height = "44px";
+        quitBtn.width = 0.2;
+        quitBtn.height = "40px";
         quitBtn.color = "white";
-        quitBtn.fontFamily = "Viga";
-        quitBtn.paddingBottom = "12px";
-        quitBtn.cornerRadius = 14;
-        quitBtn.fontSize = "12px";
-        resumeBtn.textBlock.resizeToFit = true;
-        quitBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        quitBtn.top = "-14px";
+        quitBtn.thickness = 0;
         quitBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(quitBtn);
 

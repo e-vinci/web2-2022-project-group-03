@@ -157,6 +157,7 @@ export default class Game {
                 });
                 return {
                     mesh: outer,
+                    animationGroups: result.animationGroups
                 }
             });
         }
@@ -174,9 +175,7 @@ export default class Game {
         light.intensity = 35;
         light.radius = 1;
 
-        const shadowGenerator = new ShadowGenerator(1024, light);
-
-        this.player = new Player(this.assets, scene, shadowGenerator, this.input, this.canvas);
+        this.player = new Player(this.assets, scene, this.input, this.canvas);
         // eslint-disable-next-line
         const camera = this.player.activatePlayerCamera();
     }
