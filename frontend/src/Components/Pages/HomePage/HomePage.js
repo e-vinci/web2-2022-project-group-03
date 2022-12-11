@@ -18,7 +18,11 @@ const HomePage = () => {
 
     const title = document.createElement("h5");
     title.classList.add("title");
-    title.textContent = "NOM";
+    if (isAuthenticated()) {
+        title.textContent = `WELCOME ${getAuthenticatedUser().username}`;
+    } else {
+        title.textContent = "WELCOME";
+    }
     sectionSide.appendChild(title);
 
     const menu = document.createElement("div");
