@@ -247,6 +247,10 @@ export default class Player extends TransformNode {
 
         this.camera.setPosition(new Vector3(0, 30, -20));
 
+        this.camera.upperBetaLimit = Math.PI / 2.2;
+        this.camera.lowerRadiusLimit = 10;
+        this.camera.upperRadiusLimit = 40;
+
         this.camera.attachControl(this.canvas, true);
 
         this.camera.inputs.attached.keyboard.detachControl();

@@ -86,6 +86,7 @@ input {
     font-size: 30px;
     display: flex;
     flex-direction: row;
+}
 .alert{
     background: red;
     padding: 20px 40px;
