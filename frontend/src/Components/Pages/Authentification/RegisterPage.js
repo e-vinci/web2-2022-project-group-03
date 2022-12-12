@@ -1,6 +1,7 @@
 import {clearPage} from "../../../utils/render";
 import {setAuthenticatedUser} from "../../../utils/auths";
 import Navigate from "../../Router/Navigate";
+import showErrorMessage from "../../../utils/error";
 
 const RegisterPage = async () => {
     clearPage();
@@ -101,13 +102,8 @@ const RegisterPage = async () => {
 
         const { username, email, password, passwordConfirm , termsOfUse } = data;
 
-        if (termsOfUse !== "on") {
-            alert("You must accept the terms of use");
-            return;
-        }
-
         if (password !== passwordConfirm) {
-            alert("Passwords do not match");
+            showErrorMessage("Passwords do not match", main);
             return;
         }
 
@@ -129,7 +125,7 @@ const RegisterPage = async () => {
 
         if (response.status !== 200) {
             const result = await response.json();
-            alert(result.error);
+            showErrorMessage(result.message, main);
             return;
         }
 
