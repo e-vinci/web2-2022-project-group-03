@@ -2,9 +2,8 @@ import {
     TransformNode,
     ArcRotateCamera,
     Vector3,
-    Quaternion, Ray, ActionManager, ExecuteCodeAction
+    Quaternion, Ray, ActionManager
 } from "@babylonjs/core";
-import { getAuthenticatedUser } from "../../utils/auths";
 
 export default class Player extends TransformNode {
     camera;
@@ -16,6 +15,22 @@ export default class Player extends TransformNode {
     canvas;
 
     mesh;
+
+    run;
+
+    idle;
+
+    jump;
+
+    land;
+
+    currentAnim = null;
+
+    prevAnim;
+
+    isFalling = false;
+
+    jumped = false;
 
     static PLAYER_SPEED = 0.8;
 
@@ -39,7 +54,7 @@ export default class Player extends TransformNode {
 
     moveDirection = new Vector3();
 
-    constructor(assets, scene, shadowGenerator, input, canvas) {
+    constructor(assets, scene, input, canvas) {
         super("player", scene);
         this.scene = scene;
         this.canvas = canvas
@@ -48,48 +63,15 @@ export default class Player extends TransformNode {
         this.mesh = assets.mesh;
         this.mesh.parent = this;
 
+        [,this.idle, this.jump, this.land, this.run] = assets.animationGroups;
+
         this.mesh.actionManager = new ActionManager(this.scene);
 
         this.camera.target = this.mesh;
 
-        shadowGenerator.addShadowCaster(assets.mesh);
+        this.setUpAnimations();
 
         this.input = input;
-
-        this.mesh.actionManager.registerAction(
-            new ExecuteCodeAction(
-                {
-                    trigger: ActionManager.OnIntersectionEnterTrigger,
-                    parameter: this.scene.getMeshByName("ramp"),
-                },
-                async () => {
-                    await fetch('/api/users/set', {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username
-                        })
-                    });
-
-                    const response = await fetch('/api/users/get', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username,
-                        }),
-                    });
-
-                    const result = await response.json();
-                    console.log(result);
-
-                    document.location.reload();
-                },
-            ),
-        );
     }
 
     updateFromControls() {
@@ -117,6 +99,33 @@ export default class Player extends TransformNode {
         }
 
         this.moveDirection = this.moveDirection.scaleInPlace(Player.PLAYER_SPEED);
+    }
+
+    setUpAnimations() {
+        this.scene.stopAllAnimations();
+        this.run.loopAnimation = true;
+        this.idle.loopAnimation = true;
+
+        this.currentAnim = this.idle;
+        this.prevAnim = this.land;
+    }
+
+    animatePlayer() {
+        if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
+            this.currentAnim = this.run;
+        } else if (this.jumped && !this.isFalling) {
+            this.currentAnim = this.jump;
+        } else if (!this.isFalling && this.grounded) {
+            this.currentAnim = this.idle;
+        } else if (this.isFalling) {
+            this.currentAnim = this.land;
+        }
+
+        if(this.currentAnim != null && this.prevAnim !== this.currentAnim){
+            this.prevAnim.stop();
+            this.currentAnim.play(this.currentAnim.loopAnimation);
+            this.prevAnim = this.currentAnim;
+        }
     }
 
     floorRaycast(offsetx, offsetz, raycastlen) {
@@ -192,6 +201,11 @@ export default class Player extends TransformNode {
         if (this.gravity.y < -Player.JUMP_FORCE) {
             this.gravity.y = -Player.JUMP_FORCE;
         }
+
+        if (this.gravity.y < 0 && this.jumped) {
+            this.isFalling = true;
+        }
+
         this.mesh.moveWithCollisions(this.moveDirection.addInPlace(this.gravity));
 
         if (this.isGrounded()) {
@@ -200,18 +214,25 @@ export default class Player extends TransformNode {
             this.lastGroundPos.copyFrom(this.mesh.position);
 
             this.jumpCount = 1;
+
+            this.jumped = false;
+            this.isFalling = false;
         }
 
         if (this.input.jumpKeyDown && this.jumpCount > 0) {
             this.gravity.y = Player.JUMP_FORCE;
             // eslint-disable-next-line
             this.jumpCount--;
+
+            this.jumped = true;
+            this.isFalling = false;
         }
     }
 
     beforeRenderUpdate() {
         this.updateFromControls();
         this.updateGroundDetection();
+        this.animatePlayer();
     }
 
     activatePlayerCamera() {
