@@ -276,6 +276,30 @@ export default class Game {
                             username: getAuthenticatedUser().username
                         })
                     });
+
+                    const response = await fetch('/api/users/get', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username: getAuthenticatedUser().username
+                        })
+                    });
+
+                    const { level } = response.json();
+
+                    await fetch('/api/leaderboard/add', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username: getAuthenticatedUser().username,
+                            level,
+                            time: this.ui.time
+                        })
+                    });
                 },
             ),
         );

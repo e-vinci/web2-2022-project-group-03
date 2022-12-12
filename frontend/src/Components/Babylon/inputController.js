@@ -71,9 +71,9 @@ export default class PlayerInput {
         }
 
         if (this.inputMap["Escape"]) {
+            this.ui.gamePaused = true;
             this.ui.pauseMenu.isVisible = true;
             this.ui.playerUI.addControl(this.ui.pauseMenu);
-            this.gamePaused = true;
         }
     }
 }

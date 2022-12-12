@@ -14,8 +14,6 @@ export default class Hud {
 
     clockTime;
 
-    pauseBtn;
-
     pauseMenu;
 
     constructor(scene) {
@@ -48,7 +46,7 @@ export default class Hud {
     }
 
     updateHud() {
-        if (!this.gamePaused && this.time != null && !this.timeStopped) {
+        if (!this.gamePaused && this.time !== undefined) {
             this.time += 1;
             this.clockTime.text = this.time;
         }
@@ -57,10 +55,6 @@ export default class Hud {
     startTimer() {
         this.time = 0;
         this.timeStopped = false;
-    }
-
-    stopTimer() {
-        this.timeStopped = true;
     }
 
     createPauseMenu() {
@@ -92,7 +86,6 @@ export default class Hud {
         resumeBtn.onPointerDownObservable.add(() => {
             this.pauseMenu.isVisible = false;
             this.playerUI.removeControl(pauseMenu);
-            this.pauseBtn.isHitTestVisible = true;
 
             this.gamePaused = false;
         });
