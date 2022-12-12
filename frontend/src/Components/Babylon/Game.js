@@ -323,32 +323,22 @@ export default class Game {
         // Dude
         new SceneLoader.ImportMeshAsync(car, this.scene).then((result) => {
             const car = result.meshes[0];
-            car.scaling = new Vector3(0.008, 0.008, 0.008);
-
-            car.position = new Vector3(-6, 0, 0);
-            car.rotate(Axis.Y, Tools.ToRadians(-95), Space.LOCAL);
-            const startRotation = dude.rotationQuaternion.clone();
-
-            camera.lockedTarget = dude;
-            scene.beginAnimation(result.skeletons[0], 0, 100, true, 1.0);
 
             let distance = 0;
             let step = 0.015;
             let p = 0;
 
-            scene.onBeforeRenderObservable.add(() => {
-                dude.movePOV(0, 0, step);
+            this.scene.onBeforeRenderObservable.add(() => {
+                car.movePOV(0, 0, step);
                 distance += step;
 
                 if (distance > track[p].dist) {
 
-                    dude.rotate(BABYLON.Axis.Y, BABYLON.Tools.ToRadians(track[p].turn), BABYLON.Space.LOCAL);
                     p +=1;
                     p %= track.length;
                     if (p === 0) {
                         distance = 0;
-                        dude.position = new BABYLON.Vector3(-6, 0, 0);
-                        dude.rotationQuaternion = startRotation.clone();
+                        car.position = new BABYLON.Vector3(-6, 0, 0);
                     }
                 }
 
