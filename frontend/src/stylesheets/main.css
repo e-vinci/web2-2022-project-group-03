@@ -76,7 +76,16 @@ input {
     height: 100%;
     touch-action: none;
 }
+#flexForm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
+#div2 {
+    font-size: 30px;
+    display: flex;
+    flex-direction: row;
 .alert{
     background: red;
     padding: 20px 40px;

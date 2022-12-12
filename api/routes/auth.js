@@ -19,10 +19,13 @@ router.post('/register', async (req, res) => {
 
   const checker = new Checker();
   checker.min_length = 8;
-  checker.disallowPasswords(true, true, 3);
-  checker.allowed_symbols = '!@#$%^&*()_+{}|:"<>?[];\',./`~';
-  checker.allowed_numbers = '1234567890';
-  checker.allowed_letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  // checker.disallowPasswords(true, true, 3);
+  // checker.disallowNames(true, true, 3);
+  // checker.disallowWords(true, true, 3);
+  // checker.allowed_symbols = '!@#$%^&*()_+{}|:"<>?[];\',./`~';
+  // checker.allowed_numbers = '1234567890';
+  // checker.allowed_letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  
 
   if (!checker.check(password)) {
     const errors = [];
