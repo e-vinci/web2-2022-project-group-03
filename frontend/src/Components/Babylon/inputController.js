@@ -26,7 +26,6 @@ export default class PlayerInput {
 
         this.inputMap = {};
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (evt) => {
-            console.log(evt.sourceEvent.key)
             this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type === "keydown";
         }));
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (evt) => {

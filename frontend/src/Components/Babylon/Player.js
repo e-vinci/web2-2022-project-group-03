@@ -14,6 +14,8 @@ export default class Player extends TransformNode {
 
     canvas;
 
+    ui;
+
     mesh;
 
     run;
@@ -54,10 +56,11 @@ export default class Player extends TransformNode {
 
     moveDirection = new Vector3();
 
-    constructor(assets, scene, input, canvas) {
+    constructor(assets, scene, input, canvas, ui) {
         super("player", scene);
         this.scene = scene;
         this.canvas = canvas
+        this.ui = ui;
         this.setupPlayerCamera();
 
         this.mesh = assets.mesh;
@@ -111,14 +114,18 @@ export default class Player extends TransformNode {
     }
 
     animatePlayer() {
-        if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
-            this.currentAnim = this.run;
-        } else if (this.jumped && !this.isFalling) {
-            this.currentAnim = this.jump;
-        } else if (!this.isFalling && this.grounded) {
+        if (!this.ui.gamePaused) {
+            if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
+                this.currentAnim = this.run;
+            } else if (this.jumped && !this.isFalling) {
+                this.currentAnim = this.jump;
+            } else if (!this.isFalling && this.grounded) {
+                this.currentAnim = this.idle;
+            } else if (this.isFalling) {
+                this.currentAnim = this.land;
+            }
+        } else {
             this.currentAnim = this.idle;
-        } else if (this.isFalling) {
-            this.currentAnim = this.land;
         }
 
         if(this.currentAnim != null && this.prevAnim !== this.currentAnim){
