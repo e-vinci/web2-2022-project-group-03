@@ -1,6 +1,7 @@
 import {clearPage} from "../../../utils/render";
 import Navigate from "../../Router/Navigate";
 import { setAuthenticatedUser } from "../../../utils/auths";
+import showErrorMessage from "../../../utils/error";
 
 const LoginPage = () => {
     clearPage();
@@ -86,8 +87,6 @@ const LoginPage = () => {
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData);
-
-        console.log(data);
         
         const { username, password, rememberMe } = data;
 
@@ -106,7 +105,7 @@ const LoginPage = () => {
 
         if (response.status !== 200) {
             const result = await response.json();
-            console.log(result.error);
+            showErrorMessage(result.error, main);
             return;
         }
 

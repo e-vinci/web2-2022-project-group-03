@@ -1,7 +1,7 @@
 import Navigate from "../../Router/Navigate";
 
 import { clearPage } from "../../../utils/render";
-import { isAuthenticated } from "../../../utils/auths";
+import {getAuthenticatedUser, isAuthenticated} from "../../../utils/auths";
 
 const HomePage = () => {
     clearPage();
@@ -18,7 +18,11 @@ const HomePage = () => {
 
     const title = document.createElement("h5");
     title.classList.add("title");
-    title.textContent = "NOM";
+    if (isAuthenticated()) {
+        title.textContent = `WELCOME ${getAuthenticatedUser().username}`;
+    } else {
+        title.textContent = "WELCOME";
+    }
     sectionSide.appendChild(title);
 
     const menu = document.createElement("div");
@@ -29,7 +33,29 @@ const HomePage = () => {
         const newGameButton = document.createElement("button");
         newGameButton.classList.add("nav-button");
         newGameButton.textContent = "NEW GAME";
-        newGameButton.addEventListener("click", () => {
+        newGameButton.addEventListener("click", async () => {
+            const requestGet = await fetch('/api/users/get', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: getAuthenticatedUser().username
+                })
+            });
+            const result = await requestGet.json();
+            if (result.level > 1) {
+                const requestReset = await fetch('/api/users/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: getAuthenticatedUser().username
+                    })
+                });
+                await requestReset.json();
+            }
             Navigate("/game");
         });
         menu.appendChild(newGameButton);
@@ -41,6 +67,17 @@ const HomePage = () => {
             Navigate(`/game`);
         });
         menu.appendChild(resumeGameButton);
+
+        const br = document.createElement("br");
+        menu.appendChild(br);
+
+        const logoutButton = document.createElement("button");
+        logoutButton.classList.add('nav-button');
+        logoutButton.innerText = 'LOGOUT';
+        logoutButton.addEventListener('click', () => {
+            Navigate('/logout');
+        });
+        menu.appendChild(logoutButton);
     } else {
         const signupButton = document.createElement('button');
         signupButton.classList.add('nav-button');
