@@ -10,7 +10,7 @@ const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
 router.post('/', (req, res) => {
   const leaderboard = parse(jsonDbPath);
 
-  return res.json(leaderboard.sort((a, b) => a.time - b.time));
+  return res.status(200).json(leaderboard.sort((a, b) => a.time - b.time));
 });
 
 router.post('/add', (req, res) => {

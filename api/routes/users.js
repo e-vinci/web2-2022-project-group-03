@@ -23,6 +23,7 @@ router.post('/set', (req, res) => {
     });
 
     serialize(jsonDbPath, levels);
+    return res.sendStatus(200);
 });
 
 // eslint-disable-next-line consistent-return

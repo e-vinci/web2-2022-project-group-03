@@ -287,7 +287,9 @@ export default class Game {
                         })
                     });
 
-                    const { level } = response.json();
+                    const { level } = await response.json();
+
+                    console.log(level, getAuthenticatedUser().username, this.ui.time);
 
                     await fetch('/api/leaderboard/add', {
                         method: "POST",
@@ -296,7 +298,7 @@ export default class Game {
                         },
                         body: JSON.stringify({
                             username: getAuthenticatedUser().username,
-                            level,
+                            level: level,
                             time: this.ui.time
                         })
                     });

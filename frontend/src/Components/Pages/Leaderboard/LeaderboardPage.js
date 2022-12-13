@@ -1,14 +1,18 @@
 import {clearPage} from "../../../utils/render";
 
-const LeaderboardPage = () => {
+const LeaderboardPage = async () => {
     clearPage();
 
-    const users = fetch('/leaderboard', {
+    const result = await fetch('/api/leaderboard', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
     });
+
+    const users = await result.json();
+
+    console.log(users);
 
     const main = document.querySelector('main');
 
@@ -19,6 +23,7 @@ const LeaderboardPage = () => {
                     <th>Rang</th>
                     <th>Nom</th>
                     <th>Temps</th>
+                    <th>Niveau</th>
                 </tr>
             </thead>
             <tbody>
@@ -27,9 +32,9 @@ const LeaderboardPage = () => {
     for (let i = 0; i < users.length; i + 1) {
         table += `
             <tr>
-                <td>${i + 1}</td>
-                <td>${users[i].name}</td>
+                <td>${users[i].username}</td>
                 <td>${users[i].time}</td>
+                <td>${users[i].level}</td>
             </tr>
         `;
     }

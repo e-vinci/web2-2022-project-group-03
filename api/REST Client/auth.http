@@ -26,7 +26,7 @@ Content-Type: application/json
   "username":"",
   "password":"1234"
 }
-//OK error bad request 
+// OK error bad request
 
 ### Register with invalid password
 Post http://localhost:3000/auth/register
@@ -36,7 +36,7 @@ Content-Type: application/json
   "username":"ethels",
   "password":""
 }
-//OK error bad request 
+//OK error bad request
 
 ### Register with invalid data
 Post http://localhost:3000/auth/register
@@ -46,7 +46,7 @@ Content-Type: application/json
   "username":"",
   "password":""
 }
-//OK error bad request 
+//OK error bad request
 
 ### Login an unknown user
 POST http://localhost:3000/auth/login
