@@ -94,6 +94,8 @@ export default class Player extends TransformNode {
 
             const move = correctedHorizontal.addInPlace(correctedVertical);
 
+            console.log(move);
+
             this.moveDirection = new Vector3((move).normalize().x, 0, (move).normalize().z);
 
             const angle = Math.atan2((move).normalize().x, (move).normalize().z);

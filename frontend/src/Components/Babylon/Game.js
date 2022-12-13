@@ -197,7 +197,9 @@ export default class Game {
             this.ui.updateHud();
         }, 1000);
 
+        /*
         this.carAnim();
+        */
         this.createEndLevelMenu();
 
         this.state = this.stateEnum.GAME;
@@ -303,6 +305,7 @@ export default class Game {
             ),
         );
     }
+    /*
     carAnim() {
         const walk = function (turn, dist) {
             this.turn = turn;
@@ -345,4 +348,5 @@ export default class Game {
             })
         });
     }
+    */
 }
