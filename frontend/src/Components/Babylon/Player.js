@@ -2,7 +2,9 @@ import {
     TransformNode,
     ArcRotateCamera,
     Vector3,
-    Quaternion, Ray, ActionManager
+    Quaternion,
+    Ray,
+    ActionManager
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {

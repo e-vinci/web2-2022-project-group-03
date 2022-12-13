@@ -18,7 +18,7 @@ import {
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel} from "@babylonjs/gui";
 import player from '../../models/playerBabylonDoc.glb';
-import car from '../../models/mcqueen.glb'
+import mcqueen from '../../models/mcqueen.glb'
 import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
@@ -197,9 +197,8 @@ export default class Game {
             this.ui.updateHud();
         }, 1000);
 
-        /*
-        this.carAnim();
-        */
+        // await this.carAnim();
+
         this.createEndLevelMenu();
 
         this.state = this.stateEnum.GAME;
@@ -305,8 +304,9 @@ export default class Game {
             ),
         );
     }
+
     /*
-    carAnim() {
+    async carAnim() {
         const walk = function (turn, dist) {
             this.turn = turn;
             this.dist = dist;
@@ -321,10 +321,9 @@ export default class Game {
         track.push(new walk(-72, 33.2));
         track.push(new walk(42, 37.5));
         track.push(new walk(-98, 45.2));
-        track.push(new walk(0, 47));
+        track.push(new walk(0, 47))
 
-        // Dude
-        new SceneLoader.ImportMeshAsync(car, this.scene).then((result) => {
+        SceneLoader.ImportMeshAsync(null, mcqueen).then((result) => {
             const car = result.meshes[0];
 
             let distance = 0;
@@ -336,15 +335,13 @@ export default class Game {
                 distance += step;
 
                 if (distance > track[p].dist) {
-
-                    p +=1;
+                    p += 1;
                     p %= track.length;
                     if (p === 0) {
                         distance = 0;
-                        car.position = new BABYLON.Vector3(-6, 0, 0);
+                        car.position = new Vector3(-6, 0, 0);
                     }
                 }
-
             })
         });
     }
