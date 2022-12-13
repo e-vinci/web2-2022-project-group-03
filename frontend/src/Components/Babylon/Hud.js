@@ -32,12 +32,13 @@ export default class Hud {
 
         const clockTime = new TextBlock();
         clockTime.name = "clock";
-        clockTime.textHorizontalAlignment = TextBlock.HORIZONTAL_ALIGNMENT_CENTER;
-        clockTime.fontSize = "48px";
+        clockTime.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_CENTER;
+        clockTime.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        clockTime.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        clockTime.fontSize = "30px";
         clockTime.color = "white";
-        clockTime.resizeToFit = true;
-        clockTime.height = "96px";
-        clockTime.width = "220px";
+        clockTime.height = "50px";
+        clockTime.width = "50px";
         clockTime.fontFamily = "Viga";
         stackPanel.addControl(clockTime);
         this.clockTime = clockTime;

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import damien from '../../models/TEST2.glb';
+import damien from '../../models/test.glb';
 import { SceneLoader } from "@babylonjs/core";
 
 export default class Environment {

@@ -2,7 +2,9 @@ import {
     TransformNode,
     ArcRotateCamera,
     Vector3,
-    Quaternion, Ray, ActionManager
+    Quaternion,
+    Ray,
+    ActionManager
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -13,6 +15,8 @@ export default class Player extends TransformNode {
     input;
 
     canvas;
+
+    ui;
 
     mesh;
 
@@ -32,11 +36,11 @@ export default class Player extends TransformNode {
 
     jumped = false;
 
-    static PLAYER_SPEED = 0.8;
+    static PLAYER_SPEED = 0.2;
 
-    static JUMP_FORCE = 1;
+    static JUMP_FORCE = 0.4;
 
-    static GRAVITY = -2.3;
+    static GRAVITY = -2;
 
     deltaTime = 0;
 
@@ -54,10 +58,11 @@ export default class Player extends TransformNode {
 
     moveDirection = new Vector3();
 
-    constructor(assets, scene, input, canvas) {
+    constructor(assets, scene, input, canvas, ui) {
         super("player", scene);
         this.scene = scene;
         this.canvas = canvas
+        this.ui = ui;
         this.setupPlayerCamera();
 
         this.mesh = assets.mesh;
@@ -75,7 +80,7 @@ export default class Player extends TransformNode {
     }
 
     updateFromControls() {
-        this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000.0;
+        this.deltaTime = 0.006;
 
         this.moveDirection = Vector3.Zero();
         this.h = this.input.horizontal;
@@ -97,7 +102,6 @@ export default class Player extends TransformNode {
             const targ = Quaternion.FromEulerAngles(0, angle, 0);
             this.mesh.rotationQuaternion = Quaternion.Slerp(this.mesh.rotationQuaternion, targ, 10 * this.deltaTime);
         }
-
         this.moveDirection = this.moveDirection.scaleInPlace(Player.PLAYER_SPEED);
     }
 
@@ -111,14 +115,18 @@ export default class Player extends TransformNode {
     }
 
     animatePlayer() {
-        if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
-            this.currentAnim = this.run;
-        } else if (this.jumped && !this.isFalling) {
-            this.currentAnim = this.jump;
-        } else if (!this.isFalling && this.grounded) {
+        if (!this.ui.gamePaused) {
+            if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
+                this.currentAnim = this.run;
+            } else if (this.jumped && !this.isFalling) {
+                this.currentAnim = this.jump;
+            } else if (!this.isFalling && this.grounded) {
+                this.currentAnim = this.idle;
+            } else if (this.isFalling) {
+                this.currentAnim = this.land;
+            }
+        } else {
             this.currentAnim = this.idle;
-        } else if (this.isFalling) {
-            this.currentAnim = this.land;
         }
 
         if(this.currentAnim != null && this.prevAnim !== this.currentAnim){
@@ -254,6 +262,10 @@ export default class Player extends TransformNode {
         this.camera.attachControl(this.canvas, true);
 
         this.camera.inputs.attached.keyboard.detachControl();
+
+        this.camera.checkCollisions = true;
+        this.camera.ellipsoid = new Vector3(1, 1, 5);
+        this.camera.minZ = 0.45;
 
         return this.camera;
     }
