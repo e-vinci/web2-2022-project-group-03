@@ -36,9 +36,9 @@ export default class Player extends TransformNode {
 
     static PLAYER_SPEED = 0.2;
 
-    static JUMP_FORCE = 0.7;
+    static JUMP_FORCE = 0.4;
 
-    static GRAVITY = -0.7;
+    static GRAVITY = -2;
 
     deltaTime = 0;
 
@@ -78,7 +78,7 @@ export default class Player extends TransformNode {
     }
 
     updateFromControls() {
-        this.deltaTime = 0.020;
+        this.deltaTime = 0.006;
 
         this.moveDirection = Vector3.Zero();
         this.h = this.input.horizontal;
