@@ -94,15 +94,12 @@ export default class Player extends TransformNode {
 
             const move = correctedHorizontal.addInPlace(correctedVertical);
 
-            console.log(move);
-
             this.moveDirection = new Vector3((move).normalize().x, 0, (move).normalize().z);
 
             const angle = Math.atan2((move).normalize().x, (move).normalize().z);
             const targ = Quaternion.FromEulerAngles(0, angle, 0);
             this.mesh.rotationQuaternion = Quaternion.Slerp(this.mesh.rotationQuaternion, targ, 10 * this.deltaTime);
         }
-
         this.moveDirection = this.moveDirection.scaleInPlace(Player.PLAYER_SPEED);
     }
 
@@ -263,6 +260,10 @@ export default class Player extends TransformNode {
         this.camera.attachControl(this.canvas, true);
 
         this.camera.inputs.attached.keyboard.detachControl();
+
+        this.camera.checkCollisions = true;
+        this.camera.ellipsoid = new Vector3(1, 1, 5);
+        this.camera.minZ = 0.45;
 
         return this.camera;
     }
