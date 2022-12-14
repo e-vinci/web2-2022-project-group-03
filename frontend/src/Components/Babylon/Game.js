@@ -16,7 +16,7 @@ import {
     SceneLoader,
     Vector3
 } from "@babylonjs/core";
-import { AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel } from "@babylonjs/gui";
+import {AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
 
 import player from '../../models/playerBabylonDoc.glb';
 import mcqueen from '../../models/mcqueen.glb'
@@ -27,6 +27,7 @@ import PlayerInput from "./inputController";
 import Hud from "./Hud";
 import Navigate from "../Router/Navigate";
 import { getAuthenticatedUser } from "../../utils/auths";
+import pauseMenuImage from "../../img/pauseMenuImage.png";
 
 export default class Game {
     state;
@@ -204,25 +205,26 @@ export default class Game {
         const endLevelUI = AdvancedDynamicTexture.CreateFullscreenUI("EndUI");
         endLevelUI.idealHeight = 720;
 
-        const stackPanel = new StackPanel();
-        stackPanel.width = .83;
-
         const endLevelMenu = new Rectangle();
         endLevelMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         endLevelMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-        endLevelMenu.height = 0.8;
-        endLevelMenu.width = 0.5;
+        endLevelMenu.height = 0.5;
+        endLevelMenu.width = 0.4;
         endLevelMenu.thickness = 0;
         endLevelMenu.isVisible = false;
-        stackPanel.addControl(endLevelMenu);
+
+        const image = new Image("camion", pauseMenuImage);
+        endLevelMenu.addControl(image);
+
+        const stackPanel = new StackPanel();
+        stackPanel.width = 1;
+        endLevelMenu.addControl(stackPanel);
 
         const nextBtn = Button.CreateSimpleButton("next", "NEXT LEVEL");
-        nextBtn.width = 0.2;
+        nextBtn.width = 0.3;
         nextBtn.height = "40px";
-        nextBtn.color = "white";
-        nextBtn.top = "-14px";
+        nextBtn.color = "black";
         nextBtn.thickness = 0;
-        nextBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(nextBtn);
 
         nextBtn.onPointerDownObservable.add(() => {
@@ -235,39 +237,46 @@ export default class Game {
         const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
         quitBtn.width = 0.2;
         quitBtn.height = "40px";
-        quitBtn.color = "white";
-        quitBtn.top = "-14px";
+        quitBtn.color = "black";
         quitBtn.thickness = 0;
-        quitBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(quitBtn);
 
         quitBtn.onPointerDownObservable.add(() => {
+            Navigate('/');
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
-
-            Navigate('/');
         });
 
-        this.assets.mesh.actionManager.registerAction(
+        const endGameMenu = new Rectangle();
+        endGameMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        endGameMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        endGameMenu.height = 0.5;
+        endGameMenu.width = 0.4;
+        endGameMenu.thickness = 0;
+        endGameMenu.isVisible = false;
+
+        endGameMenu.addControl(image);
+
+        const stackPanelEnd = new StackPanel();
+        stackPanelEnd.width = 1;
+        endGameMenu.addControl(stackPanelEnd);
+
+        const endText = new TextBlock();
+        endText.text = "Thank you for playing !"
+        endText.width = 0.3;
+        endText.height = "40px";
+        endText.color = "black";
+        stackPanelEnd.addControl(endText)
+
+        stackPanelEnd.addControl(quitBtn);
+
+        this.assets.mesh.actionManager.registerAction (
             new ExecuteCodeAction(
                 {
                     trigger: ActionManager.OnIntersectionEnterTrigger,
                     parameter: this.scene.getMeshByName("house1"),
                 },
                 async () => {
-                    endLevelUI.addControl(stackPanel);
-                    endLevelMenu.isVisible = true;
-                    this.ui.gamePaused = true;
-
-                    await fetch('/api/users/set', {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username
-                        })
-                    });
 
                     const response = await fetch('/api/users/get', {
                         method: "POST",
@@ -281,17 +290,38 @@ export default class Game {
 
                     const { level } = await response.json();
 
-                    await fetch('/api/leaderboard/add', {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username,
-                            level: level,
-                            time: this.ui.time
-                        })
-                    });
+                    if (level < 2) {
+                        endLevelUI.addControl(endLevelMenu);
+                        endLevelMenu.isVisible = true;
+                        this.ui.gamePaused = true;
+
+                        await fetch('/api/leaderboard/add', {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                username: getAuthenticatedUser().username,
+                                level: level,
+                                time: this.ui.time
+                            })
+                        });
+                    }
+
+                    if (level === 2) {
+                        endLevelUI.addControl(endGameMenu);
+                        endGameMenu.isVisible = true;
+                    } else {
+                        await fetch('/api/users/set', {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                username: getAuthenticatedUser().username
+                            })
+                        });
+                    }
                 },
             ),
         );
