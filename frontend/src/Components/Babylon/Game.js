@@ -48,6 +48,8 @@ export default class Game {
 
     ui;
 
+    timerInterval;
+
     constructor() {
         this.canvas = this.createCanvas();
 
@@ -187,7 +189,7 @@ export default class Game {
         scene.getMeshByName("outer").position = new Vector3(0,4,0);
         this.ui.startTimer();
 
-        setInterval(() => {
+        this.timerInterval = setInterval(() => {
             this.ui.updateHud();
         }, 1000);
 
@@ -231,6 +233,9 @@ export default class Game {
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
             this.state = '';
+
+            clearInterval(this.timerInterval);
+
             this.goToStart();
         });
 
@@ -294,18 +299,6 @@ export default class Game {
                         endLevelUI.addControl(endLevelMenu);
                         endLevelMenu.isVisible = true;
                         this.ui.gamePaused = true;
-
-                        await fetch('/api/leaderboard/add', {
-                            method: "POST",
-                            headers: {
-                                "Content-type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                username: getAuthenticatedUser().username,
-                                level: level,
-                                time: this.ui.time
-                            })
-                        });
                     }
 
                     if (level === 2) {
@@ -322,6 +315,18 @@ export default class Game {
                             })
                         });
                     }
+
+                    await fetch('/api/leaderboard/add', {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            username: getAuthenticatedUser().username,
+                            level: level,
+                            time: this.ui.time
+                        })
+                    });
                 },
             ),
         );
