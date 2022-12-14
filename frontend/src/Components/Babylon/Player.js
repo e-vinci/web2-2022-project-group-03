@@ -1,10 +1,10 @@
 import {
-    TransformNode,
     ArcRotateCamera,
     Vector3,
     Quaternion,
     Ray,
-    ActionManager
+    ActionManager,
+    TransformNode
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -38,11 +38,11 @@ export default class Player extends TransformNode {
 
     static PLAYER_SPEED = 0.2;
 
-    static JUMP_FORCE = 0.4;
+    static JUMP_FORCE = 0.3;
 
-    static GRAVITY = -2;
+    static GRAVITY = -1.3;
 
-    deltaTime = 0;
+    deltaTime = 0.006;
 
     h;
 
@@ -60,34 +60,29 @@ export default class Player extends TransformNode {
 
     constructor(assets, scene, input, canvas, ui) {
         super("player", scene);
+        [,this.idle, this.jump, this.land, this.run] = assets.animationGroups;
+
         this.scene = scene;
+        this.input = input;
         this.canvas = canvas
         this.ui = ui;
+
         this.setupPlayerCamera();
+        this.setUpAnimations();
 
         this.mesh = assets.mesh;
         this.mesh.parent = this;
-
-        [,this.idle, this.jump, this.land, this.run] = assets.animationGroups;
-
         this.mesh.actionManager = new ActionManager(this.scene);
 
         this.camera.target = this.mesh;
-
-        this.setUpAnimations();
-
-        this.input = input;
     }
 
     updateFromControls() {
-        this.deltaTime = 0.006;
-
         this.moveDirection = Vector3.Zero();
         this.h = this.input.horizontal;
         this.v = this.input.vertical;
 
         if (this.h !== 0 || this.v !== 0) {
-
             const fwd = this.camera.getDirection(new Vector3(0, 0, 1));
             const correctedVertical = fwd.scaleInPlace(this.v);
 
@@ -129,7 +124,7 @@ export default class Player extends TransformNode {
             this.currentAnim = this.idle;
         }
 
-        if(this.currentAnim != null && this.prevAnim !== this.currentAnim){
+        if (this.currentAnim != null && this.prevAnim !== this.currentAnim){
             this.prevAnim.stop();
             this.currentAnim.play(this.currentAnim.loopAnimation);
             this.prevAnim = this.currentAnim;
@@ -174,23 +169,15 @@ export default class Player extends TransformNode {
         const pick4 = this.scene.pickWithRay(ray4, predicate);
 
         if (pick.hit) {
-            if(pick.pickedMesh.name.includes("ramp")) {
-                return true;
-            }
+            if(pick.pickedMesh.name.includes("ramp")) return true;
         } else if (pick2.hit && !pick2.getNormal().equals(Vector3.Up())) {
-            if(pick2.pickedMesh.name.includes("ramp")) {
-                return true;
-            }
+            if(pick2.pickedMesh.name.includes("ramp")) return true;
         }
         else if (pick3.hit && !pick3.getNormal().equals(Vector3.Up())) {
-            if(pick3.pickedMesh.name.includes("ramp")) {
-                return true;
-            }
+            if(pick3.pickedMesh.name.includes("ramp")) return true;
         }
         else if (pick4.hit && !pick4.getNormal().equals(Vector3.Up())) {
-            if(pick4.pickedMesh.name.includes("ramp")) {
-                return true;
-            }
+            if(pick4.pickedMesh.name.includes("ramp")) return true;
         }
         return false;
     }

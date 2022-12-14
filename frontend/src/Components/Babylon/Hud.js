@@ -4,8 +4,6 @@ import Navigate from "../Router/Navigate";
 export default class Hud {
     time;
 
-    timeStopped;
-
     gamePaused;
 
     playerUI;
@@ -30,18 +28,18 @@ export default class Hud {
         stackPanel.verticalAlignment = 0;
         playerUI.addControl(stackPanel);
 
-        const clockTime = new TextBlock();
-        clockTime.name = "clock";
-        clockTime.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_CENTER;
-        clockTime.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
-        clockTime.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
-        clockTime.fontSize = "30px";
-        clockTime.color = "white";
-        clockTime.height = "50px";
-        clockTime.width = "50px";
-        clockTime.fontFamily = "Viga";
-        stackPanel.addControl(clockTime);
-        this.clockTime = clockTime;
+        const timer = new TextBlock();
+        timer.name = "clock";
+        timer.textVerticalAlignment = TextBlock.VERTICAL_ALIGNMENT_CENTER;
+        timer.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT;
+        timer.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP;
+        timer.fontSize = "30px";
+        timer.color = "white";
+        timer.height = "50px";
+        timer.width = "50px";
+        timer.fontFamily = "Viga";
+        stackPanel.addControl(timer);
+        this.clockTime = timer;
 
         this.createPauseMenu();
     }
@@ -55,7 +53,6 @@ export default class Hud {
 
     startTimer() {
         this.time = 0;
-        this.timeStopped = false;
     }
 
     createPauseMenu() {
@@ -102,6 +99,6 @@ export default class Hud {
 
         quitBtn.onPointerDownObservable.add(() => {
             Navigate('/');
-        })
+        });
     }
 }

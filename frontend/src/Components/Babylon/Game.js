@@ -16,22 +16,19 @@ import {
     SceneLoader,
     Vector3
 } from "@babylonjs/core";
-import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel} from "@babylonjs/gui";
+import { AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel } from "@babylonjs/gui";
+
 import player from '../../models/playerBabylonDoc.glb';
 import mcqueen from '../../models/mcqueen.glb'
+
 import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
-import Navigate from "../Router/Navigate";
 import Hud from "./Hud";
-import {getAuthenticatedUser} from "../../utils/auths";
+import Navigate from "../Router/Navigate";
+import { getAuthenticatedUser } from "../../utils/auths";
 
 export default class Game {
-    stateEnum = {
-        GAME: 1,
-        LOSE: 2
-    }
-
     state;
 
     scene;
@@ -84,15 +81,8 @@ export default class Game {
         await this.goToStart();
 
         this.engine.runRenderLoop(() => {
-            switch (this.state) {
-                case this.stateEnum.GAME:
-                    this.scene.render();
-                    break;
-                case this.stateEnum.LOSE:
-                    this.scene.render();
-                    break;
-                default: break;
-            }
+            if (this.state === 'GAME')
+                this.scene.render();
         });
 
         window.addEventListener('resize', () => {
@@ -146,22 +136,25 @@ export default class Game {
 
             outer.rotationQuaternion = new Quaternion(0, 1, 0, 0);
 
-            return SceneLoader.ImportMeshAsync(null, player).then((result) => {
-                const body = result.meshes[0];
-                body.parent = outer;
-                body.isPickable = false;
-                body.getChildMeshes().forEach(m => {
-                    m.isPickable = false;
-                });
-                return {
-                    mesh: outer,
-                    animationGroups: result.animationGroups
-                }
+            const result = await SceneLoader.ImportMeshAsync(null, player);
+
+            const body = result.meshes[0];
+            body.parent = outer;
+            body.isPickable = false;
+
+            body.getChildMeshes().forEach(m => {
+                m.isPickable = false;
             });
+
+            return {
+                mesh: outer,
+                animationGroups: result.animationGroups
+            }
+
         }
-        return loadCharacter().then(assets => {
-            this.assets = assets;
-        });
+        const assets = await loadCharacter()
+
+        return this.assets = assets;
     }
 
     async initializeGameAsync(scene) {
@@ -201,7 +194,7 @@ export default class Game {
 
         this.createEndLevelMenu();
 
-        this.state = this.stateEnum.GAME;
+        this.state = 'GAME';
         this.scene = scene;
         this.engine.hideLoadingUI();
         this.scene.attachControl();
@@ -233,11 +226,10 @@ export default class Game {
         stackPanel.addControl(nextBtn);
 
         nextBtn.onPointerDownObservable.add(() => {
-            this.engine.displayLoadingUI();
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
-
-            document.location.reload();
+            this.state = '';
+            this.goToStart();
         });
 
         const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
@@ -289,8 +281,6 @@ export default class Game {
 
                     const { level } = await response.json();
 
-                    console.log(level, getAuthenticatedUser().username, this.ui.time);
-
                     await fetch('/api/leaderboard/add', {
                         method: "POST",
                         headers: {
@@ -325,26 +315,25 @@ export default class Game {
         track.push(new walk(-98, 45.2));
         track.push(new walk(0, 47))
 
-        SceneLoader.ImportMeshAsync(null, mcqueen).then((result) => {
-            const car = result.meshes[0];
+        const result = await SceneLoader.ImportMeshAsync(null, mcqueen)
+        const car = result.meshes[0];
 
-            let distance = 0;
-            let step = 0.015;
-            let p = 0;
+        let distance = 0;
+        let step = 0.015;
+        let p = 0;
 
-            this.scene.onBeforeRenderObservable.add(() => {
-                car.movePOV(0, 0, step);
-                distance += step;
+        this.scene.onBeforeRenderObservable.add(() => {
+            car.movePOV(0, 0, step);
+            distance += step;
 
-                if (distance > track[p].dist) {
-                    p += 1;
-                    p %= track.length;
-                    if (p === 0) {
-                        distance = 0;
-                        car.position = new Vector3(-6, 0, 0);
-                    }
+            if (distance > track[p].dist) {
+                p += 1;
+                p %= track.length;
+                if (p === 0) {
+                    distance = 0;
+                    car.position = new Vector3(-6, 0, 0);
                 }
-            })
+            }
         });
     }
     */
