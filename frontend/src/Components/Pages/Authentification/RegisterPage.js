@@ -121,11 +121,11 @@ const RegisterPage = async () => {
             }),
         }
 
-        const response = await fetch("/api/auth/register", options);
+        const response = await fetch('/api/auth/register', options);
 
         if (response.status !== 200) {
             const result = await response.json();
-            showErrorMessage(result.message, main);
+            showErrorMessage(result.error, main);
             return;
         }
 
