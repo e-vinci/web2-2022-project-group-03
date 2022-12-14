@@ -1,54 +1,49 @@
-### Register an unknown user
-Post http://localhost:3000/auth/register
+### Register an unknown user - OK
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
   "username":"ethels",
   "password":"1234"
 }
-//OK the user is registered
 
-### Register an already existing user
-Post http://localhost:3000/auth/register
+### Register an already existing user - KO
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
   "username":"ethels",
   "password":"1234"
 }
-//OK error 401 unauthorized
 
-### Register with invalid username
-Post http://localhost:3000/auth/register
+### Register with invalid username - KO
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
   "username":"",
   "password":"1234"
 }
-// OK error bad request
 
-### Register with invalid password
-Post http://localhost:3000/auth/register
+### Register with invalid password - KO
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
   "username":"ethels",
   "password":""
 }
-//OK error bad request
 
-### Register with invalid data
-Post http://localhost:3000/auth/register
+### Register with invalid data - KO
+POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
   "username":"",
   "password":""
 }
-//OK error bad request
 
-### Login an unknown user
+### Login an unknown user - KO
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
@@ -56,9 +51,8 @@ Content-Type: application/json
   "username":"nobody",
   "password":"nobody"
 }
-//OK error 401 return, wich is right since the user dosn't exist in the detabase
 
-### Login default user
+### Login default user - OK
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
@@ -66,5 +60,4 @@ Content-Type: application/json
   "username":"michele",
   "password":"michele"
 }
-//OK error 200 return OK
 

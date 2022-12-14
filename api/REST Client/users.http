@@ -1,0 +1,71 @@
+### Test with a know user
+POST http://localhost:3000/users/get
+Content-Type: application/json
+
+{
+  "username": "nitroc"
+}
+
+### Test with an unknow user
+POST http://localhost:3000/users/get
+Content-Type: application/json
+
+{
+  "username": "unknown"
+}
+
+### Test with an empty user
+POST http://localhost:3000/users/get
+Content-Type: application/json
+
+{
+  "username": ""
+}
+
+### Test with a know user
+POST http://localhost:3000/users/set
+Content-Type: application/json
+
+{
+  "username": "nitroc"
+}
+
+### Test with an unknow user
+POST http://localhost:3000/users/set
+Content-Type: application/json
+
+{
+  "username": "unknown"
+}
+
+### Test with an empty user
+POST http://localhost:3000/users/set
+Content-Type: application/json
+
+{
+  "username": ""
+}
+
+### Test with a know user
+POST http://localhost:3000/users/reset
+Content-Type: application/json
+
+{
+  "username": "nitroc"
+}
+
+### Test with an unknow user
+POST http://localhost:3000/users/reset
+Content-Type: application/json
+
+{
+  "username": "unknown"
+}
+
+### Test with an empty user
+POST http://localhost:3000/users/reset
+Content-Type: application/json
+
+{
+  "username": ""
+}

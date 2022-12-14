@@ -1,8 +1,12 @@
+### Test with a know user, good level and time
 POST http://localhost:3000/leaderboard/add
 Content-Type: application/json
 
 {
-  "username": "test",
+  "username": "nitroc",
   "level": 1,
-  "time": 100
+  "time": 99
 }
+
+### Test get leaderboard sorted
+POST http://localhost:3000/leaderboard
