@@ -184,7 +184,7 @@ export default class Game {
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
 
-        scene.getMeshByName("outer").position = new Vector3(0,4,0);
+        scene.getMeshByName("outer").position = new Vector3(0,2,0);
         this.ui.startTimer();
 
         this.timerInterval = setInterval(() => {

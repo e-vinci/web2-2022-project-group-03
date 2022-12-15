@@ -39,6 +39,14 @@ export default class Environment {
             if (mesh.name.includes("leaves")) {
                 mesh.checkCollisions = false;
             }
+
+            if (mesh.name.includes("aspirateur")) {
+                mesh.checkCollisions = false;
+            }
+
+            if (mesh.name.includes("MUR")) {
+                mesh.isVisible = false;
+            }
         });
     }
 

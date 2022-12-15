@@ -36,7 +36,7 @@ export default class Player extends TransformNode {
 
     jumped = false;
 
-    static PLAYER_SPEED = 6;
+    static PLAYER_SPEED = 10;
 
     static JUMP_FORCE = 0.4;
 

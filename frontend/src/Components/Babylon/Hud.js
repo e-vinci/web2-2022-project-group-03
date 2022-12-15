@@ -1,6 +1,8 @@
+import {Vector3} from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel, TextBlock, Image} from "@babylonjs/gui";
 import Navigate from "../Router/Navigate";
 import pauseMenuImage from '../../img/pauseMenuImage.png';
+
 
 export default class Hud {
     time;
@@ -81,6 +83,13 @@ export default class Hud {
         resumeBtn.thickness = 0;
         stackPanel.addControl(resumeBtn);
 
+        const retryBtn = Button.CreateSimpleButton("retry", "RETRY");
+        retryBtn.width = 0.2;
+        retryBtn.height = "40px";
+        retryBtn.color = "black";
+        retryBtn.thickness = 0;
+        stackPanel.addControl(retryBtn);
+
         const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
         quitBtn.width = 0.2;
         quitBtn.height = "40px";
@@ -95,6 +104,15 @@ export default class Hud {
             this.playerUI.removeControl(pauseMenu);
 
             this.gamePaused = false;
+        });
+
+        retryBtn.onPointerDownObservable.add(() => {
+            this.pauseMenu.isVisible = false;
+            this.playerUI.removeControl(pauseMenu);
+
+            this.gamePaused = false;
+
+            this.scene.getMeshByName("outer").position = new Vector3(0,2,0);
         });
 
         quitBtn.onPointerDownObservable.add(() => {
