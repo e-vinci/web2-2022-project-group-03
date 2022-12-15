@@ -18,7 +18,7 @@ import {
 } from "@babylonjs/core";
 import {AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
 
-import player from '../../models/playerBabylonDoc.glb';
+import player from '../../models/playerbabylontmp.glb';
 import mcqueen from '../../models/mcqueen.glb'
 
 import Environment from "./Environment";
@@ -142,6 +142,7 @@ export default class Game {
             const result = await SceneLoader.ImportMeshAsync(null, player);
 
             const body = result.meshes[0];
+            body.scaling = new Vector3(0.7, 0.7, -0.7);
             body.parent = outer;
             body.isPickable = false;
 
@@ -193,7 +194,7 @@ export default class Game {
             this.ui.updateHud();
         }, 1000);
 
-        // await this.carAnim();
+        await this.carAnim();
 
         this.createEndLevelMenu();
 
@@ -279,7 +280,7 @@ export default class Game {
             new ExecuteCodeAction(
                 {
                     trigger: ActionManager.OnIntersectionEnterTrigger,
-                    parameter: this.scene.getMeshByName("house1"),
+                    parameter: this.scene.getMeshByName("fin"),
                 },
                 async () => {
 
@@ -311,7 +312,7 @@ export default class Game {
                                 "Content-type": "application/json"
                             },
                             body: JSON.stringify({
-                                username: getAuthenticatedUser().username
+                                username: getAuthenticatedUser().token
                             })
                         });
                     }
@@ -322,7 +323,7 @@ export default class Game {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
-                            username: getAuthenticatedUser().username,
+                            username: getAuthenticatedUser().token,
                             level: level,
                             time: this.ui.time
                         })
@@ -332,44 +333,9 @@ export default class Game {
         );
     }
 
-    /*
     async carAnim() {
-        const walk = function (turn, dist) {
-            this.turn = turn;
-            this.dist = dist;
-        }
-
-        const track = [];
-        track.push(new walk(86, 7));
-        track.push(new walk(-85, 14.8));
-        track.push(new walk(-93, 16.5));
-        track.push(new walk(48, 25.5));
-        track.push(new walk(-112, 30.5));
-        track.push(new walk(-72, 33.2));
-        track.push(new walk(42, 37.5));
-        track.push(new walk(-98, 45.2));
-        track.push(new walk(0, 47))
-
-        const result = await SceneLoader.ImportMeshAsync(null, mcqueen)
+        const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
         const car = result.meshes[0];
-
-        let distance = 0;
-        let step = 0.015;
-        let p = 0;
-
-        this.scene.onBeforeRenderObservable.add(() => {
-            car.movePOV(0, 0, step);
-            distance += step;
-
-            if (distance > track[p].dist) {
-                p += 1;
-                p %= track.length;
-                if (p === 0) {
-                    distance = 0;
-                    car.position = new Vector3(-6, 0, 0);
-                }
-            }
-        });
+        car.position = new Vector3(22.5, 3, -30);
     }
-    */
 }
