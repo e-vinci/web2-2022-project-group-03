@@ -186,7 +186,6 @@ export default class Game {
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
 
-        // scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
         scene.getMeshByName("outer").position = new Vector3(0,4,0);
         this.ui.startTimer();
 

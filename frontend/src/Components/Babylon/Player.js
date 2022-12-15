@@ -243,13 +243,11 @@ export default class Player extends TransformNode {
 
         this.camera.setPosition(new Vector3(0, 30, -20));
 
-        /*
         this.camera.lowerRadiusLimit = 10;
         this.camera.upperRadiusLimit = 10;
 
         this.camera.checkCollisions = true;
         this.camera.collisionRadius = new Vector3(0.1, 0.1, 0.1);
-        */
 
         this.camera.attachControl(this.canvas, true);
 
