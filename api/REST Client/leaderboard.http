@@ -1,10 +1,11 @@
+### Test with a know user, good level and time
 POST http://localhost:3000/leaderboard/add
 Content-Type: application/json
 
 {
-  "username": "test",
+  "username": "nitroc",
   "level": 1,
-  "time": 100
+  "time": 99
 }
 
 ###log in a existing user
@@ -29,3 +30,6 @@ Authorization: {{micheleToken}}
   "level": 1,
   "time": 100
 }
+
+### Test get leaderboard sorted
+POST http://localhost:3000/leaderboard

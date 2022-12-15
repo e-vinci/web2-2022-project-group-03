@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {ActionManager, ExecuteCodeAction, Scalar} from "@babylonjs/core";
 
 export default class PlayerInput {
@@ -22,7 +21,7 @@ export default class PlayerInput {
         this.scene = scene;
         this.ui = ui;
 
-        scene.actionManager = new ActionManager(scene);
+        this.scene.actionManager = new ActionManager(scene);
 
         this.inputMap = {};
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (evt) => {
@@ -38,11 +37,11 @@ export default class PlayerInput {
     }
 
     updateFromKeyboard() {
-        if (this.inputMap["z"] && !this.ui.gamePaused) {
+        if (this.inputMap.z && !this.ui.gamePaused) {
             this.vertical = Scalar.Lerp(this.vertical, 1, 0.2);
             this.verticalAxis = 1;
 
-        } else if (this.inputMap["s"] && !this.ui.gamePaused) {
+        } else if (this.inputMap.s && !this.ui.gamePaused) {
             this.vertical = Scalar.Lerp(this.vertical, -1, 0.2);
             this.verticalAxis = -1;
         } else {
@@ -50,11 +49,11 @@ export default class PlayerInput {
             this.verticalAxis = 0;
         }
 
-        if (this.inputMap["q"] && !this.ui.gamePaused) {
+        if (this.inputMap.q && !this.ui.gamePaused) {
             this.horizontal = Scalar.Lerp(this.horizontal, -1, 0.2);
             this.horizontalAxis = -1;
 
-        } else if (this.inputMap["d"] && !this.ui.gamePaused) {
+        } else if (this.inputMap.d && !this.ui.gamePaused) {
             this.horizontal = Scalar.Lerp(this.horizontal, 1, 0.2);
             this.horizontalAxis = 1;
         }
@@ -63,13 +62,13 @@ export default class PlayerInput {
             this.horizontalAxis = 0;
         }
 
-        if (this.inputMap[" "] && !this.ui.gamePaused) {
+        if (this.inputMap[" "]  && !this.ui.gamePaused) {
             this.jumpKeyDown = true;
         } else {
             this.jumpKeyDown = false;
         }
 
-        if (this.inputMap["Escape"]) {
+        if (this.inputMap.Escape) {
             this.ui.gamePaused = true;
             this.ui.pauseMenu.isVisible = true;
             this.ui.playerUI.addControl(this.ui.pauseMenu);

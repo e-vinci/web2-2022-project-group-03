@@ -1,5 +1,6 @@
-import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
+import {AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel, TextBlock, Image} from "@babylonjs/gui";
 import Navigate from "../Router/Navigate";
+import pauseMenuImage from '../../img/pauseMenuImage.png';
 
 export default class Hud {
     time;
@@ -61,23 +62,31 @@ export default class Hud {
         const pauseMenu = new Rectangle();
         pauseMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         pauseMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-        pauseMenu.height = 0.8;
-        pauseMenu.width = 0.5;
+        pauseMenu.height = 0.5;
+        pauseMenu.width = 0.4;
         pauseMenu.thickness = 0;
         pauseMenu.isVisible = false;
 
+        const image = new Image("camion", pauseMenuImage);
+        pauseMenu.addControl(image);
+
         const stackPanel = new StackPanel();
-        stackPanel.width = .83;
+        stackPanel.width = 1;
         pauseMenu.addControl(stackPanel);
 
         const resumeBtn = Button.CreateSimpleButton("resume", "RESUME");
         resumeBtn.width = 0.2;
         resumeBtn.height = "40px";
-        resumeBtn.color = "white";
-        resumeBtn.top = "-14px";
+        resumeBtn.color = "black";
         resumeBtn.thickness = 0;
-        resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(resumeBtn);
+
+        const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
+        quitBtn.width = 0.2;
+        quitBtn.height = "40px";
+        quitBtn.color = "black";
+        quitBtn.thickness = 0;
+        stackPanel.addControl(quitBtn);
 
         this.pauseMenu = pauseMenu;
 
@@ -87,15 +96,6 @@ export default class Hud {
 
             this.gamePaused = false;
         });
-
-        const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
-        quitBtn.width = 0.2;
-        quitBtn.height = "40px";
-        quitBtn.color = "white";
-        quitBtn.top = "-14px";
-        quitBtn.thickness = 0;
-        quitBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-        stackPanel.addControl(quitBtn);
 
         quitBtn.onPointerDownObservable.add(() => {
             Navigate('/');

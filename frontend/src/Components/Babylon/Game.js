@@ -1,4 +1,3 @@
-/* eslint-disable */
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF";
@@ -16,9 +15,9 @@ import {
     SceneLoader,
     Vector3
 } from "@babylonjs/core";
-import { AdvancedDynamicTexture, Button, Control, Rectangle, StackPanel } from "@babylonjs/gui";
+import {AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
 
-import player from '../../models/playerBabylonDoc.glb';
+import player from '../../models/playerbabylontmp.glb';
 import mcqueen from '../../models/mcqueen.glb'
 
 import Environment from "./Environment";
@@ -26,7 +25,8 @@ import Player from "./Player";
 import PlayerInput from "./inputController";
 import Hud from "./Hud";
 import Navigate from "../Router/Navigate";
-import { getAuthenticatedUser } from "../../utils/auths";
+import {getAuthenticatedUser} from "../../utils/auths";
+import pauseMenuImage from "../../img/pauseMenuImage.png";
 
 export default class Game {
     state;
@@ -46,6 +46,8 @@ export default class Game {
     player;
 
     ui;
+
+    timerInterval;
 
     constructor() {
         this.canvas = this.createCanvas();
@@ -106,7 +108,7 @@ export default class Game {
 
         this.environment = new Environment(scene);
 
-        const response = await fetch('/api/users/get', {
+        const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -118,7 +120,7 @@ export default class Game {
 
         const result = await response.json();
 
-        await this.environment.load(parseInt(result.level, 10) || 1);
+        await Environment.load(parseInt(result.level, 10) || 1);
 
         await this.loadCharacterAssets(scene);
     }
@@ -139,11 +141,13 @@ export default class Game {
             const result = await SceneLoader.ImportMeshAsync(null, player);
 
             const body = result.meshes[0];
+            body.scaling = new Vector3(0.7, 0.7, -0.7);
             body.parent = outer;
             body.isPickable = false;
 
             body.getChildMeshes().forEach(m => {
-                m.isPickable = false;
+                const mesh = m;
+                mesh.isPickable = false;
             });
 
             return {
@@ -152,9 +156,9 @@ export default class Game {
             }
 
         }
-        const assets = await loadCharacter()
+        this.assets = await loadCharacter()
 
-        return this.assets = assets;
+        return this.assets;
     }
 
     async initializeGameAsync(scene) {
@@ -173,7 +177,7 @@ export default class Game {
 
     async goToGame() {
         this.scene.detachControl();
-        const scene = this.scene;
+        const { scene } = this;
 
         this.ui = new Hud(scene);
 
@@ -182,15 +186,14 @@ export default class Game {
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
 
-        // scene.getMeshByName("outer").position = scene.getTransformNodeByName("startPosition").getAbsolutePosition();
         scene.getMeshByName("outer").position = new Vector3(0,4,0);
         this.ui.startTimer();
 
-        setInterval(() => {
+        this.timerInterval = setInterval(() => {
             this.ui.updateHud();
         }, 1000);
 
-        // await this.carAnim();
+        await Game.carAnim();
 
         this.createEndLevelMenu();
 
@@ -204,72 +207,82 @@ export default class Game {
         const endLevelUI = AdvancedDynamicTexture.CreateFullscreenUI("EndUI");
         endLevelUI.idealHeight = 720;
 
-        const stackPanel = new StackPanel();
-        stackPanel.width = .83;
-
         const endLevelMenu = new Rectangle();
         endLevelMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
         endLevelMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
-        endLevelMenu.height = 0.8;
-        endLevelMenu.width = 0.5;
+        endLevelMenu.height = 0.5;
+        endLevelMenu.width = 0.4;
         endLevelMenu.thickness = 0;
         endLevelMenu.isVisible = false;
-        stackPanel.addControl(endLevelMenu);
+
+        const image = new Image("camion", pauseMenuImage);
+        endLevelMenu.addControl(image);
+
+        const stackPanel = new StackPanel();
+        stackPanel.width = 1;
+        endLevelMenu.addControl(stackPanel);
 
         const nextBtn = Button.CreateSimpleButton("next", "NEXT LEVEL");
-        nextBtn.width = 0.2;
+        nextBtn.width = 0.3;
         nextBtn.height = "40px";
-        nextBtn.color = "white";
-        nextBtn.top = "-14px";
+        nextBtn.color = "black";
         nextBtn.thickness = 0;
-        nextBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(nextBtn);
 
         nextBtn.onPointerDownObservable.add(() => {
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
             this.state = '';
+
+            clearInterval(this.timerInterval);
+
             this.goToStart();
         });
 
         const quitBtn = Button.CreateSimpleButton("quit", "QUIT");
         quitBtn.width = 0.2;
         quitBtn.height = "40px";
-        quitBtn.color = "white";
-        quitBtn.top = "-14px";
+        quitBtn.color = "black";
         quitBtn.thickness = 0;
-        quitBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
         stackPanel.addControl(quitBtn);
 
         quitBtn.onPointerDownObservable.add(() => {
+            Navigate('/');
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
-
-            Navigate('/');
         });
 
-        this.assets.mesh.actionManager.registerAction(
+        const endGameMenu = new Rectangle();
+        endGameMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
+        endGameMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
+        endGameMenu.height = 0.5;
+        endGameMenu.width = 0.4;
+        endGameMenu.thickness = 0;
+        endGameMenu.isVisible = false;
+
+        endGameMenu.addControl(image);
+
+        const stackPanelEnd = new StackPanel();
+        stackPanelEnd.width = 1;
+        endGameMenu.addControl(stackPanelEnd);
+
+        const endText = new TextBlock();
+        endText.text = "Thank you for playing !"
+        endText.width = 0.3;
+        endText.height = "40px";
+        endText.color = "black";
+        stackPanelEnd.addControl(endText)
+
+        stackPanelEnd.addControl(quitBtn);
+
+        this.assets.mesh.actionManager.registerAction (
             new ExecuteCodeAction(
                 {
                     trigger: ActionManager.OnIntersectionEnterTrigger,
-                    parameter: this.scene.getMeshByName("house1"),
+                    parameter: this.scene.getMeshByName("fin"),
                 },
                 async () => {
-                    endLevelUI.addControl(stackPanel);
-                    endLevelMenu.isVisible = true;
-                    this.ui.gamePaused = true;
-
-                    await fetch('/api/users/set', {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            token: getAuthenticatedUser().token
-                        })
-                    });
-
-                    const response = await fetch('/api/users/get', {
+                    const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                         method: "POST",
                         headers: {
                             "Content-type": "application/json"
@@ -281,7 +294,28 @@ export default class Game {
 
                     const { level } = await response.json();
 
-                    await fetch('/api/leaderboard/add', {
+                    if (level < 2) {
+                        endLevelUI.addControl(endLevelMenu);
+                        endLevelMenu.isVisible = true;
+                        this.ui.gamePaused = true;
+                    }
+
+                    if (level === 2) {
+                        endLevelUI.addControl(endGameMenu);
+                        endGameMenu.isVisible = true;
+                    } else {
+                        await fetch(`${process.env.API_BASE_URL}/users/set`, {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                token: getAuthenticatedUser().token
+                            })
+                        });
+                    }
+
+                    await fetch(`${process.env.API_BASE_URL}/leaderboard/add`, {
                         method: "POST",
                         headers: {
                             "Content-type": "application/json"
@@ -297,44 +331,41 @@ export default class Game {
         );
     }
 
-    /*
-    async carAnim() {
-        const walk = function (turn, dist) {
+    static async carAnim() {
+        const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
+        const car = result.meshes[0];
+        car.position = new Vector3(22.5, 3, -30);
+
+        /*
+        const slide = function (turn, dist) { //after covering dist apply turn
             this.turn = turn;
             this.dist = dist;
         }
 
         const track = [];
-        track.push(new walk(86, 7));
-        track.push(new walk(-85, 14.8));
-        track.push(new walk(-93, 16.5));
-        track.push(new walk(48, 25.5));
-        track.push(new walk(-112, 30.5));
-        track.push(new walk(-72, 33.2));
-        track.push(new walk(42, 37.5));
-        track.push(new walk(-98, 45.2));
-        track.push(new walk(0, 47))
-
-        const result = await SceneLoader.ImportMeshAsync(null, mcqueen)
-        const car = result.meshes[0];
+        track.push(new slide(Math.PI / 2, 4));
+        track.push(new slide(3 * Math.PI / 4, 8));
+        track.push(new slide(3 * Math.PI / 4, 8 + 4 * Math.sqrt(2)));
 
         let distance = 0;
-        let step = 0.015;
+        let step = 0.05;
         let p = 0;
 
-        this.scene.onBeforeRenderObservable.add(() => {
-            car.movePOV(0, 0, step);
+        scene.onBeforeRenderObservable.add(() => {
+            sphere.movePOV(0, 0, step);
             distance += step;
 
             if (distance > track[p].dist) {
-                p += 1;
+                sphere.rotate(BABYLON.Axis.Y, track[p].turn, BABYLON.Space.LOCAL);
+                p +=1;
                 p %= track.length;
                 if (p === 0) {
                     distance = 0;
-                    car.position = new Vector3(-6, 0, 0);
+                    sphere.position = new BABYLON.Vector3(2, 0, 2); //reset to initial conditions
+                    sphere.rotation = BABYLON.Vector3.Zero();//prevents error accumulation
                 }
             }
         });
+        */
     }
-    */
 }

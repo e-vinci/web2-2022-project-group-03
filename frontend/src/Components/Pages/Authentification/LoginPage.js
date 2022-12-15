@@ -101,7 +101,7 @@ const LoginPage = () => {
             })
         }
 
-        const response = await fetch('/api/auth/login', options);
+        const response = await fetch(`${process.env.API_BASE_URL}/auth/login`, options);
 
         if (response.status !== 200) {
             const result = await response.json();

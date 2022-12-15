@@ -34,7 +34,7 @@ const HomePage = () => {
         newGameButton.classList.add("nav-button");
         newGameButton.textContent = "NEW GAME";
         newGameButton.addEventListener("click", async () => {
-            const requestGet = await fetch('/api/users/get', {
+            const requestGet = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,7 +45,7 @@ const HomePage = () => {
             });
             const result = await requestGet.json();
             if (result.level > 1) {
-                const requestReset = await fetch('/api/users/reset', {
+                const requestReset = await fetch(`${process.env.API_BASE_URL}/users/reset`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
