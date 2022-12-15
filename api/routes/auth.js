@@ -15,24 +15,15 @@ router.post('/register', async (req, res) => {
   const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
   const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
 
-  if (!username || !password) return res.status(400).json({ message: 'Username or password missing !' });
+  if (!username || !password) return res.status(400).json({ error: 'Username or password missing !' });
 
   const checker = new Checker();
   checker.min_length = 8;
-  // checker.disallowPasswords(true, true, 3);
-  // checker.disallowNames(true, true, 3);
-  // checker.disallowWords(true, true, 3);
-  // checker.allowed_symbols = '!@#$%^&*()_+{}|:"<>?[];\',./`~';
-  // checker.allowed_numbers = '1234567890';
-  // checker.allowed_letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  
+  checker.disallowPasswords(true, true, 3);
+
 
   if (!checker.check(password)) {
-    const errors = [];
-    checker.errors.forEach((error) => {
-      errors.push({ error: error.message });
-    });
-    return res.status(400).json({ error: 'Your password must be atleast 8 characters and contains symbols and numbers !' });
+    return res.status(400).json({ error: 'Your password must be at least 8 characters and contains symbols and numbers !' });
   }
 
   const users = parse(jsonDbPath);

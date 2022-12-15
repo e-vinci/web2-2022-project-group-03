@@ -1,4 +1,5 @@
 import {clearPage} from "../../../utils/render";
+import Navigate from "../../Router/Navigate";
 
 const LeaderboardPage = async () => {
     clearPage();
@@ -10,41 +11,84 @@ const LeaderboardPage = async () => {
         },
     });
 
-    const users = await result.json();
+    const leaderboard = await result.json();
+    console.log(leaderboard);
 
-    console.log(users);
+    const main = document.querySelector("main");
 
-    const main = document.querySelector('main');
+    const sectionImage = document.createElement("section");
+    sectionImage.classList.add("image");
+    main.appendChild(sectionImage);
 
-    let table = `
-        <table>
-            <thead>
-                <tr>
-                    <th>Rang</th>
-                    <th>Nom</th>
-                    <th>Temps</th>
-                    <th>Niveau</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
+    const leaderboardSection = document.createElement("section");
+    leaderboardSection.classList.add("leaderboard");
+    sectionImage.appendChild(leaderboardSection);
 
-    for (let i = 0; i < users.length; i + 1) {
-        table += `
-            <tr>
-                <td>${users[i].username}</td>
-                <td>${users[i].time}</td>
-                <td>${users[i].level}</td>
-            </tr>
-        `;
+    const title = document.createElement("h5");
+    title.classList.add("title");
+    title.textContent = "LEADERBOARD";
+    leaderboardSection.appendChild(title);
+
+    if (leaderboard.length > 0) {
+        const leaderboardTable = document.createElement("table");
+        leaderboardTable.classList.add("leaderboard-table");
+        leaderboardSection.appendChild(leaderboardTable);
+
+        const leaderboardTableRowHead = document.createElement("tr");
+
+        const leaderboardTableHeadRank = document.createElement("th");
+        leaderboardTableHeadRank.classList.add("table-head");
+        leaderboardTableHeadRank.textContent = "RANK";
+        leaderboardTableRowHead.appendChild(leaderboardTableHeadRank);
+
+        const leaderboardTableHeadUsername = document.createElement("th");
+        leaderboardTableHeadUsername.classList.add("table-head");
+        leaderboardTableHeadUsername.textContent = "USERNAME";
+        leaderboardTableRowHead.appendChild(leaderboardTableHeadUsername);
+
+        const leaderboardTableHeadTime = document.createElement("th");
+        leaderboardTableHeadTime.classList.add("table-head");
+        leaderboardTableHeadTime.textContent = "TIME";
+        leaderboardTableRowHead.appendChild(leaderboardTableHeadTime);
+
+        leaderboardTable.appendChild(leaderboardTableRowHead);
+
+        let i = 1;
+        for (const leaderboardElement of leaderboard) {
+            const leaderboardTableRow = document.createElement("tr");
+            leaderboardTable.appendChild(leaderboardTableRow);
+
+            const leaderboardTableRowRank = document.createElement("td");
+            leaderboardTableRowRank.classList.add("table-data");
+            leaderboardTableRowRank.textContent = `#${i}`;
+            leaderboardTableRow.appendChild(leaderboardTableRowRank);
+
+            const leaderboardTableRowUsername = document.createElement("td");
+            leaderboardTableRowUsername.classList.add("table-data");
+            leaderboardTableRowUsername.textContent = leaderboardElement.username;
+            leaderboardTableRow.appendChild(leaderboardTableRowUsername);
+
+            const leaderboardTableRowTime = document.createElement("td");
+            leaderboardTableRowTime.classList.add("table-data");
+            leaderboardTableRowTime.textContent = leaderboardElement.time;
+            leaderboardTableRow.appendChild(leaderboardTableRowTime);
+
+            i += 1;
+        }
+    } else {
+        const noEntries = document.createElement("h5");
+        noEntries.classList.add("no-entries");
+        noEntries.textContent = "THERE ARE NO LEADERBOARD ENTRIES YET";
+        leaderboardSection.appendChild(noEntries);
     }
 
-    table += `
-            </tbody>
-        </table>
-    `;
-
-    main.innerHTML = table;
+    const backButton = document.createElement("button");
+    backButton.classList.add("leaderboard-back-button");
+    backButton.textContent = "BACK";
+    backButton.addEventListener("click", () => {
+        Navigate("/");
+    });
+    leaderboardSection.appendChild(backButton);
 }
 
 export default LeaderboardPage;
