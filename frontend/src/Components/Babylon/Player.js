@@ -194,7 +194,7 @@ export default class Player extends TransformNode {
                 this.jumpCount = 1;
                 this.grounded = true;
             } else {
-                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(this.deltaTime * Player.GRAVITY));
+                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(-0.0325));
                 this.grounded = false;
             }
         }
