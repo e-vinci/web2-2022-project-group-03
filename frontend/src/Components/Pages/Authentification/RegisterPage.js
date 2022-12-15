@@ -107,6 +107,11 @@ const RegisterPage = async () => {
             return;
         }
 
+        if (username.length > 16) {
+            showErrorMessage("Username is too long", main);
+            return;
+        }
+
         const options = {
             method: "POST",
             headers: {
