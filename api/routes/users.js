@@ -9,8 +9,6 @@ const { parse, serialize} = require("../utils/json");
 
 const jsonDbPath = path.join(__dirname, '/../data/levels.json');
 
-const jwtSecret = 'DamsLePlusBö!';
-
 // eslint-disable-next-line consistent-return
 router.post('/set', authorize,(req, res) => {
     const { username } = req.user;

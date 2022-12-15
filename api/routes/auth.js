@@ -12,45 +12,45 @@ const { parse } = require("../utils/json");
 const jsonDbPath = path.join(__dirname, '/../data/users.json');
 
 router.post('/register', async (req, res) => {
-  const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
-  const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
+    const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
+    const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
 
-  if (!username || !password) return res.status(400).json({ error: 'Username or password missing !' });
+    if (!username || !password) return res.status(400).json({ error: 'Username or password missing !' });
 
-  const checker = new Checker();
-  checker.min_length = 8;
-  checker.disallowPasswords(true, true, 3);
+    const checker = new Checker();
+    checker.min_length = 8;
+    checker.disallowPasswords(true, true, 3);
 
 
-  if (!checker.check(password)) {
-    return res.status(400).json({ error: 'Your password must be at least 8 characters and contains symbols and numbers !' });
-  }
+    if (!checker.check(password)) {
+        return res.status(400).json({ error: 'Your password must be at least 8 characters and contains symbols and numbers !' });
+    }
 
-  const users = parse(jsonDbPath);
+    const users = parse(jsonDbPath);
 
-  // eslint-disable-next-line consistent-return
-  users.forEach((user) => {
-    if (user.username === username) return res.status(409).json({ error: 'Username already exists !' });
-  });
+    // eslint-disable-next-line consistent-return
+    users.forEach((user) => {
+        if (user.username === username) return res.status(409).json({ error: 'Username already exists !' });
+    });
 
-  const authenticatedUser = await register(username, password);
+    const authenticatedUser = await register(username, password);
 
-  if (!authenticatedUser) return res.sendStatus(401);
+    if (!authenticatedUser) return res.sendStatus(401);
 
-  return res.json(authenticatedUser);
+    return res.json(authenticatedUser);
 });
 
 router.post('/login', async (req, res) => {
-  const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
-  const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
+    const username = req?.body?.username?.length !== 0 ? req.body.username : undefined;
+    const password = req?.body?.password?.length !== 0 ? req.body.password : undefined;
 
-  if (!username || !password) return res.status(400).json({ error: 'Username or password missing !' });
+    if (!username || !password) return res.status(400).json({ error: 'Username or password missing !' });
 
-  const authenticatedUser = await login(username, password);
+    const authenticatedUser = await login(username, password);
 
-  if (!authenticatedUser) return res.status(401).json({ error: 'Wrong username or password !' });
+    if (!authenticatedUser) return res.status(401).json({ error: 'Wrong username or password !' });
 
-  return res.json(authenticatedUser);
+    return res.json(authenticatedUser);
 });
 
 module.exports = router;

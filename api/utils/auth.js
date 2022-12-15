@@ -4,10 +4,8 @@ const { readOneUserFromUsername } = require('../models/auth');
 const jwtSecret = 'DamsLePlusBö!';
 
 const authorize = (req, res, next) => {
-  console.log(req.get('authorization'));
   const token = req.get('authorization');
 
-  console.log(token);
   if (!token) return res.sendStatus(401); // unauthorized
 
   try {
@@ -21,6 +19,7 @@ const authorize = (req, res, next) => {
     req.user = existingUser; // request.user object is available in all other middleware functions
     return next();
   } catch (err) {
+    // eslint-disable-next-line
     console.error('authorize: ', err);
     return res.sendStatus(401);
   }

@@ -1,14 +1,12 @@
-/* eslint-disable */
 const express = require('express');
 const path = require("node:path");
+
 const router = express.Router();
 const { authorize } = require('../utils/auth');
 
 const { parse, serialize } = require("../utils/json");
 
 const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
-
-const jwtSecret = 'DamsLePlusBö!';
 
 router.post('/', (req, res) => {
     const leaderboard = parse(jsonDbPath);
@@ -40,37 +38,32 @@ router.post('/', (req, res) => {
 
     if (newRepresentation) {
         newRepresentation = newRepresentation.sort((a, b) => a.time - b.time);
-
-        console.log(newRepresentation);
-
         return res.status(200).json(newRepresentation);
-    } else {
-        return res.status(404).json({ error: 'No leaderboard found' });
     }
+
+    return res.status(404).json({ error: 'No leaderboard found' });
 });
 
 router.post('/add', authorize,(req, res) => {
-  const leaderboard = parse(jsonDbPath);
-  const { username, level, time } = req.body;
+    const leaderboard = parse(jsonDbPath);
+    const { username, level, time } = req.body;
 
     let leaderboardFound;
     leaderboard.forEach((leaderboardElement) => {
-        if (leaderboardElement.username === username) {
+        if (leaderboardElement.username === username)
             leaderboardFound = leaderboardElement;
-        }
     });
 
     if (leaderboardFound) {
         let levelFound;
         leaderboardFound.levels.forEach((levelElement) => {
-            if (levelElement.level === level) {
+            if (levelElement.level === level)
                 levelFound = levelElement;
-            }
         });
         if (levelFound) {
-            if (levelFound.time > time) {
+            if (levelFound.time > time)
                 levelFound.time = time;
-            }
+
             const index = leaderboardFound.levels.indexOf(levelFound);
             leaderboardFound.levels.splice(index, 1);
             leaderboardFound.levels.push(levelFound);
@@ -82,11 +75,11 @@ router.post('/add', authorize,(req, res) => {
         leaderboard.push(leaderboardFound);
     } else {
         leaderboard.push({
-            username: username,
+            username,
             levels: [
                 {
-                    level: level,
-                    time: time
+                    level,
+                    time
                 }
             ]
         })
