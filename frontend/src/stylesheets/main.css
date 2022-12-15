@@ -40,7 +40,8 @@ body {
 }
 
 .title {
-    margin: 20px 0 0;
+    color: white;
+    margin: 0 0 0;
     text-align: center;
     font-size: 100px;
 }
@@ -142,4 +143,43 @@ input {
     padding: 0 20px;
     font-size: 60px;
     color: darkred;
+}
+
+.leaderboard {
+    background-color: black;
+    margin-inline: 25%;
+    height: 100%;
+}
+
+.leaderboard-table {
+    text-align: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.table-head {
+    padding-inline: 50px;
+    color: white;
+}
+
+.table-data {
+    color: white;
+}
+
+.leaderboard-back-button {
+    background: none;
+    font-size: 80px;
+    max-width: 270px;
+    padding-top: 10px;
+    cursor: pointer;
+    color: white;
+    float: right;
+    padding-right: 20px;
+}
+
+.no-entries {
+    color: white;
+    margin-block: 40px;
+    text-align: center;
+    font-size: 100px;
 }
