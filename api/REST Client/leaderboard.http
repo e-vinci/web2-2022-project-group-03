@@ -6,3 +6,26 @@ Content-Type: application/json
   "level": 1,
   "time": 100
 }
+
+###log in a existing user
+# @name michele
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"michele",
+  "password":"michele"
+}
+
+### define a variable to ease the loading of the token 
+@micheleToken = {{michele.response.body.token}}
+
+###check if the logged user can ad a new time to the leaderboard
+POST http://localhost:3000/leaderboard/add
+Content-Type: application/json
+Authorization: {{micheleToken}}
+
+{
+  "level": 1,
+  "time": 100
+}

@@ -3,15 +3,22 @@ const express = require('express');
 
 const router = express.Router();
 const path = require("node:path");
+const { authorize } = require('../utils/auth');
 
 const { parse, serialize} = require("../utils/json");
 
 const jsonDbPath = path.join(__dirname, '/../data/levels.json');
-// eslint-disable-next-line consistent-return
-router.post('/set', (req, res) => {
-    const { username } = req.body;
 
-    if (!username) return res.status(400).json({ error: 'Username missing !' });
+const jwtSecret = 'DamsLePlusBö!';
+
+// eslint-disable-next-line consistent-return
+router.post('/set', authorize,(req, res) => {
+    const { token } = req.body;
+
+    if (!token) return res.status(400).json({ error: 'Username missing !' });
+
+    const decoded = jwt.verify(token, jwtSecret);
+    const { username } = decoded;
 
     const levels = parse(jsonDbPath);
 

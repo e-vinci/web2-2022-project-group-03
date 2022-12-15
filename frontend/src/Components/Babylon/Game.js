@@ -265,7 +265,7 @@ export default class Game {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
-                            username: getAuthenticatedUser().username
+                            token: getAuthenticatedUser().token
                         })
                     });
 
@@ -287,7 +287,7 @@ export default class Game {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
-                            username: getAuthenticatedUser().username,
+                            token: getAuthenticatedUser().token,
                             level: level,
                             time: this.ui.time
                         })
