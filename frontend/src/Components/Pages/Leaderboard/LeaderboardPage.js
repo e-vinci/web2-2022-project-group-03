@@ -54,7 +54,7 @@ const LeaderboardPage = async () => {
         leaderboardTable.appendChild(leaderboardTableRowHead);
 
         let i = 1;
-        for (const leaderboardElement of leaderboard) {
+        leaderboard.forEach((leaderboardElement) => {
             const leaderboardTableRow = document.createElement("tr");
             leaderboardTable.appendChild(leaderboardTableRow);
 
@@ -74,7 +74,7 @@ const LeaderboardPage = async () => {
             leaderboardTableRow.appendChild(leaderboardTableRowTime);
 
             i += 1;
-        }
+        });
     } else {
         const noEntries = document.createElement("h5");
         noEntries.classList.add("no-entries");
