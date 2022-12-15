@@ -4,7 +4,7 @@ import {
     Quaternion,
     Ray,
     ActionManager,
-    TransformNode
+    TransformNode, Vector2
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -38,7 +38,7 @@ export default class Player extends TransformNode {
 
     static PLAYER_SPEED = 0.2;
 
-    static JUMP_FORCE = 0.3;
+    static JUMP_FORCE = 0.2;
 
     static GRAVITY = -1.3;
 
@@ -75,6 +75,7 @@ export default class Player extends TransformNode {
         this.mesh.actionManager = new ActionManager(this.scene);
 
         this.camera.target = this.mesh;
+        this.camera.targetScreenOffset = new Vector2(0, -3);
     }
 
     updateFromControls() {
@@ -242,17 +243,15 @@ export default class Player extends TransformNode {
 
         this.camera.setPosition(new Vector3(0, 30, -20));
 
-        this.camera.upperBetaLimit = Math.PI / 2.2;
         this.camera.lowerRadiusLimit = 10;
-        this.camera.upperRadiusLimit = 40;
+        this.camera.upperRadiusLimit = 10;
+
+        this.camera.checkCollisions = true;
+        this.camera.collisionRadius = new Vector3(0.1, 0.1, 0.1);
 
         this.camera.attachControl(this.canvas, true);
 
         this.camera.inputs.attached.keyboard.detachControl();
-
-        this.camera.checkCollisions = true;
-        this.camera.ellipsoid = new Vector3(1, 1, 5);
-        this.camera.minZ = 0.45;
 
         return this.camera;
     }
