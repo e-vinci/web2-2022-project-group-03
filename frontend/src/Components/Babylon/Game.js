@@ -1,4 +1,3 @@
-/* eslint-disable */
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF";
@@ -26,7 +25,7 @@ import Player from "./Player";
 import PlayerInput from "./inputController";
 import Hud from "./Hud";
 import Navigate from "../Router/Navigate";
-import { getAuthenticatedUser } from "../../utils/auths";
+import {getAuthenticatedUser} from "../../utils/auths";
 import pauseMenuImage from "../../img/pauseMenuImage.png";
 
 export default class Game {
@@ -109,7 +108,7 @@ export default class Game {
 
         this.environment = new Environment(scene);
 
-        const response = await fetch('/api/users/get', {
+        const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -121,7 +120,7 @@ export default class Game {
 
         const result = await response.json();
 
-        await this.environment.load(parseInt(result.level, 10) || 1);
+        await Environment.load(parseInt(result.level, 10) || 1);
 
         await this.loadCharacterAssets(scene);
     }
@@ -147,7 +146,8 @@ export default class Game {
             body.isPickable = false;
 
             body.getChildMeshes().forEach(m => {
-                m.isPickable = false;
+                const mesh = m;
+                mesh.isPickable = false;
             });
 
             return {
@@ -156,9 +156,9 @@ export default class Game {
             }
 
         }
-        const assets = await loadCharacter()
+        this.assets = await loadCharacter()
 
-        return this.assets = assets;
+        return this.assets;
     }
 
     async initializeGameAsync(scene) {
@@ -177,7 +177,7 @@ export default class Game {
 
     async goToGame() {
         this.scene.detachControl();
-        const scene = this.scene;
+        const { scene } = this;
 
         this.ui = new Hud(scene);
 
@@ -193,7 +193,7 @@ export default class Game {
             this.ui.updateHud();
         }, 1000);
 
-        await this.carAnim();
+        await Game.carAnim();
 
         this.createEndLevelMenu();
 
@@ -283,7 +283,7 @@ export default class Game {
                 },
                 async () => {
 
-                    const response = await fetch('/api/users/get', {
+                    const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                         method: "POST",
                         headers: {
                             "Content-type": "application/json"
@@ -305,7 +305,7 @@ export default class Game {
                         endLevelUI.addControl(endGameMenu);
                         endGameMenu.isVisible = true;
                     } else {
-                        await fetch('/api/users/set', {
+                        await fetch(`${process.env.API_BASE_URL}/users/set`, {
                             method: "POST",
                             headers: {
                                 "Content-type": "application/json"
@@ -316,14 +316,14 @@ export default class Game {
                         });
                     }
 
-                    await fetch('/api/leaderboard/add', {
+                    await fetch(`${process.env.API_BASE_URL}/leaderboard/add`, {
                         method: "POST",
                         headers: {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
                             username: getAuthenticatedUser().token,
-                            level: level,
+                            level,
                             time: this.ui.time
                         })
                     });
@@ -332,7 +332,7 @@ export default class Game {
         );
     }
 
-    async carAnim() {
+    static async carAnim() {
         const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
         const car = result.meshes[0];
         car.position = new Vector3(22.5, 3, -30);

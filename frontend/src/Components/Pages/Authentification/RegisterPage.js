@@ -126,7 +126,7 @@ const RegisterPage = async () => {
             }),
         }
 
-        const response = await fetch('/api/auth/register', options);
+        const response = await fetch(`${process.env.API_BASE_URL}/auth/register`, options);
 
         if (response.status !== 200) {
             const result = await response.json();

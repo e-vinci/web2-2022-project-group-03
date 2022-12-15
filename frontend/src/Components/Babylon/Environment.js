@@ -1,6 +1,5 @@
-/* eslint-disable */
-import damien from '../../models/seinecourt1test.glb';
 import { SceneLoader } from "@babylonjs/core";
+import damien from '../../models/seinecourt1test.glb';
 
 export default class Environment {
     scene;
@@ -9,52 +8,56 @@ export default class Environment {
         this.scene = scene;
     }
 
-    async load(level) {
+    static async load(level) {
         let assets
         switch (level) {
             case 1:
-                assets = await this.loadAssetLevel1();
+                assets = await Environment.loadAssetLevel1();
                 break;
             case 2:
-                assets = await this.loadAssetLevel2()
+                assets = await Environment.loadAssetLevel2()
+                break;
+            default :
+                assets = await Environment.loadAssetLevel1();
                 break;
         }
 
         assets.allMeshes.forEach(m => {
-            m.receiveShadows = true;
-            m.checkCollisions = true;
+            const mesh = m;
+            mesh.receiveShadows = true;
+            mesh.checkCollisions = true;
 
 
-            if (m.name.includes("stairs")) {
-                m.checkCollisions = false;
-                m.isPickable = false;
+            if (mesh.name.includes("stairs")) {
+                mesh.checkCollisions = false;
+                mesh.isPickable = false;
             }
 
-            if (m.name.includes("ramp")) {
-                m.isVisible = false;
+            if (mesh.name.includes("ramp")) {
+                mesh.isVisible = false;
             }
         });
     }
 
-    async loadAssetLevel1() {
+    static async loadAssetLevel1() {
         const result = await SceneLoader.ImportMeshAsync(null, damien);
-        let env = result.meshes[0];
-        let allMeshes = env.getChildMeshes();
+        const env = result.meshes[0];
+        const allMeshes = env.getChildMeshes();
 
         return {
-            env: env,
-            allMeshes: allMeshes
+            env,
+            allMeshes
         }
     }
 
-    async loadAssetLevel2() {
+    static async loadAssetLevel2() {
         const result = await SceneLoader.ImportMeshAsync(null, damien);
-        let env = result.meshes[0];
-        let allMeshes = env.getChildMeshes();
+        const env = result.meshes[0];
+        const allMeshes = env.getChildMeshes();
 
         return {
-            env: env,
-            allMeshes: allMeshes
+            env,
+            allMeshes
         }
     }
 }
