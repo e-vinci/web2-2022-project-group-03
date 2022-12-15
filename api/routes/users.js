@@ -13,12 +13,9 @@ const jwtSecret = 'DamsLePlusBö!';
 
 // eslint-disable-next-line consistent-return
 router.post('/set', authorize,(req, res) => {
-    const { token } = req.body;
+    const { username } = req.user;
 
-    if (!token) return res.status(400).json({ error: 'Username missing !' });
-
-    const decoded = jwt.verify(token, jwtSecret);
-    const { username } = decoded;
+    if (!username) return res.status(400).json({ error: 'Username missing !' });
 
     const levels = parse(jsonDbPath);
 
@@ -34,8 +31,8 @@ router.post('/set', authorize,(req, res) => {
 });
 
 // eslint-disable-next-line consistent-return
-router.post('/get', (req, res) => {
-    const { username } = req.body;
+router.post('/get', authorize, (req, res) => {
+    const { username } = req.user;
 
     if (!username) return res.status(400).json({ error: 'Username missing !' });
 

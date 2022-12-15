@@ -4,12 +4,11 @@ const { readOneUserFromUsername } = require('../models/auth');
 const jwtSecret = 'DamsLePlusBö!';
 
 const authorize = (req, res, next) => {
-  const token = req.get("Authorization");
+  console.log(req.get('authorization'));
+  const token = req.get('authorization');
 
   console.log(token);
   if (!token) return res.sendStatus(401); // unauthorized
-
-  
 
   try {
     const decoded = jwt.verify(token, jwtSecret);
@@ -17,7 +16,7 @@ const authorize = (req, res, next) => {
 
     const existingUser = readOneUserFromUsername(username);
 
-    if (!existingUser) return res.sendStatus(401); //unauthorized
+    if (!existingUser) return res.sendStatus(401); // unauthorized
 
     req.user = existingUser; // request.user object is available in all other middleware functions
     return next();
