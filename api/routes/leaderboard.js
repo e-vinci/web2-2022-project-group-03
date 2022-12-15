@@ -2,10 +2,13 @@
 const express = require('express');
 const path = require("node:path");
 const router = express.Router();
+const { authorize } = require('../utils/auth');
 
 const { parse, serialize } = require("../utils/json");
 
 const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
+
+const jwtSecret = 'DamsLePlusBö!';
 
 router.post('/', (req, res) => {
     const leaderboard = parse(jsonDbPath);
@@ -46,9 +49,9 @@ router.post('/', (req, res) => {
     }
 });
 
-router.post('/add', (req, res) => {
-    const leaderboard = parse(jsonDbPath);
-    const { username, level, time } = req.body;
+router.post('/add', authorize,(req, res) => {
+  const leaderboard = parse(jsonDbPath);
+  const { username, level, time } = req.body;
 
     let leaderboardFound;
     leaderboard.forEach((leaderboardElement) => {

@@ -282,7 +282,6 @@ export default class Game {
                     parameter: this.scene.getMeshByName("fin"),
                 },
                 async () => {
-
                     const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                         method: "POST",
                         headers: {
@@ -311,7 +310,7 @@ export default class Game {
                                 "Content-type": "application/json"
                             },
                             body: JSON.stringify({
-                                username: getAuthenticatedUser().token
+                                token: getAuthenticatedUser().token
                             })
                         });
                     }
@@ -322,8 +321,8 @@ export default class Game {
                             "Content-type": "application/json"
                         },
                         body: JSON.stringify({
-                            username: getAuthenticatedUser().token,
-                            level,
+                            token: getAuthenticatedUser().token,
+                            level: level,
                             time: this.ui.time
                         })
                     });
