@@ -112,10 +112,8 @@ export default class Game {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: getAuthenticatedUser().username,
-            }),
+                Authorization: getAuthenticatedUser().token
+            }
         });
 
         const result = await response.json();
@@ -286,11 +284,9 @@ export default class Game {
                     const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                         method: "POST",
                         headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            username: getAuthenticatedUser().username
-                        })
+                            "Content-type": "application/json",
+                            Authorization: getAuthenticatedUser().token
+                        }
                     });
 
                     const { level } = await response.json();
@@ -307,20 +303,19 @@ export default class Game {
                     await fetch(`${process.env.API_BASE_URL}/users/set`, {
                         method: "POST",
                         headers: {
-                            "Content-type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            token: getAuthenticatedUser().token
-                        })
+                            "Content-type": "application/json",
+                            Authorization: getAuthenticatedUser().token
+                        }
                     });
 
                     await fetch(`${process.env.API_BASE_URL}/leaderboard/add`, {
                         method: "POST",
                         headers: {
-                            "Content-type": "application/json"
+                            "Content-type": "application/json",
+                            Authorization: getAuthenticatedUser().token
                         },
                         body: JSON.stringify({
-                            token: getAuthenticatedUser().token,
+                            username: getAuthenticatedUser().username,
                             level,
                             time: this.ui.time
                         })

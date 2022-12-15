@@ -38,10 +38,8 @@ const HomePage = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: getAuthenticatedUser().username
-                })
+                    Authorization: getAuthenticatedUser().token
+                }
             });
             const result = await requestGet.json();
             if (result.level > 1) {
