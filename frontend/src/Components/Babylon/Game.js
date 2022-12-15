@@ -282,6 +282,7 @@ export default class Game {
                     parameter: this.scene.getMeshByName("fin"),
                 },
                 async () => {
+
                     const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                         method: "POST",
                         headers: {
@@ -298,22 +299,20 @@ export default class Game {
                         endLevelUI.addControl(endLevelMenu);
                         endLevelMenu.isVisible = true;
                         this.ui.gamePaused = true;
-                    }
-
-                    if (level === 2) {
+                    } else {
                         endLevelUI.addControl(endGameMenu);
                         endGameMenu.isVisible = true;
-                    } else {
-                        await fetch(`${process.env.API_BASE_URL}/users/set`, {
-                            method: "POST",
-                            headers: {
-                                "Content-type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                token: getAuthenticatedUser().token
-                            })
-                        });
                     }
+
+                    await fetch(`${process.env.API_BASE_URL}/users/set`, {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            token: getAuthenticatedUser().token
+                        })
+                    });
 
                     await fetch(`${process.env.API_BASE_URL}/leaderboard/add`, {
                         method: "POST",
@@ -322,7 +321,7 @@ export default class Game {
                         },
                         body: JSON.stringify({
                             token: getAuthenticatedUser().token,
-                            level: level,
+                            level,
                             time: this.ui.time
                         })
                     });
