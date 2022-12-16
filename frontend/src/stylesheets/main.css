@@ -10,8 +10,8 @@ body {
 
 @font-face {
     font-family: 'hospitaleteregular';
-    src: url('hospitalete-webfont.woff2') format('woff2'),
-    url('hospitalete-webfont.woff') format('woff');
+    src: url("./hospitalete-webfont.woff2") format('woff2'),
+    url("./hospitalete-webfont.woff") format('woff');
 }
 
 * {
