@@ -80,7 +80,6 @@ export default class Player extends TransformNode {
 
     updateFromControls() {
         this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
-
         this.moveDirection = Vector3.Zero();
 
         this.h = this.input.horizontal;
@@ -244,12 +243,12 @@ export default class Player extends TransformNode {
     }
 
     setupPlayerCamera() {
-        this.camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), this.scene);
+        this.camera = new ArcRotateCamera("Camera", 0, 0, 0, new Vector3(0, 0, 0), this.scene);
 
-        this.camera.setPosition(new Vector3(-10, 5, ));
+        this.camera.setPosition(new Vector3(-10, 5, 0));
 
-        this.camera.lowerRadiusLimit = 10;
-        this.camera.upperRadiusLimit = 10;
+        this.camera.lowerRadiusLimit = 4;
+        this.camera.upperRadiusLimit = 8;
 
         this.camera.checkCollisions = true;
         this.camera.collisionRadius = new Vector3(0.1, 0.1, 0.1);
@@ -260,4 +259,10 @@ export default class Player extends TransformNode {
 
         return this.camera;
     }
+
+    /*
+    static firstPersonView() {
+        this.camera.position = new Vector3(-10,5,0);
+    }
+    */
 }

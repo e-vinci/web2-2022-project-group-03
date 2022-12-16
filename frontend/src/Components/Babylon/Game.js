@@ -140,7 +140,7 @@ export default class Game {
             const result = await SceneLoader.ImportMeshAsync(null, player);
 
             const body = result.meshes[0];
-            body.scaling = new Vector3(0.7, 0.7, -0.7);
+            body.scaling = new Vector3(0.6, 0.6, -0.6);
             body.parent = outer;
             body.isPickable = false;
 
@@ -179,7 +179,7 @@ export default class Game {
 
         this.ui = new Hud(scene, this.engine);
 
-        this.input = new PlayerInput(scene, this.ui);
+        this.input = new PlayerInput(scene, this.ui, this.player);
 
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();

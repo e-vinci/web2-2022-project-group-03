@@ -1,4 +1,5 @@
 import {ActionManager, ExecuteCodeAction, Scalar} from "@babylonjs/core";
+import player from "./Player";
 
 export default class PlayerInput {
     inputMap;
@@ -17,6 +18,8 @@ export default class PlayerInput {
 
     scene;
 
+    pauseMenuVisible = false;
+
     constructor(scene, ui) {
         this.scene = scene;
         this.ui = ui;
@@ -28,6 +31,16 @@ export default class PlayerInput {
             this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type === "keydown";
         }));
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (evt) => {
+
+            if (evt.sourceEvent.key === "Escape" && this.pauseMenuVisible) {
+                this.pauseMenuVisible = false;
+                this.ui.gamePaused = false;
+                this.ui.pauseMenu.isVisible = false;
+                this.ui.playerUI.removeControl(this.ui.pauseMenu);
+            } else if (evt.sourceEvent.key === "Escape") {
+                this.pauseMenuVisible = true;
+            }
+
             this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type === "keydown";
         }));
 
@@ -68,10 +81,16 @@ export default class PlayerInput {
             this.jumpKeyDown = false;
         }
 
-        if (this.inputMap.Escape) {
+        if (this.inputMap.Escape && !this.ui.gamePaused) {
             this.ui.gamePaused = true;
             this.ui.pauseMenu.isVisible = true;
             this.ui.playerUI.addControl(this.ui.pauseMenu);
         }
+
+        /*
+        if (this.inputMap.c && !this.ui.gamePaused) {
+            player.firstPersonView()
+        }
+        */
     }
 }

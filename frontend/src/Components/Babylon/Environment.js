@@ -27,25 +27,21 @@ export default class Environment {
             mesh.checkCollisions = true;
 
 
-            if (mesh.name.includes("stairs")) {
+            if (mesh.name.includes("stairs") || mesh.name.includes("fin")) {
                 mesh.checkCollisions = false;
                 mesh.isPickable = false;
             }
 
-            if (mesh.name.includes("ramp")) {
+            if (mesh.name.includes("ramp") || mesh.name.includes("MUR")) {
                 mesh.isVisible = false;
             }
 
-            if (mesh.name.includes("leaves")) {
+            if (mesh.name.includes("leaves")
+                || mesh.name.includes("aspirateur")
+                || mesh.name.includes("air")
+                || mesh.name.includes("bark")
+                || mesh.name.includes("sky")) {
                 mesh.checkCollisions = false;
-            }
-
-            if (mesh.name.includes("aspirateur")) {
-                mesh.checkCollisions = false;
-            }
-
-            if (mesh.name.includes("MUR")) {
-                mesh.isVisible = false;
             }
         });
     }
