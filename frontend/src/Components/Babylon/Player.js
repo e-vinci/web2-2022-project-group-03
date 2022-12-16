@@ -261,8 +261,9 @@ export default class Player extends TransformNode {
     }
 
     /*
-    static firstPersonView() {
+    firstPersonView() {
         this.camera.position = new Vector3(-10,5,0);
     }
     */
+
 }

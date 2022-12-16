@@ -1,5 +1,4 @@
 import {ActionManager, ExecuteCodeAction, Scalar} from "@babylonjs/core";
-import player from "./Player";
 
 export default class PlayerInput {
     inputMap;
@@ -89,7 +88,8 @@ export default class PlayerInput {
 
         /*
         if (this.inputMap.c && !this.ui.gamePaused) {
-            player.firstPersonView()
+            const player = this.scene.getMeshByName("outer");
+            player.firstPersonView();
         }
         */
     }
