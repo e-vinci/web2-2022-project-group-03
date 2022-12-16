@@ -12,7 +12,6 @@ const LeaderboardPage = async () => {
     });
 
     const leaderboard = await result.json();
-    console.log(leaderboard);
 
     const main = document.querySelector("main");
 
