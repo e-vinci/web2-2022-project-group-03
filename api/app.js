@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/auth', cors(corsOptions), authRouter);
-app.use('/users', usersRouter);
-app.use('/leaderboard', leaderboardRouter);
+app.use('/users', cors(corsOptions), usersRouter);
+app.use('/leaderboard', cors(corsOptions), leaderboardRouter);
 
 module.exports = app;
