@@ -245,9 +245,10 @@ export default class Game {
         stackPanel.addControl(quitBtn);
 
         quitBtn.onPointerDownObservable.add(() => {
-            Navigate('/');
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
+            this.scene.dispose();
+            Navigate('/');
         });
 
         const endGameMenu = new Rectangle();
@@ -298,6 +299,7 @@ export default class Game {
                     } else {
                         endLevelUI.addControl(endGameMenu);
                         endGameMenu.isVisible = true;
+                        this.ui.gamePaused = true;
                     }
 
                     await fetch(`${process.env.API_BASE_URL}/users/set`, {
