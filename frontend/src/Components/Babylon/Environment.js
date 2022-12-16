@@ -1,5 +1,5 @@
 import { SceneLoader } from "@babylonjs/core";
-import damien from '../../models/seinecourt1test.glb';
+import damien from '../../models/seinecourt1.glb';
 
 export default class Environment {
     scene;
@@ -24,7 +24,6 @@ export default class Environment {
 
         assets.allMeshes.forEach(m => {
             const mesh = m;
-            mesh.receiveShadows = true;
             mesh.checkCollisions = true;
 
 
@@ -34,6 +33,18 @@ export default class Environment {
             }
 
             if (mesh.name.includes("ramp")) {
+                mesh.isVisible = false;
+            }
+
+            if (mesh.name.includes("leaves")) {
+                mesh.checkCollisions = false;
+            }
+
+            if (mesh.name.includes("aspirateur")) {
+                mesh.checkCollisions = false;
+            }
+
+            if (mesh.name.includes("MUR")) {
                 mesh.isVisible = false;
             }
         });

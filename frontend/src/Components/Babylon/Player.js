@@ -36,13 +36,13 @@ export default class Player extends TransformNode {
 
     jumped = false;
 
-    static PLAYER_SPEED = 0.2;
+    static PLAYER_SPEED = 10;
 
-    static JUMP_FORCE = 0.2;
+    static JUMP_FORCE = 0.4;
 
     static GRAVITY = -1.3;
 
-    deltaTime = 0.006;
+    deltaTime;
 
     h;
 
@@ -79,7 +79,10 @@ export default class Player extends TransformNode {
     }
 
     updateFromControls() {
+        this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+
         this.moveDirection = Vector3.Zero();
+
         this.h = this.input.horizontal;
         this.v = this.input.vertical;
 
@@ -98,7 +101,6 @@ export default class Player extends TransformNode {
             const targ = Quaternion.FromEulerAngles(0, angle, 0);
             this.mesh.rotationQuaternion = Quaternion.Slerp(this.mesh.rotationQuaternion, targ, 10 * this.deltaTime);
         }
-        this.moveDirection = this.moveDirection.scaleInPlace(Player.PLAYER_SPEED);
     }
 
     setUpAnimations() {
@@ -184,13 +186,15 @@ export default class Player extends TransformNode {
     }
 
     updateGroundDetection() {
+        this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+
         if (!this.isGrounded()) {
             if (this.checkSlope() && this.gravity.y <= 0) {
                 this.gravity.y = 0;
                 this.jumpCount = 1;
                 this.grounded = true;
             } else {
-                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(this.deltaTime * Player.GRAVITY));
+                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(0.025 * Player.GRAVITY));
                 this.grounded = false;
             }
         }
@@ -202,6 +206,7 @@ export default class Player extends TransformNode {
             this.isFalling = true;
         }
 
+        this.moveDirection = this.moveDirection.scaleInPlace(Player.PLAYER_SPEED * this.deltaTime);
         this.mesh.moveWithCollisions(this.moveDirection.addInPlace(this.gravity));
 
         if (this.isGrounded()) {

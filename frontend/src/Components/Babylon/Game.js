@@ -184,7 +184,7 @@ export default class Game {
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
 
-        scene.getMeshByName("outer").position = new Vector3(0,4,0);
+        scene.getMeshByName("outer").position = new Vector3(0,2,0);
         this.ui.startTimer();
 
         this.timerInterval = setInterval(() => {
@@ -245,9 +245,10 @@ export default class Game {
         stackPanel.addControl(quitBtn);
 
         quitBtn.onPointerDownObservable.add(() => {
-            Navigate('/');
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
+            this.scene.dispose();
+            Navigate('/');
         });
 
         const endGameMenu = new Rectangle();
@@ -298,6 +299,7 @@ export default class Game {
                     } else {
                         endLevelUI.addControl(endGameMenu);
                         endGameMenu.isVisible = true;
+                        this.ui.gamePaused = true;
                     }
 
                     await fetch(`${process.env.API_BASE_URL}/users/set`, {
