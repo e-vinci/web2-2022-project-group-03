@@ -5,7 +5,6 @@ import GamePage from "../Pages/Game/GamePage";
 import LeaderboardPage from "../Pages/Leaderboard/LeaderboardPage";
 import Logout from "../Logout/Logout";
 
-
 const routes = {
   '/': HomePage,
   '/login': LoginPage,
