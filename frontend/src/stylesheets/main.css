@@ -65,6 +65,8 @@ input {
     font-size: 30px;
     max-width: 270px;
     padding: 10px 6px 1px 0;
+    text-decoration: none;
+    color: white;
 }
 
 .menu {
