@@ -68,11 +68,13 @@ const RegisterPage = async () => {
     const breakLine = document.createElement("br");
     form.appendChild(breakLine);
 
-    const termsOfUseLabel = document.createElement("label");
-    termsOfUseLabel.setAttribute("id", "terms")
-    termsOfUseLabel.setAttribute("for", "termsOfUse");
-    termsOfUseLabel.textContent = "I accept the terms of use";
-    form.appendChild(termsOfUseLabel);
+    const termsOfUseLink = document.createElement("a");
+    termsOfUseLink.setAttribute("id", "terms");
+    termsOfUseLink.setAttribute("for", "termsOfUse");
+    termsOfUseLink.setAttribute("href", "https://en.help.roblox.com/hc/en-us/articles/115004647846-Roblox-Terms-of-Use%22");
+    termsOfUseLink.setAttribute("target", "_blank");
+    termsOfUseLink.textContent = "I accept the terms of use";
+    form.appendChild(termsOfUseLink);
 
     const termsOfUseInput = document.createElement("input");
     termsOfUseInput.setAttribute("type", "checkbox");
