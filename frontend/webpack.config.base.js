@@ -59,12 +59,8 @@ module.exports = {
             // default condition: a file with size less than 8kb will be treated as a inline
             // module type and resource module type otherwise
             {
-                test: /\.(png|jpg|gif|svg|mp3|mpe?g|glb)$/,
+                test: /\.(png|jpg|gif|svg|mp3|mpe?g|glb|woff|woff2)$/,
                 type: 'asset/resource',
-            },
-            {
-                test: /\.(woff|woff2)$/,
-                loader: 'url-loader?limit=100000'
             },
 
             /* automatically chooses between exporting a data URI and emitting a separate file.
