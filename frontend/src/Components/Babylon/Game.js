@@ -105,6 +105,7 @@ export default class Game {
     async setUpGame() {
         const scene = new Scene(this.engine);
         this.scene = scene;
+        this.scene.detachControl();
 
         this.environment = new Environment(scene);
 
@@ -174,10 +175,9 @@ export default class Game {
     }
 
     async goToGame() {
-        this.scene.detachControl();
         const { scene } = this;
 
-        this.ui = new Hud(scene);
+        this.ui = new Hud(scene, this.engine);
 
         this.input = new PlayerInput(scene, this.ui);
 
@@ -234,6 +234,7 @@ export default class Game {
 
             clearInterval(this.timerInterval);
 
+            this.scene.dispose();
             this.goToStart();
         });
 
@@ -247,7 +248,8 @@ export default class Game {
         quitBtn.onPointerDownObservable.add(() => {
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
-            this.scene.dispose();
+            this.engine.dispose();
+            this.engine = null;
             Navigate('/');
         });
 

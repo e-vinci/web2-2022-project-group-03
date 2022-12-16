@@ -246,7 +246,7 @@ export default class Player extends TransformNode {
     setupPlayerCamera() {
         this.camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), this.scene);
 
-        this.camera.setPosition(new Vector3(0, 30, -20));
+        this.camera.setPosition(new Vector3(-10, 5, ));
 
         this.camera.lowerRadiusLimit = 10;
         this.camera.upperRadiusLimit = 10;
