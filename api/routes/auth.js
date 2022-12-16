@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
 
 
     if (!checker.check(password)) {
-        return res.status(400).json({ error: 'Your password must be at least 8 characters and contains symbols and numbers !' });
+        return res.status(400).json({ error: 'Your password must be at least 8 characters !' });
     }
 
     const users = parse(jsonDbPath);
