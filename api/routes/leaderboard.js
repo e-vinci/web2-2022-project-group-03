@@ -6,6 +6,8 @@ const { parse, serialize } = require("../utils/json");
 const router = express.Router();
 const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
 
+const MAX_LEVEL = 2;
+
 /**
  * @returns the leaderboard sorted by time or an error if there is no time registered in the leaderboard
  */
@@ -14,7 +16,7 @@ router.post('/', (req, res) => {
 
     let newRepresentation = [];
     leaderboard.forEach((leaderboardElement) => {
-        if (leaderboardElement.levels.length === 2) {
+        if (leaderboardElement.levels.length === MAX_LEVEL) {
             leaderboardElement.levels.forEach((level) => {
                 let representationFound;
                 newRepresentation.forEach((element) => {
