@@ -349,10 +349,10 @@ export default class Game {
     async carAnim() {
         const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
         const car = result.meshes[0];
-        car.position = new Vector3(22.5, 3, -30);
+        car.position = new Vector3(24.2, 3, -30);
 
         const car2 = car.clone("car2");
-        car2.position = new Vector3(22.5, 3, 70);
+        car2.position = new Vector3(20.8, 3, 70);
         car2.rotation = new Vector3(0, Math.PI * 2, 0);
 
         const car3 = car.clone("car3");
@@ -360,8 +360,9 @@ export default class Game {
         car3.rotation = new Vector3(0, Math.PI / 2, 0);
 
         const car4 = car.clone("car4");
+        car4.position = new Vector3(-180,5.4,56.5);
         car4.rotation = new Vector3(0, Math.PI * 1.5, 0);
-        car4.position = new Vector3(-180,5.4,60);
+
 
         this.scene.onBeforeRenderObservable.add(() => {
             let step = 5;
