@@ -1,11 +1,9 @@
 const express = require('express');
 const path = require("node:path");
-
-const router = express.Router();
 const { authorize } = require('../utils/auth');
-
 const { parse, serialize } = require("../utils/json");
 
+const router = express.Router();
 const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
 
 /**

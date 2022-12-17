@@ -3,7 +3,6 @@ const path = require('node:path');
 const bcrypt = require('bcrypt');
 const { parse, serialize } = require('../utils/json');
 
-
 const jwtSecret = 'DamsLePlusBö!';
 
 const lifetimeJwt = 24 * 60 * 60 * 1000; // in ms : 24 * 60 * 60 * 1000 = 24h
@@ -14,11 +13,11 @@ const jsonDbPath = path.join(__dirname, '/../data/users.json');
 
 // Default user
 const defaultUsers = [
-  {
-    id: 1,
-    username: 'michele',
-    password: bcrypt.hashSync('michele', saltRounds),
-  },
+    {
+        id: 1,
+        username: 'michele',
+        password: bcrypt.hashSync('michele', saltRounds),
+    },
 ];
 
 /**
@@ -28,24 +27,24 @@ const defaultUsers = [
  * @returns The token of the user and the username, or undefined if login failed
  */
 async function login(username, password) {
-  const userFound = readOneUserFromUsername(username);
-  if (!userFound) return undefined;
+    const userFound = readOneUserFromUsername(username);
+    if (!userFound) return undefined;
 
-  const passwordMatch = await bcrypt.compare(password, userFound.password);
-  if (!passwordMatch) return undefined;
+    const passwordMatch = await bcrypt.compare(password, userFound.password);
+    if (!passwordMatch) return undefined;
 
-  const token = jwt.sign(
-    { username },
-    jwtSecret,
-    { expiresIn: lifetimeJwt },
-  );
+    const token = jwt.sign(
+        { username },
+        jwtSecret,
+        { expiresIn: lifetimeJwt },
+    );
 
-  const authenticatedUser = {
-    username,
-    token,
-  };
+    const authenticatedUser = {
+        username,
+        token,
+    };
 
-  return authenticatedUser;
+    return authenticatedUser;
 };
 
 /**
@@ -55,22 +54,22 @@ async function login(username, password) {
  * @returns The token of the new user and the username or undefined if the user already exists
  */
 async function register(username, password) {
-  const userFound = readOneUserFromUsername(username);
-  if (userFound) return undefined;
+    const userFound = readOneUserFromUsername(username);
+    if (userFound) return undefined;
 
-  await createOneUser(username, password);
+    await createOneUser(username, password);
 
-  const token = jwt.sign(
-    { username },
-    jwtSecret,
-    { expiresIn: lifetimeJwt },
-  );
-  const authenticatedUser = {
-    username,
-    token,
-  };
+    const token = jwt.sign(
+        { username },
+        jwtSecret,
+        { expiresIn: lifetimeJwt },
+    );
+    const authenticatedUser = {
+        username,
+        token,
+    };
 
-  return authenticatedUser;
+    return authenticatedUser;
 };
 
 /**
@@ -79,11 +78,11 @@ async function register(username, password) {
  * @returns The user or undefined if no user with the given username was found
  */
 function readOneUserFromUsername(username) {
-  const users = parse(jsonDbPath, defaultUsers);
-  const indexOfUserFound = users.findIndex((user) => user.username === username);
-  if (indexOfUserFound < 0) return undefined;
+    const users = parse(jsonDbPath, defaultUsers);
+    const indexOfUserFound = users.findIndex((user) => user.username === username);
+    if (indexOfUserFound < 0) return undefined;
 
-  return users[indexOfUserFound];
+    return users[indexOfUserFound];
 };
 
 /**
@@ -93,21 +92,21 @@ function readOneUserFromUsername(username) {
  * @returns The newly created user
  */
 async function createOneUser(username, password) {
-  const auth = parse(jsonDbPath, defaultUsers);
+    const auth = parse(jsonDbPath, defaultUsers);
 
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-  const createdUser = {
-    id: getNextId(),
-    username,
-    password: hashedPassword,
-  };
+    const createdUser = {
+        id: getNextId(),
+        username,
+        password: hashedPassword,
+    };
 
-  auth.push(createdUser);
+    auth.push(createdUser);
 
-  serialize(jsonDbPath, auth);
+    serialize(jsonDbPath, auth);
 
-  return createdUser;
+    return createdUser;
 }
 
 /**
@@ -115,16 +114,16 @@ async function createOneUser(username, password) {
  * @returns The next ID for a new user
  */
 function getNextId() {
-  const auth = parse(jsonDbPath, defaultUsers);
-  const lastIndex = auth?.length !== 0 ? auth.length - 1 : undefined;
-  if (lastIndex === undefined) return 1;
-  const lastId = auth[lastIndex]?.id;
-  const nextId = lastId + 1;
-  return nextId;
+    const auth = parse(jsonDbPath, defaultUsers);
+    const lastIndex = auth?.length !== 0 ? auth.length - 1 : undefined;
+    if (lastIndex === undefined) return 1;
+    const lastId = auth[lastIndex]?.id;
+    const nextId = lastId + 1;
+    return nextId;
 }
 
 module.exports = {
-  login,
-  register,
-  readOneUserFromUsername,
+    login,
+    register,
+    readOneUserFromUsername,
 };

@@ -1,13 +1,11 @@
-/* eslint-disable */
 const express = require('express');
-
-const router = express.Router();
 const path = require("node:path");
 const { authorize } = require('../utils/auth');
-
 const { parse, serialize } = require("../utils/json");
 
 const jsonDbPath = path.join(__dirname, '/../data/levels.json');
+
+const router = express.Router();
 
 /**
  * set the level of the specified user to the next level
@@ -55,15 +53,14 @@ router.post('/get', authorize, (req, res) => {
 
     if (found) {
         return res.status(200).json(found); // OK
-    } else {
-        const newLevel = {
-            username,
-            level: 1,
-        };
-        levels.push(newLevel);
-        serialize(jsonDbPath, levels);
-        return res.status(200).json(newLevel); // OK
     }
+    const newLevel = {
+        username,
+        level: 1,
+    };
+    levels.push(newLevel);
+    serialize(jsonDbPath, levels);
+    return res.status(200).json(newLevel); // OK
 });
 
 /**

@@ -1,14 +1,10 @@
 const express = require('express');
-
-const router = express.Router();
-
 const path = require("node:path");
-
 const Checker = require('password-checker');
-
 const { register, login } = require('../models/auth');
 const { parse } = require("../utils/json");
 
+const router = express.Router();
 const jsonDbPath = path.join(__dirname, '/../data/users.json');
 
 /**
