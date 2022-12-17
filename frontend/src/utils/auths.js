@@ -24,7 +24,16 @@ const setAuthenticatedUser = (authenticatedUser, rememberME) => {
     currentUser = authenticatedUser;
 };
 
-const isAuthenticated = () => currentUser !== undefined;
+const isAuthenticated = () => {
+    if (currentUser !== undefined && currentUser !== null) {
+        return true;
+    };
+
+    if (localStorage.getItem(STORE_NAME) !== null || sessionStorage.getItem(STORE_NAME) !== null) {
+        return true;
+    };
+    return false;
+}
 
 const clearAuthenticatedUser = () => {
     localStorage.removeItem(STORE_NAME);

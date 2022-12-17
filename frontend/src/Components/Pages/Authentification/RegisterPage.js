@@ -1,10 +1,15 @@
 import {clearPage} from "../../../utils/render";
-import {setAuthenticatedUser} from "../../../utils/auths";
+import {isAuthenticated , setAuthenticatedUser} from "../../../utils/auths";
 import Navigate from "../../Router/Navigate";
 import showErrorMessage from "../../../utils/error";
 
 const RegisterPage = async () => {
     clearPage();
+    
+    if (await isAuthenticated()){
+        Navigate("/");
+        return;
+    }
 
     const main = document.querySelector("main");
 
