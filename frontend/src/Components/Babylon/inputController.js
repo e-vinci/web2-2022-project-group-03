@@ -22,6 +22,12 @@ export default class PlayerInput {
 
     isFirstPerson = false;
 
+    /**
+     * Creates triggers for when key is up and down
+     * @param {Scene} scene The current scene
+     * @param {Hud} ui The current scene
+     * @returns The loaded mesh
+     */
     constructor(scene, ui) {
         this.scene = scene;
         this.ui = ui;
@@ -56,6 +62,9 @@ export default class PlayerInput {
         });
     }
 
+    /**
+     * Launches methods when the appropriate key is pressed
+     */
     updateFromKeyboard() {
         if (this.inputMap.z && !this.ui.gamePaused) {
             this.vertical = Scalar.Lerp(this.vertical, 1, 0.2);

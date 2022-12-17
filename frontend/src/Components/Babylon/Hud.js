@@ -19,6 +19,11 @@ export default class Hud {
 
     pauseMenu;
 
+    /**
+     * Creates a fullsceen UI and adds the ingame timer
+     * @param {Scene} scene The current scene
+     * @param {Engine} engine The current engine
+     */
     constructor(scene, engine) {
         this.scene = scene;
         this.engine = engine;
@@ -50,6 +55,9 @@ export default class Hud {
         this.createPauseMenu();
     }
 
+    /**
+     * Updates the ingame time
+     */
     updateHud() {
         if (!this.gamePaused && this.time !== undefined) {
             this.time += 1;
@@ -57,10 +65,16 @@ export default class Hud {
         }
     }
 
+    /**
+     * Starts the ingame time
+     */
     startTimer() {
         this.time = 0;
     }
 
+    /**
+     * Creates the pause menu
+     */
     createPauseMenu() {
         this.gamePaused = false;
 

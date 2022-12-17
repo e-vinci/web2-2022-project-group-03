@@ -59,6 +59,15 @@ export default class Player extends TransformNode {
 
     moveDirection = new Vector3();
 
+    /**
+     * setup camera and animations
+     * places the camera
+     * @param {Mesh} assets The player mesh
+     * @param {Scene} scene The current scene
+     * @param {PlayerInput} input The player inputs
+     * @param {HTMLCanvasElement} canvas The current canvas
+     * @param {Hud} ui The current ingame ui
+     */
     constructor(assets, scene, input, canvas, ui) {
         super("player", scene);
         [,this.idle, this.jump, this.land, this.run] = assets.animationGroups;
@@ -79,6 +88,9 @@ export default class Player extends TransformNode {
         this.camera.targetScreenOffset = new Vector2(0, -3);
     }
 
+    /**
+     * Gets the inputs and corrects them so that forward is where the camera looks
+     */
     updateFromControls() {
         this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
         this.moveDirection = Vector3.Zero();
@@ -103,6 +115,9 @@ export default class Player extends TransformNode {
         }
     }
 
+    /**
+     * Setups all animations
+     */
     setUpAnimations() {
         this.scene.stopAllAnimations();
         this.run.loopAnimation = true;
@@ -112,6 +127,9 @@ export default class Player extends TransformNode {
         this.prevAnim = this.land;
     }
 
+    /**
+     * Starts and stops the animations
+     */
     animatePlayer() {
         if (!this.ui.gamePaused) {
             if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
@@ -134,6 +152,10 @@ export default class Player extends TransformNode {
         }
     }
 
+    /**
+     * sending raycasts to detect the ground
+     * @returns coordinates of the ground
+     */
     floorRaycast(offsetx, offsetz, raycastlen) {
         const raycastFloorPos = new Vector3(this.mesh.position.x + offsetx, this.mesh.position.y + 0.5, this.mesh.position.z + offsetz);
         const ray = new Ray(raycastFloorPos, Vector3.Up().scale(-1), raycastlen);
@@ -152,6 +174,10 @@ export default class Player extends TransformNode {
         return !this.floorRaycast(0, 0, 0.6).equals(Vector3.Zero());
     }
 
+    /**
+     * sends 4 raycasts to the groud to detect when we are on a slope
+     * @returns boolean
+     */
     checkSlope() {
         const predicate = (mesh) => mesh.isPickable && mesh.isEnabled();
 
@@ -185,6 +211,10 @@ export default class Player extends TransformNode {
         return false;
     }
 
+    /**
+     * Calculates gravity and player speed using delta time
+     * sets flags to know when the player is allowed to jump
+     */
     updateGroundDetection() {
         this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
 
@@ -243,6 +273,11 @@ export default class Player extends TransformNode {
         return this.camera;
     }
 
+    /**
+     * Creates a camera and limits the camera movements
+     * Adds collisions to the camera
+     * @returns the camera
+     */
     setupPlayerCamera() {
         this.camera = new ArcRotateCamera("Camera", 0, 0, 0, new Vector3(0, 0, 0), this.scene);
 
@@ -261,6 +296,10 @@ export default class Player extends TransformNode {
         return this.camera;
     }
 
+    /**
+     * sets the camera to be in first person view
+     * @param {ArcRotateCamera} camera The current camera
+     */
     static enableFirstPersonView(camera) {
         const currentCam = camera;
         currentCam.lowerRadiusLimit = 1;
@@ -270,6 +309,10 @@ export default class Player extends TransformNode {
         currentCam.radius = 0;
     }
 
+    /**
+     * sets the camera back to normal
+     * @param {ArcRotateCamera} camera The current camera
+     */
     static DisablefirstPersonView(camera) {
         const currentCam = camera;
         currentCam.lowerRadiusLimit = 4;

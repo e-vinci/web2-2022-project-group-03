@@ -4,10 +4,18 @@ import damien from '../../models/seinecourt1.glb';
 export default class Environment {
     scene;
 
+    /**
+     * Gets the scene
+     * @param {Scene} scene the current scene
+     */
     constructor(scene) {
         this.scene = scene;
     }
 
+    /**
+     * Loads the level and sets appropriate properties to meshes
+     * @param {int} level The current level of the user
+     */
     async load(level) {
         let assets
         switch (level) {
@@ -63,6 +71,10 @@ export default class Environment {
         });
     }
 
+    /**
+     * loads the mesh for the first level
+     * @returns the environment and all the meshes
+     */
     static async loadAssetLevel1() {
         const result = await SceneLoader.ImportMeshAsync(null, damien);
         const env = result.meshes[0];
@@ -74,6 +86,10 @@ export default class Environment {
         }
     }
 
+    /**
+     * loads the mesh for the second level
+     * @returns the environment and all the meshes
+     */
     static async loadAssetLevel2() {
         const result = await SceneLoader.ImportMeshAsync(null, damien);
         const env = result.meshes[0];

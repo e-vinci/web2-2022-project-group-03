@@ -13,17 +13,17 @@ import {
     SceneLoader,
     Vector3
 } from "@babylonjs/core";
-import {AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, TextBlock} from "@babylonjs/gui";
+import { AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, TextBlock } from "@babylonjs/gui";
 
 import player from '../../models/playerbabylontmp.glb';
-import mcqueen from '../../models/mcqueen.glb'
+import mcqueen from '../../models/mcqueen.glb';
 
 import Environment from "./Environment";
 import Player from "./Player";
 import PlayerInput from "./inputController";
 import Hud from "./Hud";
 import Navigate from "../Router/Navigate";
-import {getAuthenticatedUser} from "../../utils/auths";
+import { getAuthenticatedUser } from "../../utils/auths";
 import pauseMenuImage from "../../img/pauseMenuImage.png";
 
 export default class Game {
@@ -47,24 +47,21 @@ export default class Game {
 
     timerInterval;
 
+    /**
+     * Creates the canvas and engine and start the main method
+     */
     constructor() {
         this.canvas = this.createCanvas();
 
         this.engine = new Engine(this.canvas, true);
 
-        window.addEventListener("keydown", (ev) => {
-            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.keyCode === 73) {
-                if (this.scene.debugLayer.isVisible()) {
-                    this.scene.debugLayer.hide();
-                } else {
-                    this.scene.debugLayer.show();
-                }
-            }
-        });
-
         this.main();
     }
 
+    /**
+     * Creates the canvas
+     * @returns the canvas
+     */
     createCanvas() {
         const canvas = document.createElement("canvas");
         canvas.id = "renderCanvas"
@@ -77,6 +74,9 @@ export default class Game {
         return this.canvas;
     }
 
+    /**
+     * Starts the game, renders the game, and adds an event listner to resize the game
+     */
     async main() {
         await this.goToStart();
 
@@ -90,6 +90,9 @@ export default class Game {
         });
     }
 
+    /**
+     * Displays the loading UI, setups the game and goes to the game
+     */
     async goToStart() {
         this.engine.displayLoadingUI();
 
@@ -97,6 +100,11 @@ export default class Game {
         await this.goToGame();
     }
 
+    /**
+     * Creates the scene and detachs control to avoid inputs during loading
+     * Creates a new environment, gets the current level of the user and load the level
+     * Loads the character mesh
+     */
     async setUpGame() {
         const scene = new Scene(this.engine);
         this.scene = scene;
@@ -119,6 +127,11 @@ export default class Game {
         await this.loadCharacterAssets(scene);
     }
 
+    /**
+     * Creates a hitbox, import the player mesh and merges the two
+     * @param {Scene} scene The current scene
+     * @returns The loaded mesh
+     */
     async loadCharacterAssets(scene){
         async function loadCharacter(){
             const outer = MeshBuilder.CreateBox("outer", { width: 1, depth: 1, height: 2 }, scene);
@@ -127,9 +140,7 @@ export default class Game {
             outer.checkCollisions = true;
 
             outer.bakeTransformIntoVertices(Matrix.Translation(0, 1, 0))
-
             outer.ellipsoidOffset = new Vector3(0, 1, 0);
-
             outer.rotationQuaternion = new Quaternion(0, 1, 0, 0);
 
             const result = await SceneLoader.ImportMeshAsync(null, player);
@@ -148,13 +159,16 @@ export default class Game {
                 mesh: outer,
                 animationGroups: result.animationGroups
             }
-
         }
         this.assets = await loadCharacter()
 
         return this.assets;
     }
 
+    /**
+     * Initializes the game, creates light, the player and a camera
+     * @param {Scene} scene The current scene
+     */
     async initializeGameAsync(scene) {
         // eslint-disable-next-line
         const light0 = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), scene);
@@ -164,12 +178,18 @@ export default class Game {
         const camera = this.player.activatePlayerCamera();
     }
 
+    /**
+     * Creates the ingame UI and inputs
+     * Initializes the game, places the mesh and starts the ingame timer
+     * Starts the car animations
+     * Hides the loading ui, gives back control and set state to GAME
+     */
     async goToGame() {
         const { scene } = this;
 
         this.ui = new Hud(scene, this.engine);
 
-        this.input = new PlayerInput(scene, this.ui, this.player);
+        this.input = new PlayerInput(scene, this.ui);
 
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
@@ -183,7 +203,7 @@ export default class Game {
 
         await this.carAnim();
 
-        this.createEndLevelMenu();
+        this.createEndMenu();
 
         this.state = 'GAME';
         this.scene = scene;
@@ -191,7 +211,11 @@ export default class Game {
         this.scene.attachControl();
     }
 
-    createEndLevelMenu() {
+    /**
+     * Creates the menus for end of level and end of game
+     * Creates a trigger for the end of level
+     */
+    createEndMenu() {
         const endLevelUI = AdvancedDynamicTexture.CreateFullscreenUI("EndUI");
         endLevelUI.idealHeight = 720;
 
@@ -274,6 +298,8 @@ export default class Game {
                 },
                 async () => {
 
+                    this.ui.gamePaused = true;
+
                     const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
                         method: "POST",
                         headers: {
@@ -287,20 +313,18 @@ export default class Game {
                     if (level < 2) {
                         endLevelUI.addControl(endLevelMenu);
                         endLevelMenu.isVisible = true;
-                        this.ui.gamePaused = true;
+
+                        await fetch(`${process.env.API_BASE_URL}/users/set`, {
+                            method: "POST",
+                            headers: {
+                                "Content-type": "application/json",
+                                Authorization: getAuthenticatedUser().token
+                            }
+                        });
                     } else {
                         endLevelUI.addControl(endGameMenu);
                         endGameMenu.isVisible = true;
-                        this.ui.gamePaused = true;
                     }
-
-                    await fetch(`${process.env.API_BASE_URL}/users/set`, {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json",
-                            Authorization: getAuthenticatedUser().token
-                        }
-                    });
 
                     await fetch(`${process.env.API_BASE_URL}/leaderboard/add`, {
                         method: "POST",
@@ -319,14 +343,25 @@ export default class Game {
         );
     }
 
+    /**
+     * Creates multiple cars and start their animations
+     */
     async carAnim() {
         const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
         const car = result.meshes[0];
         car.position = new Vector3(22.5, 3, -30);
 
-        const result2 = await SceneLoader.ImportMeshAsync(null, mcqueen);
-        const car2 = result2.meshes[0];
+        const car2 = car.clone("car2");
         car2.position = new Vector3(22.5, 3, 70);
+        car2.rotation = new Vector3(0, Math.PI * 2, 0);
+
+        const car3 = car.clone("car3");
+        car3.position = new Vector3(10, 5.4, 60);
+        car3.rotation = new Vector3(0, Math.PI / 2, 0);
+
+        const car4 = car.clone("car4");
+        car4.rotation = new Vector3(0, Math.PI * 1.5, 0);
+        car4.position = new Vector3(-180,5.4,60);
 
         this.scene.onBeforeRenderObservable.add(() => {
             let step = 5;
@@ -337,9 +372,15 @@ export default class Game {
                 car.position = new Vector3(22.5, 3, -30);
             if (Math.floor(car2.position.z) === -25)
                 car2.position = new Vector3(22.5, 3, 70);
+            if (Math.floor(car3.position.x) === -80)
+                car3.position = new Vector3(10, 5.4, 60);
+            if (Math.floor(car4.position.x) === 22)
+                car4.position = new Vector3(-180,5.4,60);
 
             car.movePOV(0, 0, step);
-            car2.movePOV(0,0,-step);
+            car2.movePOV(0,0, step);
+            car3.movePOV(0,0, step);
+            car4.movePOV(0,0, step);
         });
     }
 }

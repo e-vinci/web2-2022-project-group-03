@@ -6,10 +6,6 @@ import {getAuthenticatedUser, isAuthenticated} from "../../../utils/auths";
 const HomePage = () => {
     clearPage();
 
-    if (navigator.userAgent.indexOf("Firefox") === -1) {
-        alert('Please use Firefox for a better experience');
-    }
-
     const main = document.querySelector("main");
 
     const sectionImage = document.createElement("section");
