@@ -4,7 +4,8 @@ import {
     Quaternion,
     Ray,
     ActionManager,
-    TransformNode, Vector2
+    TransformNode,
+    Vector2
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -40,7 +41,7 @@ export default class Player extends TransformNode {
 
     static JUMP_FORCE = 0.4;
 
-    static GRAVITY = -1.3;
+    static GRAVITY = -1.8;
 
     deltaTime;
 

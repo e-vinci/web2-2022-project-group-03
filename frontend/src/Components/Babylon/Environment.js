@@ -1,4 +1,4 @@
-import { SceneLoader } from "@babylonjs/core";
+import {Color3, PointLight, SceneLoader, StandardMaterial, Vector3} from "@babylonjs/core";
 import damien from '../../models/seinecourt1.glb';
 
 export default class Environment {
@@ -8,7 +8,7 @@ export default class Environment {
         this.scene = scene;
     }
 
-    static async load(level) {
+    async load(level) {
         let assets
         switch (level) {
             case 1:
@@ -26,7 +26,6 @@ export default class Environment {
             const mesh = m;
             mesh.checkCollisions = true;
 
-
             if (mesh.name.includes("stairs") || mesh.name.includes("fin")) {
                 mesh.checkCollisions = false;
                 mesh.isPickable = false;
@@ -42,6 +41,19 @@ export default class Environment {
                 || mesh.name.includes("bark")
                 || mesh.name.includes("sky")) {
                 mesh.checkCollisions = false;
+            }
+
+            if (mesh.name.includes("bulb")) {
+                const whiteMat = new StandardMaterial("whiteMat");
+                whiteMat.emissiveColor = Color3.White();
+                whiteMat.alpha = 0.8;
+
+                const light = new PointLight("sparklight", new Vector3(0, -1, 0), this.scene);
+                light.intensity = 35;
+                light.diffuse = Color3.White();
+                mesh.material = whiteMat;
+                light.parent = mesh;
+                console.log("r")
             }
         });
     }
