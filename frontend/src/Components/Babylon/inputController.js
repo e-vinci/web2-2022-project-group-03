@@ -1,4 +1,5 @@
-import {ActionManager, ExecuteCodeAction, Scalar} from "@babylonjs/core";
+import { ActionManager, ExecuteCodeAction, Scalar } from "@babylonjs/core";
+import Player from "./Player";
 
 export default class PlayerInput {
     inputMap;
@@ -17,6 +18,16 @@ export default class PlayerInput {
 
     scene;
 
+    pauseMenuVisible = false;
+
+    isFirstPerson = false;
+
+    /**
+     * Creates triggers for when key is up and down
+     * @param {Scene} scene The current scene
+     * @param {Hud} ui The current scene
+     * @returns The loaded mesh
+     */
     constructor(scene, ui) {
         this.scene = scene;
         this.ui = ui;
@@ -28,6 +39,21 @@ export default class PlayerInput {
             this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type === "keydown";
         }));
         scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (evt) => {
+
+            if (evt.sourceEvent.key === "Escape" && this.pauseMenuVisible) {
+                this.pauseMenuVisible = false;
+                this.ui.gamePaused = false;
+                this.ui.pauseMenu.isVisible = false;
+                this.ui.playerUI.removeControl(this.ui.pauseMenu);
+            } else if (evt.sourceEvent.key === "Escape") {
+                this.pauseMenuVisible = true;
+            }
+
+            if (evt.sourceEvent.key === "c" && this.isFirstPerson) {
+                this.isFirstPerson = false;
+                Player.DisablefirstPersonView(this.scene.getCameraByName("Camera"));
+            } else if (evt.sourceEvent.key === "c") this.isFirstPerson = true;
+
             this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type === "keydown";
         }));
 
@@ -36,6 +62,9 @@ export default class PlayerInput {
         });
     }
 
+    /**
+     * Launches methods when the appropriate key is pressed
+     */
     updateFromKeyboard() {
         if (this.inputMap.z && !this.ui.gamePaused) {
             this.vertical = Scalar.Lerp(this.vertical, 1, 0.2);
@@ -68,10 +97,17 @@ export default class PlayerInput {
             this.jumpKeyDown = false;
         }
 
-        if (this.inputMap.Escape) {
+        if (this.inputMap.Escape && !this.ui.gamePaused) {
             this.ui.gamePaused = true;
             this.ui.pauseMenu.isVisible = true;
             this.ui.playerUI.addControl(this.ui.pauseMenu);
         }
+
+        if (this.inputMap.c && !this.ui.gamePaused) {
+            const camera = this.scene.getCameraByName("Camera");
+
+            Player.enableFirstPersonView(camera);
+        }
+
     }
 }

@@ -61,7 +61,7 @@ const HomePage = () => {
         const resumeGameButton = document.createElement('button');
         resumeGameButton.classList.add('nav-button');
         resumeGameButton.innerText = 'RESUME';
-        resumeGameButton.addEventListener('click', async () => {
+        resumeGameButton.addEventListener('click', () => {
             Navigate(`/game`);
         });
         menu.appendChild(resumeGameButton);

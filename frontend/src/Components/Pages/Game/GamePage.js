@@ -1,12 +1,17 @@
 import Game from '../../Babylon/Game';
 
 import { clearPage } from "../../../utils/render";
+import {isAuthenticated} from "../../../utils/auths";
+import Navigate from "../../Router/Navigate";
 
 const GamePage = async () => {
     clearPage();
-    // eslint-disable-next-line no-new
-    await new Game();
-    document.querySelector("canvas").focus();
+    if (isAuthenticated()) {
+        await new Game();
+        document.querySelector("canvas").focus();
+    } else {
+        Navigate('/login');
+    }
 }
 
 export default GamePage;

@@ -4,7 +4,8 @@ import {
     Quaternion,
     Ray,
     ActionManager,
-    TransformNode, Vector2
+    TransformNode,
+    Vector2
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -38,9 +39,9 @@ export default class Player extends TransformNode {
 
     static PLAYER_SPEED = 10;
 
-    static JUMP_FORCE = 0.4;
+    static JUMP_FORCE = 0.5;
 
-    static GRAVITY = -1.3;
+    static GRAVITY = -1.8;
 
     deltaTime;
 
@@ -58,6 +59,15 @@ export default class Player extends TransformNode {
 
     moveDirection = new Vector3();
 
+    /**
+     * setup camera and animations
+     * places the camera
+     * @param {Mesh} assets The player mesh
+     * @param {Scene} scene The current scene
+     * @param {PlayerInput} input The player inputs
+     * @param {HTMLCanvasElement} canvas The current canvas
+     * @param {Hud} ui The current ingame ui
+     */
     constructor(assets, scene, input, canvas, ui) {
         super("player", scene);
         [,this.idle, this.jump, this.land, this.run] = assets.animationGroups;
@@ -78,9 +88,11 @@ export default class Player extends TransformNode {
         this.camera.targetScreenOffset = new Vector2(0, -3);
     }
 
+    /**
+     * Gets the inputs and corrects them so that forward is where the camera looks
+     */
     updateFromControls() {
         this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
-
         this.moveDirection = Vector3.Zero();
 
         this.h = this.input.horizontal;
@@ -103,6 +115,9 @@ export default class Player extends TransformNode {
         }
     }
 
+    /**
+     * Setups all animations
+     */
     setUpAnimations() {
         this.scene.stopAllAnimations();
         this.run.loopAnimation = true;
@@ -112,6 +127,9 @@ export default class Player extends TransformNode {
         this.prevAnim = this.land;
     }
 
+    /**
+     * Starts and stops the animations
+     */
     animatePlayer() {
         if (!this.ui.gamePaused) {
             if (!this.isFalling && !this.jumped && (this.input.inputMap.z || this.input.inputMap.s || this.input.inputMap.q || this.input.inputMap.d)) {
@@ -134,6 +152,10 @@ export default class Player extends TransformNode {
         }
     }
 
+    /**
+     * sending raycasts to detect the ground
+     * @returns coordinates of the ground
+     */
     floorRaycast(offsetx, offsetz, raycastlen) {
         const raycastFloorPos = new Vector3(this.mesh.position.x + offsetx, this.mesh.position.y + 0.5, this.mesh.position.z + offsetz);
         const ray = new Ray(raycastFloorPos, Vector3.Up().scale(-1), raycastlen);
@@ -152,6 +174,10 @@ export default class Player extends TransformNode {
         return !this.floorRaycast(0, 0, 0.6).equals(Vector3.Zero());
     }
 
+    /**
+     * sends 4 raycasts to the groud to detect when we are on a slope
+     * @returns boolean
+     */
     checkSlope() {
         const predicate = (mesh) => mesh.isPickable && mesh.isEnabled();
 
@@ -185,6 +211,10 @@ export default class Player extends TransformNode {
         return false;
     }
 
+    /**
+     * Calculates gravity and player speed using delta time
+     * sets flags to know when the player is allowed to jump
+     */
     updateGroundDetection() {
         this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
 
@@ -194,7 +224,7 @@ export default class Player extends TransformNode {
                 this.jumpCount = 1;
                 this.grounded = true;
             } else {
-                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(0.025 * Player.GRAVITY));
+                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(Player.GRAVITY * this.deltaTime));
                 this.grounded = false;
             }
         }
@@ -243,13 +273,18 @@ export default class Player extends TransformNode {
         return this.camera;
     }
 
+    /**
+     * Creates a camera and limits the camera movements
+     * Adds collisions to the camera
+     * @returns the camera
+     */
     setupPlayerCamera() {
-        this.camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), this.scene);
+        this.camera = new ArcRotateCamera("Camera", 0, 0, 0, new Vector3(0, 0, 0), this.scene);
 
-        this.camera.setPosition(new Vector3(0, 30, -20));
+        this.camera.setPosition(new Vector3(-10, 5, 0));
 
-        this.camera.lowerRadiusLimit = 10;
-        this.camera.upperRadiusLimit = 10;
+        this.camera.lowerRadiusLimit = 4;
+        this.camera.upperRadiusLimit = 8;
 
         this.camera.checkCollisions = true;
         this.camera.collisionRadius = new Vector3(0.1, 0.1, 0.1);
@@ -259,5 +294,31 @@ export default class Player extends TransformNode {
         this.camera.inputs.attached.keyboard.detachControl();
 
         return this.camera;
+    }
+
+    /**
+     * sets the camera to be in first person view
+     * @param {ArcRotateCamera} camera The current camera
+     */
+    static enableFirstPersonView(camera) {
+        const currentCam = camera;
+        currentCam.lowerRadiusLimit = 1;
+        currentCam.upperRadiusLimit = 1;
+        currentCam.checkCollisions = false;
+        currentCam.targetScreenOffset = new Vector2(0, -2.4);
+        currentCam.radius = 0;
+    }
+
+    /**
+     * sets the camera back to normal
+     * @param {ArcRotateCamera} camera The current camera
+     */
+    static DisablefirstPersonView(camera) {
+        const currentCam = camera;
+        currentCam.lowerRadiusLimit = 4;
+        currentCam.upperRadiusLimit = 8;
+        currentCam.checkCollisions = true;
+        currentCam.targetScreenOffset = new Vector2(0, -3);
+        currentCam.radius = 8;
     }
 }
