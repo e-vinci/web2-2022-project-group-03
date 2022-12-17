@@ -5,6 +5,8 @@ const cors = require('cors');
 
 const corsOptions = {
     origin: ['http://localhost:8080', 'https://e-vinci.github.io'],
+    methods: ['POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }
 
 const authRouter = require('./routes/auth');
