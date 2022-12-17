@@ -158,7 +158,6 @@ export default class Game {
     async initializeGameAsync(scene) {
         // eslint-disable-next-line
         const light0 = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), scene);
-        light0.intensity = 0.2;
 
         this.player = new Player(this.assets, scene, this.input, this.canvas, this.ui);
         // eslint-disable-next-line
@@ -342,6 +341,5 @@ export default class Game {
             car.movePOV(0, 0, step);
             car2.movePOV(0,0,-step);
         });
-
     }
 }

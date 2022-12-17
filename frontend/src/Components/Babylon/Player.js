@@ -39,7 +39,7 @@ export default class Player extends TransformNode {
 
     static PLAYER_SPEED = 10;
 
-    static JUMP_FORCE = 0.4;
+    static JUMP_FORCE = 0.5;
 
     static GRAVITY = -1.8;
 

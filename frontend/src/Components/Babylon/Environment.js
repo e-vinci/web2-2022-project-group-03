@@ -26,9 +26,15 @@ export default class Environment {
             const mesh = m;
             mesh.checkCollisions = true;
 
-            if (mesh.name.includes("stairs") || mesh.name.includes("fin")) {
+            if (mesh.name.includes("stairs")) {
                 mesh.checkCollisions = false;
                 mesh.isPickable = false;
+            }
+
+            if (mesh.name.includes("fin")) {
+                mesh.checkCollisions = false;
+                mesh.isPickable = false;
+                mesh.isVisible = false;
             }
 
             if (mesh.name.includes("ramp") || mesh.name.includes("MUR")) {
