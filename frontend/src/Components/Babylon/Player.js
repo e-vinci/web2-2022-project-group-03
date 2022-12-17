@@ -194,7 +194,7 @@ export default class Player extends TransformNode {
                 this.jumpCount = 1;
                 this.grounded = true;
             } else {
-                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(0.025 * Player.GRAVITY));
+                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(Player.GRAVITY * this.deltaTime));
                 this.grounded = false;
             }
         }
@@ -262,18 +262,20 @@ export default class Player extends TransformNode {
     }
 
     static enableFirstPersonView(camera) {
-        const currentCam = camera
+        const currentCam = camera;
         currentCam.lowerRadiusLimit = 1;
         currentCam.upperRadiusLimit = 1;
         currentCam.checkCollisions = false;
+        currentCam.targetScreenOffset = new Vector2(0, -2.4);
         currentCam.radius = 0;
     }
 
     static DisablefirstPersonView(camera) {
-        const currentCam = camera
+        const currentCam = camera;
         currentCam.lowerRadiusLimit = 4;
         currentCam.upperRadiusLimit = 8;
         currentCam.checkCollisions = true;
+        currentCam.targetScreenOffset = new Vector2(0, -3);
         currentCam.radius = 8;
     }
 }
