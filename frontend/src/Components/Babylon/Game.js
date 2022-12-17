@@ -3,13 +3,11 @@ import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF";
 import {
     ActionManager,
-    Color3,
     Engine,
     ExecuteCodeAction,
     HemisphericLight,
     Matrix,
     MeshBuilder,
-    PointLight,
     Quaternion,
     Scene,
     SceneLoader,
@@ -94,17 +92,15 @@ export default class Game {
 
     async goToStart() {
         this.engine.displayLoadingUI();
-        // eslint-disable-next-line
-        let finishedLoading = false;
-        await this.setUpGame().then(() => {
-            this.goToGame();
-            finishedLoading = true;
-        });
+
+        await this.setUpGame()
+        await this.goToGame();
     }
 
     async setUpGame() {
         const scene = new Scene(this.engine);
         this.scene = scene;
+        this.scene.detachControl();
 
         this.environment = new Environment(scene);
 
@@ -118,7 +114,7 @@ export default class Game {
 
         const result = await response.json();
 
-        await Environment.load(parseInt(result.level, 10) || 1);
+        await this.environment.load(parseInt(result.level, 10) || 1);
 
         await this.loadCharacterAssets(scene);
     }
@@ -139,7 +135,7 @@ export default class Game {
             const result = await SceneLoader.ImportMeshAsync(null, player);
 
             const body = result.meshes[0];
-            body.scaling = new Vector3(0.7, 0.7, -0.7);
+            body.scaling = new Vector3(0.6, 0.6, -0.6);
             body.parent = outer;
             body.isPickable = false;
 
@@ -163,23 +159,17 @@ export default class Game {
         // eslint-disable-next-line
         const light0 = new HemisphericLight("HemiLight", new Vector3(0, 1, 0), scene);
 
-        const light = new PointLight("sparklight", new Vector3(0, -1, 0), scene);
-        light.diffuse = new Color3(0.08627450980392157, 0.10980392156862745, 0.15294117647058825);
-        light.intensity = 35;
-        light.radius = 1;
-
         this.player = new Player(this.assets, scene, this.input, this.canvas, this.ui);
         // eslint-disable-next-line
         const camera = this.player.activatePlayerCamera();
     }
 
     async goToGame() {
-        this.scene.detachControl();
         const { scene } = this;
 
-        this.ui = new Hud(scene);
+        this.ui = new Hud(scene, this.engine);
 
-        this.input = new PlayerInput(scene, this.ui);
+        this.input = new PlayerInput(scene, this.ui, this.player);
 
         await this.initializeGameAsync(scene);
         await scene.whenReadyAsync();
@@ -191,7 +181,7 @@ export default class Game {
             this.ui.updateHud();
         }, 1000);
 
-        await Game.carAnim();
+        await this.carAnim();
 
         this.createEndLevelMenu();
 
@@ -234,6 +224,7 @@ export default class Game {
 
             clearInterval(this.timerInterval);
 
+            this.scene.dispose();
             this.goToStart();
         });
 
@@ -247,7 +238,8 @@ export default class Game {
         quitBtn.onPointerDownObservable.add(() => {
             endLevelMenu.isVisible = false;
             this.ui.gamePaused = false;
-            this.scene.dispose();
+            this.engine.dispose();
+            this.engine = null;
             Navigate('/');
         });
 
@@ -327,41 +319,27 @@ export default class Game {
         );
     }
 
-    static async carAnim() {
+    async carAnim() {
         const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
         const car = result.meshes[0];
         car.position = new Vector3(22.5, 3, -30);
 
-        /*
-        const slide = function (turn, dist) { //after covering dist apply turn
-            this.turn = turn;
-            this.dist = dist;
-        }
+        const result2 = await SceneLoader.ImportMeshAsync(null, mcqueen);
+        const car2 = result2.meshes[0];
+        car2.position = new Vector3(22.5, 3, 70);
 
-        const track = [];
-        track.push(new slide(Math.PI / 2, 4));
-        track.push(new slide(3 * Math.PI / 4, 8));
-        track.push(new slide(3 * Math.PI / 4, 8 + 4 * Math.sqrt(2)));
+        this.scene.onBeforeRenderObservable.add(() => {
+            let step = 5;
+            const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+            step *= deltaTime;
 
-        let distance = 0;
-        let step = 0.05;
-        let p = 0;
+            if (Math.floor(car.position.z) === 90)
+                car.position = new Vector3(22.5, 3, -30);
+            if (Math.floor(car2.position.z) === -25)
+                car2.position = new Vector3(22.5, 3, 70);
 
-        scene.onBeforeRenderObservable.add(() => {
-            sphere.movePOV(0, 0, step);
-            distance += step;
-
-            if (distance > track[p].dist) {
-                sphere.rotate(BABYLON.Axis.Y, track[p].turn, BABYLON.Space.LOCAL);
-                p +=1;
-                p %= track.length;
-                if (p === 0) {
-                    distance = 0;
-                    sphere.position = new BABYLON.Vector3(2, 0, 2); //reset to initial conditions
-                    sphere.rotation = BABYLON.Vector3.Zero();//prevents error accumulation
-                }
-            }
+            car.movePOV(0, 0, step);
+            car2.movePOV(0,0,-step);
         });
-        */
     }
 }

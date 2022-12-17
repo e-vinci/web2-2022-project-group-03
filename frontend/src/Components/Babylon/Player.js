@@ -4,7 +4,8 @@ import {
     Quaternion,
     Ray,
     ActionManager,
-    TransformNode, Vector2
+    TransformNode,
+    Vector2
 } from "@babylonjs/core";
 
 export default class Player extends TransformNode {
@@ -38,9 +39,9 @@ export default class Player extends TransformNode {
 
     static PLAYER_SPEED = 10;
 
-    static JUMP_FORCE = 0.4;
+    static JUMP_FORCE = 0.5;
 
-    static GRAVITY = -1.3;
+    static GRAVITY = -1.8;
 
     deltaTime;
 
@@ -80,7 +81,6 @@ export default class Player extends TransformNode {
 
     updateFromControls() {
         this.deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
-
         this.moveDirection = Vector3.Zero();
 
         this.h = this.input.horizontal;
@@ -194,7 +194,7 @@ export default class Player extends TransformNode {
                 this.jumpCount = 1;
                 this.grounded = true;
             } else {
-                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(0.025 * Player.GRAVITY));
+                this.gravity = this.gravity.addInPlace(Vector3.Up().scale(Player.GRAVITY * this.deltaTime));
                 this.grounded = false;
             }
         }
@@ -244,12 +244,12 @@ export default class Player extends TransformNode {
     }
 
     setupPlayerCamera() {
-        this.camera = new ArcRotateCamera("Camera", 0, 0, 10, new Vector3(0, 0, 0), this.scene);
+        this.camera = new ArcRotateCamera("Camera", 0, 0, 0, new Vector3(0, 0, 0), this.scene);
 
-        this.camera.setPosition(new Vector3(0, 30, -20));
+        this.camera.setPosition(new Vector3(-10, 5, 0));
 
-        this.camera.lowerRadiusLimit = 10;
-        this.camera.upperRadiusLimit = 10;
+        this.camera.lowerRadiusLimit = 4;
+        this.camera.upperRadiusLimit = 8;
 
         this.camera.checkCollisions = true;
         this.camera.collisionRadius = new Vector3(0.1, 0.1, 0.1);
@@ -259,5 +259,23 @@ export default class Player extends TransformNode {
         this.camera.inputs.attached.keyboard.detachControl();
 
         return this.camera;
+    }
+
+    static enableFirstPersonView(camera) {
+        const currentCam = camera;
+        currentCam.lowerRadiusLimit = 1;
+        currentCam.upperRadiusLimit = 1;
+        currentCam.checkCollisions = false;
+        currentCam.targetScreenOffset = new Vector2(0, -2.4);
+        currentCam.radius = 0;
+    }
+
+    static DisablefirstPersonView(camera) {
+        const currentCam = camera;
+        currentCam.lowerRadiusLimit = 4;
+        currentCam.upperRadiusLimit = 8;
+        currentCam.checkCollisions = true;
+        currentCam.targetScreenOffset = new Vector2(0, -3);
+        currentCam.radius = 8;
     }
 }

@@ -13,12 +13,15 @@ export default class Hud {
 
     scene;
 
+    engine;
+
     clockTime;
 
     pauseMenu;
 
-    constructor(scene) {
+    constructor(scene, engine) {
         this.scene = scene;
+        this.engine = engine;
 
         const playerUI = AdvancedDynamicTexture.CreateFullscreenUI("UI");
         this.playerUI = playerUI;
@@ -113,9 +116,12 @@ export default class Hud {
             this.gamePaused = false;
 
             this.scene.getMeshByName("outer").position = new Vector3(0,2,0);
+            this.scene.getCameraByName("Camera").setPosition(new Vector3(-10, 5, ));
         });
 
         quitBtn.onPointerDownObservable.add(() => {
+            this.engine.dispose();
+            this.engine = null;
             Navigate('/');
         });
     }
