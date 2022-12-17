@@ -2,11 +2,18 @@ import Navigate from "../../Router/Navigate";
 
 import { clearPage } from "../../../utils/render";
 import {getAuthenticatedUser, isAuthenticated} from "../../../utils/auths";
+import music from "../../../sounds/mainMenu.mp3";
 
 const HomePage = () => {
     clearPage();
 
     const main = document.querySelector("main");
+
+    const audio = document.createElement("audio");
+    audio.setAttribute("autoplay", "");
+    audio.setAttribute("src", music);
+
+    main.appendChild(audio);
 
     const sectionImage = document.createElement("section");
     sectionImage.classList.add("image");

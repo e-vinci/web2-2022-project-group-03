@@ -1,13 +1,14 @@
 const express = require('express');
 const path = require("node:path");
-
-const router = express.Router();
 const { authorize } = require('../utils/auth');
-
 const { parse, serialize } = require("../utils/json");
 
+const router = express.Router();
 const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
 
+/**
+ * @returns the leaderboard sorted by time or an error if there is no time registered in the leaderboard
+ */
 router.post('/', (req, res) => {
     const leaderboard = parse(jsonDbPath);
 
@@ -38,13 +39,17 @@ router.post('/', (req, res) => {
 
     if (newRepresentation) {
         newRepresentation = newRepresentation.sort((a, b) => a.time - b.time);
-        return res.status(200).json(newRepresentation);
+        return res.status(200).json(newRepresentation); // OK
     }
 
-    return res.status(404).json({ error: 'No leaderboard found' });
+    return res.status(404).json({ error: 'No leaderboard found' }); // Not Found
 });
 
-router.post('/add', authorize,(req, res) => {
+/**
+ * add a new time to the leaderboard
+ * @param {middleware} authorize this middleware verify if the request is authorized before allowing it to proceed
+ */
+router.post('/add', authorize, (req, res) => {
     const leaderboard = parse(jsonDbPath);
     const { username, level, time } = req.body;
 
@@ -86,7 +91,7 @@ router.post('/add', authorize,(req, res) => {
     }
 
     serialize(jsonDbPath, leaderboard);
-    return res.sendStatus(200);
+    return res.sendStatus(200); // OK
 });
 
 module.exports = router;

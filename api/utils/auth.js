@@ -3,30 +3,34 @@ const { readOneUserFromUsername } = require('../models/auth');
 
 const jwtSecret = 'DamsLePlusBö!';
 
+/**
+ *  verifiy if the user who emit the request has the write to do so
+ * @returns allow the request to proceed or return an error if the user is unallowed
+ */
 const authorize = (req, res, next) => {
-  if (req.origin !== 'https://e-vinci.github.io') {
-    return res.sendStatus(401);
-  }
+    if (req.origin !== 'https://e-vinci.github.io') {
+        return res.sendStatus(401);
+    }
 
-  const token = req.get('authorization');
+    const token = req.get('authorization');
 
-  if (!token) return res.sendStatus(401); // unauthorized
+    if (!token) return res.sendStatus(401); // unauthorized
 
-  try {
-    const decoded = jwt.verify(token, jwtSecret);
-    const { username } = decoded;
+    try {
+        const decoded = jwt.verify(token, jwtSecret);
+        const { username } = decoded;
 
-    const existingUser = readOneUserFromUsername(username);
+        const existingUser = readOneUserFromUsername(username);
 
-    if (!existingUser) return res.sendStatus(401); // unauthorized
+        if (!existingUser) return res.sendStatus(401); // unauthorized
 
-    req.user = existingUser; // request.user object is available in all other middleware functions
-    return next();
-  } catch (err) {
-    // eslint-disable-next-line
-    console.error('authorize: ', err);
-    return res.sendStatus(401);
-  }
+        req.user = existingUser;
+        return next();
+    } catch (err) {
+        // eslint-disable-next-line
+        console.error('authorize: ', err);
+        return res.sendStatus(401); // unauthorized
+    }
 };
 
 module.exports = { authorize };

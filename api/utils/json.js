@@ -10,14 +10,14 @@ const path = require('node:path');
  * @returns {Array} : the array that was parsed from the file (or defaultArray)
  */
 function parse(filePath, defaultArray = []) {
-  if (!fs.existsSync(filePath)) return defaultArray;
-  const fileData = fs.readFileSync(filePath);
-  try {
-    // parse() Throws a SyntaxError exception if the string to parse is not valid JSON.
-    return JSON.parse(fileData);
-  } catch (err) {
-    return defaultArray;
-  }
+    if (!fs.existsSync(filePath)) return defaultArray;
+    const fileData = fs.readFileSync(filePath);
+    try {
+        // parse() Throws a SyntaxError exception if the string to parse is not valid JSON.
+        return JSON.parse(fileData);
+    } catch (err) {
+        return defaultArray;
+    }
 }
 
 /**
@@ -27,9 +27,9 @@ function parse(filePath, defaultArray = []) {
  * Even if the file exists, its whole content is reset by the given object.
  */
 function serialize(filePath, object) {
-  const objectSerialized = JSON.stringify(object);
-  createPotentialLastDirectory(filePath);
-  fs.writeFileSync(filePath, objectSerialized);
+    const objectSerialized = JSON.stringify(object);
+    createPotentialLastDirectory(filePath);
+    fs.writeFileSync(filePath, objectSerialized);
 }
 
 /**
@@ -37,11 +37,11 @@ function serialize(filePath, object) {
  * @param {String} filePath - path to the .json file
  */
 function createPotentialLastDirectory(filePath) {
-  const pathToLastDirectory = filePath.substring(0, filePath.lastIndexOf(path.sep));
+    const pathToLastDirectory = filePath.substring(0, filePath.lastIndexOf(path.sep));
 
-  if (fs.existsSync(pathToLastDirectory)) return;
+    if (fs.existsSync(pathToLastDirectory)) return;
 
-  fs.mkdirSync(pathToLastDirectory);
+    fs.mkdirSync(pathToLastDirectory);
 }
 
 module.exports = { parse, serialize };
