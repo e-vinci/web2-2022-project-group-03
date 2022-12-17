@@ -4,6 +4,10 @@ const { readOneUserFromUsername } = require('../models/auth');
 const jwtSecret = 'DamsLePlusBö!';
 
 const authorize = (req, res, next) => {
+  if (req.origin !== 'https://e-vinci.github.io') {
+    return res.sendStatus(401);
+  }
+
   const token = req.get('authorization');
 
   if (!token) return res.sendStatus(401); // unauthorized
