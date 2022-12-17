@@ -261,10 +261,19 @@ export default class Player extends TransformNode {
         return this.camera;
     }
 
-    /*
-    firstPersonView() {
-        this.camera.position = new Vector3(-10,5,0);
+    static enableFirstPersonView(camera) {
+        const currentCam = camera
+        currentCam.lowerRadiusLimit = 1;
+        currentCam.upperRadiusLimit = 1;
+        currentCam.checkCollisions = false;
+        currentCam.radius = 0;
     }
-    */
 
+    static DisablefirstPersonView(camera) {
+        const currentCam = camera
+        currentCam.lowerRadiusLimit = 4;
+        currentCam.upperRadiusLimit = 8;
+        currentCam.checkCollisions = true;
+        currentCam.radius = 8;
+    }
 }

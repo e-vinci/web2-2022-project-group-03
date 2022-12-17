@@ -53,7 +53,6 @@ export default class Environment {
                 light.diffuse = Color3.White();
                 mesh.material = whiteMat;
                 light.parent = mesh;
-                console.log("r")
             }
         });
     }

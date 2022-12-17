@@ -92,12 +92,9 @@ export default class Game {
 
     async goToStart() {
         this.engine.displayLoadingUI();
-        // eslint-disable-next-line
-        let finishedLoading = false;
-        await this.setUpGame().then(() => {
-            this.goToGame();
-            finishedLoading = true;
-        });
+
+        await this.setUpGame()
+        await this.goToGame();
     }
 
     async setUpGame() {

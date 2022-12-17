@@ -1,4 +1,5 @@
-import {ActionManager, ExecuteCodeAction, Scalar} from "@babylonjs/core";
+import { ActionManager, ExecuteCodeAction, Scalar } from "@babylonjs/core";
+import Player from "./Player";
 
 export default class PlayerInput {
     inputMap;
@@ -18,6 +19,8 @@ export default class PlayerInput {
     scene;
 
     pauseMenuVisible = false;
+
+    isFirstPerson = false;
 
     constructor(scene, ui) {
         this.scene = scene;
@@ -39,6 +42,11 @@ export default class PlayerInput {
             } else if (evt.sourceEvent.key === "Escape") {
                 this.pauseMenuVisible = true;
             }
+
+            if (evt.sourceEvent.key === "c" && this.isFirstPerson) {
+                this.isFirstPerson = false;
+                Player.DisablefirstPersonView(this.scene.getCameraByName("Camera"));
+            } else if (evt.sourceEvent.key === "c") this.isFirstPerson = true;
 
             this.inputMap[evt.sourceEvent.key] = evt.sourceEvent.type === "keydown";
         }));
@@ -86,11 +94,11 @@ export default class PlayerInput {
             this.ui.playerUI.addControl(this.ui.pauseMenu);
         }
 
-        /*
         if (this.inputMap.c && !this.ui.gamePaused) {
-            const player = this.scene.getMeshByName("outer");
-            player.firstPersonView();
+            const camera = this.scene.getCameraByName("Camera");
+
+            Player.enableFirstPersonView(camera);
         }
-        */
+
     }
 }
