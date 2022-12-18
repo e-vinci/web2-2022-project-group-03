@@ -1,4 +1,4 @@
-const STORE_NAME = 'user';
+const STORE_NAME = 'grior_user';
 let currentUser;
 
 const getAuthenticatedUser = () => {
