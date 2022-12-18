@@ -8,11 +8,9 @@ const jwtSecret = 'DamsLePlusBö!';
  * @returns allow the request to proceed or return an error if the user is unallowed
  */
 const authorize = (req, res, next) => {
-    /*
     if (req.origin !== 'https://e-vinci.github.io') {
         return res.sendStatus(401);
     }
-    */
 
     const token = req.get('authorization');
 
