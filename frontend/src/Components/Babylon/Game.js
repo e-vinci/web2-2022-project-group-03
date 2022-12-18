@@ -483,6 +483,8 @@ export default class Game {
             }, 2000);
 
             this.scene.onBeforeRenderObservable.add(() => {
+                if (this.ui.gamePaused)
+                    return
                 let step = 30;
                 let step2 = 10;
                 const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
