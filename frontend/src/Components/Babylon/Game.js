@@ -216,6 +216,7 @@ export default class Game {
         }, 1000);
 
         await this.carAnim();
+        await this.platforms();
 
         this.createEndMenu();
 
@@ -314,7 +315,7 @@ export default class Game {
 
                     this.ui.gamePaused = true;
 
-                    if (this.level < 3) {
+                    if (this.level < 4) {
                         endLevelUI.addControl(endLevelMenu);
                         endLevelMenu.isVisible = true;
 
@@ -520,4 +521,89 @@ export default class Game {
         return animWheel;
     }
     */
+
+    async platforms() {
+        const platform = MeshBuilder.CreateBox("platform", {height: 1, width: 3, depth: 6});
+        platform.position = new Vector3(-26, 0, 104);
+        platform.rotation = new Vector3(0, Math.PI * 1.2, 0)
+
+        const platform2 = platform.clone("platform2");
+        platform2.position = new Vector3(-30, 0, 107);
+
+        const platform3 = platform.clone("platform3");
+        platform3.position = new Vector3(-34, 0, 110);
+        platform3.rotation = new Vector3(0, Math.PI * 1.3, 0);
+
+        const platform4 = platform.clone("platform4");
+        platform4.position = new Vector3(-38, 0, 113);
+        platform4.rotation = new Vector3(0, Math.PI * 1.3, 0);
+
+        const platform5 = platform.clone("platform5");
+        platform5.position = new Vector3(-37, 0, 135);
+        platform5.rotation = new Vector3(0, Math.PI / 1.4, 0);
+
+        const platform6 = platform.clone("platform6");
+        platform6.position = new Vector3(-34, 0, 139);
+        platform6.rotation = new Vector3(0, Math.PI / 1.4, 0);
+
+        const platform7 = platform.clone("platform6");
+        platform7.position = new Vector3(-31, 0, 144);
+        platform7.rotation = new Vector3(0, Math.PI / 1.4, 0);
+
+        let reverse = false;
+        let reverse2 = false;
+        let reverse3 = false;
+        let reverse4 = false;
+        let reverse5 = false;
+        let reverse6 = false;
+        let reverse7 = false;
+
+        this.scene.onBeforeRenderObservable.add(() => {
+            let step = 2;
+            const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+            step *= deltaTime;
+
+            if (platform.position.z < 102) reverse = true;
+            if (platform.position.z > 107) reverse = false;
+
+            if (platform2.position.z < 106) reverse2 = true;
+            if (platform2.position.z > 110) reverse2 = false;
+
+            if (platform3.position.z < 108) reverse3 = true;
+            if (platform3.position.z > 112) reverse3 = false;
+
+            if (platform4.position.z < 112) reverse4 = true;
+            if (platform4.position.z > 117) reverse4 = false;
+
+            if (platform5.position.z > 136) reverse5 = true;
+            if (platform5.position.z < 131) reverse5 = false;
+
+            if (platform6.position.z > 139) reverse6 = true;
+            if (platform6.position.z < 135) reverse6 = false;
+
+            if (platform7.position.z > 144) reverse7 = true;
+            if (platform7.position.z < 141) reverse7 = false;
+
+            if (reverse) platform.movePOV(0,0,step);
+            else platform.movePOV(0,0,-step);
+
+            if (reverse2) platform2.movePOV(0,0,step);
+            else platform2.movePOV(0,0,-step);
+
+            if (reverse3) platform3.movePOV(0,0,step);
+            else platform3.movePOV(0,0,-step);
+
+            if (reverse4) platform4.movePOV(0,0,step);
+            else platform4.movePOV(0,0,-step);
+
+            if (reverse5) platform5.movePOV(0,0,-step);
+            else platform5.movePOV(0,0,step);
+
+            if (reverse6) platform6.movePOV(0,0,-step);
+            else platform6.movePOV(0,0,step);
+
+            if (reverse7) platform7.movePOV(0,0,-step);
+            else platform7.movePOV(0,0,step);
+        });
+    }
 }
