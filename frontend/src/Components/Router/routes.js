@@ -4,6 +4,7 @@ import RegisterPage from "../Pages/Authentification/RegisterPage";
 import GamePage from "../Pages/Game/GamePage";
 import LeaderboardPage from "../Pages/Leaderboard/LeaderboardPage";
 import Logout from "../Logout/Logout";
+import CreditsPage from "../Pages/CreditsPage/CreditsPage";
 
 const routes = {
   '/': HomePage,
@@ -12,6 +13,7 @@ const routes = {
   '/game': GamePage,
   '/leaderboard': LeaderboardPage,
   '/logout': Logout,
+  '/credits': CreditsPage
 };
 
 export default routes;

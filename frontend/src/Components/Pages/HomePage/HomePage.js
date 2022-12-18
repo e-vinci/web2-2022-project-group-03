@@ -104,6 +104,14 @@ const HomePage = () => {
         Navigate("/leaderboard");
     });
     menu.appendChild(leaderboardButton);
+
+    const creditsButton = document.createElement("button");
+    creditsButton.classList.add("nav-button");
+    creditsButton.textContent = "CREDITS";
+    creditsButton.addEventListener("click", () => {
+        Navigate("/credits");
+    });
+    menu.appendChild(creditsButton);
 };
 
 export default HomePage;
