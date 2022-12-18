@@ -17,6 +17,7 @@ import { AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, 
 
 import player from '../../models/playerbabylontmp.glb';
 import sierra from '../../models/sierra.glb';
+import platformMesh from '../../models/plateform.glb';
 
 import Environment from "./Environment";
 import Player from "./Player";
@@ -375,7 +376,6 @@ export default class Game {
                     console.log(mesh.animations)
                 }
                 */
-
             });
 
             car.position = new Vector3(24.2, 3, -30);
@@ -523,7 +523,15 @@ export default class Game {
     */
 
     async platforms() {
-        const platform = MeshBuilder.CreateBox("platform", {height: 1, width: 3, depth: 6});
+        const result = await SceneLoader.ImportMeshAsync(null, platformMesh);
+        const platform = result.meshes[0];
+
+        platform.getChildMeshes().forEach(m => {
+            const mesh = m;
+            mesh.checkCollisions = true;
+            mesh.isPickable = true;
+        });
+
         platform.position = new Vector3(-26, 0, 104);
         platform.rotation = new Vector3(0, Math.PI * 1.2, 0)
 
@@ -564,16 +572,16 @@ export default class Game {
             step *= deltaTime;
 
             if (platform.position.z < 102) reverse = true;
-            if (platform.position.z > 107) reverse = false;
+            if (platform.position.z > 108) reverse = false;
 
             if (platform2.position.z < 106) reverse2 = true;
-            if (platform2.position.z > 110) reverse2 = false;
+            if (platform2.position.z > 111) reverse2 = false;
 
             if (platform3.position.z < 108) reverse3 = true;
-            if (platform3.position.z > 112) reverse3 = false;
+            if (platform3.position.z > 113) reverse3 = false;
 
             if (platform4.position.z < 112) reverse4 = true;
-            if (platform4.position.z > 117) reverse4 = false;
+            if (platform4.position.z > 118) reverse4 = false;
 
             if (platform5.position.z > 136) reverse5 = true;
             if (platform5.position.z < 131) reverse5 = false;
@@ -582,7 +590,7 @@ export default class Game {
             if (platform6.position.z < 135) reverse6 = false;
 
             if (platform7.position.z > 144) reverse7 = true;
-            if (platform7.position.z < 141) reverse7 = false;
+            if (platform7.position.z < 139) reverse7 = false;
 
             if (reverse) platform.movePOV(0,0,step);
             else platform.movePOV(0,0,-step);
