@@ -27,18 +27,19 @@ const setAuthenticatedUser = (authenticatedUser, rememberME) => {
 const isAuthenticated = () => {
     if (currentUser !== undefined && currentUser !== null) {
         return true;
-    };
+    }
 
     if (localStorage.getItem(STORE_NAME) !== null || sessionStorage.getItem(STORE_NAME) !== null) {
         return true;
-    };
+    }
     return false;
 }
 
 const clearAuthenticatedUser = () => {
     localStorage.removeItem(STORE_NAME);
+    sessionStorage.removeItem(STORE_NAME);
     currentUser = undefined;
-};
+}
 
 // eslint-disable-next-line object-curly-newline
 export { getAuthenticatedUser, setAuthenticatedUser, isAuthenticated, clearAuthenticatedUser };
