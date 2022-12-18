@@ -1,10 +1,12 @@
-import { Color3, PointLight, SceneLoader, StandardMaterial, Vector3 } from "@babylonjs/core";
+import { Color3, PointLight, SceneLoader, Sound, StandardMaterial, Vector3 } from "@babylonjs/core";
 import level1 from '../../models/seinecourt1.glb';
 import level2 from '../../models/seineplateform1.glb';
 import level3 from '../../models/seinecourt2.glb';
 import level4 from '../../models/seineplateform2.glb';
 import level5 from '../../models/seinecourt3.glb';
 import level6 from '../../models/seinefin.glb';
+
+import music3 from  '../../sounds/music3.mp3';
 
 export default class Environment {
     scene;
@@ -97,11 +99,6 @@ export default class Environment {
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
 
-        /*
-        const sound = new Sound("musicLevel1", musicLevel1, this.scene, null, { loop: true, autoplay: true });
-        console.log(sound);
-        */
-
         return {
             env,
             allMeshes
@@ -131,6 +128,9 @@ export default class Environment {
         const result = await SceneLoader.ImportMeshAsync(null, level3);
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
+
+        // eslint-disable-next-line
+        new Sound("music3", music3, this.scene, null, { loop: true, autoplay: true });
 
         return {
             env,
