@@ -75,6 +75,10 @@ const CreditsPage = () => {
         {
             name: "Blomme Kimberley (SealRescue)",
             github: "https://github.com/Kybol"
+        },
+        {
+            name: "Garcia Alexandre",
+            github: "https://github.com/AlexandreSGarcia"
         }
     ];
 
