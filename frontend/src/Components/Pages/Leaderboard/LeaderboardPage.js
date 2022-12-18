@@ -85,7 +85,7 @@ const LeaderboardPage = async () => {
     }
 
     const backButton = document.createElement("button");
-    backButton.classList.add("leaderboard-back-button");
+    backButton.classList.add("back-button");
     backButton.textContent = "BACK";
     backButton.addEventListener("click", () => {
         Navigate("/");

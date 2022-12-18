@@ -168,7 +168,7 @@ input {
     color: white;
 }
 
-.leaderboard-back-button {
+.back-button {
     background: none;
     font-size: 80px;
     max-width: 270px;
@@ -184,4 +184,25 @@ input {
     margin-block: 40px;
     text-align: center;
     font-size: 100px;
+}
+
+.credits {
+    background-color: black;
+    margin-inline: 25%;
+    height: 100%;
+}
+
+.title-bis {
+    margin: 0 0 0 0;
+    color: white;
+    text-align: center;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+.list {
+    margin: 20px 0 30px 0;
 }
