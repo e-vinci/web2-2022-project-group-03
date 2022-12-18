@@ -1,8 +1,10 @@
-import {Color3, PointLight, SceneLoader, StandardMaterial, Vector3} from "@babylonjs/core";
+import { Color3, PointLight, SceneLoader, StandardMaterial, Vector3 } from "@babylonjs/core";
 import level1 from '../../models/seinecourt1.glb';
 import level2 from '../../models/seineplateform1.glb';
 import level3 from '../../models/seinecourt2.glb';
 import level4 from '../../models/seineplateform2.glb';
+import level5 from '../../models/seinecourt3.glb';
+import level6 from '../../models/seinefin.glb';
 
 export default class Environment {
     scene;
@@ -34,6 +36,12 @@ export default class Environment {
             case 4:
                 assets = await Environment.loadAssetLevel4();
                 break;
+            case 5:
+                assets = await Environment.loadAssetLevel5();
+                break;
+            case 6:
+                assets = await Environment.loadAssetLevel6();
+                break;
             default:
                 assets = await Environment.loadAssetLevel1();
                 break;
@@ -48,7 +56,7 @@ export default class Environment {
                 mesh.isPickable = false;
             }
 
-            if (mesh.name.includes("fin")) {
+            if (mesh.name.includes("fin") || mesh.name.includes("mort")) {
                 mesh.checkCollisions = false;
                 mesh.isPickable = false;
                 mesh.isVisible = false;
@@ -136,6 +144,36 @@ export default class Environment {
      */
     static async loadAssetLevel4() {
         const result = await SceneLoader.ImportMeshAsync(null, level4);
+        const env = result.meshes[0];
+        const allMeshes = env.getChildMeshes();
+
+        return {
+            env,
+            allMeshes
+        }
+    }
+
+    /**
+     * loads the mesh for the fifth
+     * @returns the environment and all the meshes
+     */
+    static async loadAssetLevel5() {
+        const result = await SceneLoader.ImportMeshAsync(null, level5);
+        const env = result.meshes[0];
+        const allMeshes = env.getChildMeshes();
+
+        return {
+            env,
+            allMeshes
+        }
+    }
+
+    /**
+     * loads the mesh for the sixth
+     * @returns the environment and all the meshes
+     */
+    static async loadAssetLevel6() {
+        const result = await SceneLoader.ImportMeshAsync(null, level6);
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
 

@@ -217,7 +217,8 @@ export default class Game {
         }, 1000);
 
         await this.carAnim();
-        await this.platforms();
+        if (this.level === 2)
+            await this.platforms();
 
         this.createEndMenu();
 
@@ -316,7 +317,7 @@ export default class Game {
 
                     this.ui.gamePaused = true;
 
-                    if (this.level < 4) {
+                    if (this.level < 6) {
                         endLevelUI.addControl(endLevelMenu);
                         endLevelMenu.isVisible = true;
 
@@ -344,6 +345,19 @@ export default class Game {
                             time: this.ui.time
                         })
                     });
+                },
+            ),
+        );
+
+        this.assets.mesh.actionManager.registerAction (
+            new ExecuteCodeAction(
+                {
+                    trigger: ActionManager.OnIntersectionEnterTrigger,
+                    parameter: this.scene.getMeshByName("mort"),
+                },
+                async () => {
+                    this.scene.getMeshByName("outer").position = new Vector3(0,2,0);
+                    this.scene.getCameraByName("Camera").setPosition(new Vector3(-10, 5, 0));
                 },
             ),
         );
@@ -411,7 +425,7 @@ export default class Game {
                 car3.movePOV(0,0, step);
                 car4.movePOV(0,0, step);
             });
-        } else if (this.level === 2) {
+        } else if (this.level === 4) {
             const result = await SceneLoader.ImportMeshAsync(null, sierra);
             // eslint-disable-next-line
             const car = result.meshes[0];
