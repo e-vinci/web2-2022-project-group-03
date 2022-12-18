@@ -410,11 +410,12 @@ export default class Game {
                 car3.movePOV(0,0, step);
                 car4.movePOV(0,0, step);
             });
-        } else {
+        } else if (this.level === 2) {
             const result = await SceneLoader.ImportMeshAsync(null, sierra);
             // eslint-disable-next-line
             const car = result.meshes[0];
-            car.position = new Vector3(0,-5,0)
+            car.position = new Vector3(100,0,105);
+            car.rotation = new Vector3(0,Math.PI * 1.5, 0);
 
             car.getChildMeshes().forEach(m => {
                 const mesh = m;
@@ -468,8 +469,10 @@ export default class Game {
 
             this.scene.onBeforeRenderObservable.add(() => {
                 let step = 30;
+                let step2 = 10;
                 const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
                 step *= deltaTime;
+                step2 *= deltaTime;
 
                 leftLaneCars.forEach(sierraCar => {
                     if (sierraCar.position.x < 0) {
@@ -489,6 +492,10 @@ export default class Game {
                     }
                     sierraCar.movePOV(0, 0, step);
                 });
+
+                if (car.position.x > 170)
+                    car.position = new Vector3(100,0,105);
+                car.movePOV(0,0, step2);
             });
         }
     }
