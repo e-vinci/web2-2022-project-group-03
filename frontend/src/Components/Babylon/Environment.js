@@ -7,6 +7,7 @@ import level5 from '../../models/seinecourt3.glb';
 import level6 from '../../models/seinefin.glb';
 
 import music3 from  '../../sounds/music3.mp3';
+import music4 from  '../../sounds/music4.mp3';
 
 export default class Environment {
     scene;
@@ -146,6 +147,9 @@ export default class Environment {
         const result = await SceneLoader.ImportMeshAsync(null, level4);
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
+
+        // eslint-disable-next-line
+        new Sound("music4", music4, this.scene, null, { loop: true, autoplay: true });
 
         return {
             env,
