@@ -16,7 +16,7 @@ import {
 import { AdvancedDynamicTexture, Button, Control, Image, Rectangle, StackPanel, TextBlock } from "@babylonjs/gui";
 
 import player from '../../models/playerbabylontmp.glb';
-import mcqueen from '../../models/mcqueen.glb';
+import sierra from '../../models/sierra.glb';
 
 import Environment from "./Environment";
 import Player from "./Player";
@@ -47,6 +47,8 @@ export default class Game {
 
     timerInterval;
 
+    level;
+
     /**
      * Creates the canvas and engine and start the main method
      */
@@ -54,6 +56,17 @@ export default class Game {
         this.canvas = this.createCanvas();
 
         this.engine = new Engine(this.canvas, true);
+
+        window.addEventListener("keydown", (ev) => {
+            // Shift+Ctrl+Alt+I
+            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.keyCode === 73) {
+                if (this.scene.debugLayer.isVisible()) {
+                    this.scene.debugLayer.hide();
+                } else {
+                    this.scene.debugLayer.show();
+                }
+            }
+        });
 
         this.main();
     }
@@ -121,8 +134,9 @@ export default class Game {
         });
 
         const result = await response.json();
+        this.level = result.level;
 
-        await this.environment.load(parseInt(result.level, 10) || 1);
+        await this.environment.load(parseInt(this.level, 10) || 1);
 
         await this.loadCharacterAssets(scene);
     }
@@ -282,7 +296,7 @@ export default class Game {
         endGameMenu.addControl(stackPanelEnd);
 
         const endText = new TextBlock();
-        endText.text = "Thank you for playing !"
+        endText.text = "More coming soon !"
         endText.width = 0.3;
         endText.height = "40px";
         endText.color = "black";
@@ -300,17 +314,7 @@ export default class Game {
 
                     this.ui.gamePaused = true;
 
-                    const response = await fetch(`${process.env.API_BASE_URL}/users/get`, {
-                        method: "POST",
-                        headers: {
-                            "Content-type": "application/json",
-                            Authorization: getAuthenticatedUser().token
-                        }
-                    });
-
-                    const { level } = await response.json();
-
-                    if (level < 2) {
+                    if (this.level < 3) {
                         endLevelUI.addControl(endLevelMenu);
                         endLevelMenu.isVisible = true;
 
@@ -334,7 +338,7 @@ export default class Game {
                         },
                         body: JSON.stringify({
                             username: getAuthenticatedUser().username,
-                            level,
+                            level: this.level,
                             time: this.ui.time
                         })
                     });
@@ -347,41 +351,166 @@ export default class Game {
      * Creates multiple cars and start their animations
      */
     async carAnim() {
-        const result = await SceneLoader.ImportMeshAsync(null, mcqueen);
-        const car = result.meshes[0];
-        car.position = new Vector3(24.2, 3, -30);
+        if (this.level === 1) {
+            const result = await SceneLoader.ImportMeshAsync(null, sierra);
+            const car = result.meshes[0];
 
-        const car2 = car.clone("car2");
-        car2.position = new Vector3(20.8, 3, 70);
-        car2.rotation = new Vector3(0, Math.PI * 2, 0);
+            // const animWheel = await Game.setupTireAnimation();
 
-        const car3 = car.clone("car3");
-        car3.position = new Vector3(10, 5.4, 60);
-        car3.rotation = new Vector3(0, Math.PI / 2, 0);
+            car.getChildMeshes().forEach(m => {
+                const mesh = m;
+                mesh.checkCollisions = false;
+                mesh.isPickable = false;
 
-        const car4 = car.clone("car4");
-        car4.position = new Vector3(-180,5.4,56.5);
-        car4.rotation = new Vector3(0, Math.PI * 1.5, 0);
+                if (mesh.name.includes("sierramur"))
+                    mesh.isVisible = false;
+
+                /*
+                if (mesh.name.includes("wheels")) {
+                    mesh.animations = [];
+                    mesh.animations.push(animWheel);
+                    console.log(mesh.animations)
+                    this.scene.beginAnimation(mesh, 0, 30, true);
+                    console.log(mesh.animations)
+                }
+                */
+
+            });
+
+            car.position = new Vector3(24.2, 3, -30);
+
+            const car2 = car.clone("car2");
+            car2.position = new Vector3(20.8, 3, 70);
+            car2.rotation = new Vector3(0, Math.PI * 2, 0);
+
+            const car3 = car.clone("car3");
+            car3.position = new Vector3(10, 5.4, 60);
+            car3.rotation = new Vector3(0, Math.PI / 2, 0);
+
+            const car4 = car.clone("car4");
+            car4.position = new Vector3(-180,5.4,56.5);
+            car4.rotation = new Vector3(0, Math.PI * 1.5, 0);
+
+            this.scene.onBeforeRenderObservable.add(() => {
+                let step = 5;
+                const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+                step *= deltaTime;
+
+                if (Math.floor(car.position.z) > 90)
+                    car.position = new Vector3(22.5, 3, -30);
+                if (Math.floor(car2.position.z) < -25)
+                    car2.position = new Vector3(22.5, 3, 70);
+                if (Math.floor(car3.position.x) < -80)
+                    car3.position = new Vector3(10, 5.4, 60);
+                if (Math.floor(car4.position.x) > 22)
+                    car4.position = new Vector3(-180,5.4,60);
+
+                car.movePOV(0, 0, step);
+                car2.movePOV(0,0, step);
+                car3.movePOV(0,0, step);
+                car4.movePOV(0,0, step);
+            });
+        } else {
+            const result = await SceneLoader.ImportMeshAsync(null, sierra);
+            // eslint-disable-next-line
+            const car = result.meshes[0];
+            car.position = new Vector3(0,-5,0)
+
+            car.getChildMeshes().forEach(m => {
+                const mesh = m;
+                mesh.checkCollisions = true;
+                mesh.isPickable = true;
+
+                if (mesh.name.includes("sierramur"))
+                    mesh.isVisible = false;
+            });
+
+            const leftLaneCars = [];
+            setInterval(async () => {
+                const carClone = car.clone("sierra");
+                carClone.rotation = new Vector3(0, Math.PI / 2, 0);
+                const randomInt = Math.floor(Math.random() * 2);
+                if (randomInt === 0)
+                    carClone.position = new Vector3(210, -4.1, -0.5);
+                else
+                    carClone.position = new Vector3(210, -4.1, 3);
+
+                carClone.getChildMeshes().forEach(m => {
+                    const mesh = m;
+                    if (mesh.name.includes("sierramur")) {
+                        mesh.actionManager = new ActionManager(this.scene);
+                        this.assets.mesh.actionManager.registerAction(
+                            new ExecuteCodeAction({trigger: ActionManager.OnIntersectionEnterTrigger, parameter: mesh}, () => {
+                                this.scene.getMeshByName("outer").position = new Vector3(0,2,0);
+                                this.scene.getCameraByName("Camera").setPosition(new Vector3(-10, 5, 0));
+                            })
+                        );
+                    }
+                });
+
+                leftLaneCars.push(carClone);
+            }, 1000);
+
+            const rightLaneCars = [];
+            setInterval(async () => {
+                const carClone = car.clone("sierra");
+                carClone.rotation = new Vector3(0, Math.PI * 1.3, 0);
+
+                const randomInt = Math.floor(Math.random() * 2);
+                if (randomInt === 0)
+                    carClone.position = new Vector3(23, -52.5, -101);
+                else
+                    carClone.position = new Vector3(23, -52.5, -104.5);
 
 
-        this.scene.onBeforeRenderObservable.add(() => {
-            let step = 5;
-            const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
-            step *= deltaTime;
+                rightLaneCars.push(carClone);
+            }, 2000);
 
-            if (Math.floor(car.position.z) === 90)
-                car.position = new Vector3(22.5, 3, -30);
-            if (Math.floor(car2.position.z) === -25)
-                car2.position = new Vector3(22.5, 3, 70);
-            if (Math.floor(car3.position.x) === -80)
-                car3.position = new Vector3(10, 5.4, 60);
-            if (Math.floor(car4.position.x) === 22)
-                car4.position = new Vector3(-180,5.4,60);
+            this.scene.onBeforeRenderObservable.add(() => {
+                let step = 30;
+                const deltaTime = this.scene.getEngine().getDeltaTime() / 1000;
+                step *= deltaTime;
 
-            car.movePOV(0, 0, step);
-            car2.movePOV(0,0, step);
-            car3.movePOV(0,0, step);
-            car4.movePOV(0,0, step);
-        });
+                leftLaneCars.forEach(sierraCar => {
+                    if (sierraCar.position.x < 0) {
+                        leftLaneCars.splice(leftLaneCars.indexOf(sierraCar), 1);
+                        this.scene.meshes.splice(this.scene.meshes.indexOf(sierraCar), 1);
+                        this.scene.removeMesh(sierraCar);
+                        sierraCar.dispose();
+                    }
+                    sierraCar.movePOV(0, 0, step);
+                });
+
+                rightLaneCars.forEach(sierraCar => {
+                    if (sierraCar.position.x > 140) {
+                        rightLaneCars.splice(rightLaneCars.indexOf(sierraCar), 1);
+                        this.scene.removeMesh(sierraCar);
+                        sierraCar.dispose();
+                    }
+                    sierraCar.movePOV(0, 0, step);
+                });
+            });
+        }
     }
+
+    /*
+    static setupTireAnimation() {
+        const animWheel = new Animation("wheelAnimation", "rotation.y", 30, Animation.ANIMATIONTYPE_FLOAT, Animation.ANIMATIONLOOPMODE_CYCLE);
+
+        const wheelKeys = [];
+
+        wheelKeys.push({
+            frame: 0,
+            value: 0
+        });
+
+        wheelKeys.push({
+            frame: 30,
+            value: 2 * Math.PI
+        });
+
+        animWheel.setKeys(wheelKeys);
+        return animWheel;
+    }
+    */
 }

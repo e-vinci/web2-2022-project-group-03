@@ -130,7 +130,7 @@ export default class Hud {
             this.gamePaused = false;
 
             this.scene.getMeshByName("outer").position = new Vector3(0,2,0);
-            this.scene.getCameraByName("Camera").setPosition(new Vector3(-10, 5, ));
+            this.scene.getCameraByName("Camera").setPosition(new Vector3(-10, 5, 0));
         });
 
         quitBtn.onPointerDownObservable.add(() => {

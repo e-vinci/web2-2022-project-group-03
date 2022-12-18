@@ -4,6 +4,9 @@ import Navigate from "../../Router/Navigate";
 const LeaderboardPage = async () => {
     clearPage();
 
+    const audio = document.querySelector('audio');
+    if (audio.paused) audio.play();
+
     const result = await fetch(`${process.env.API_BASE_URL}/leaderboard`, {
         method: 'POST',
         headers: {

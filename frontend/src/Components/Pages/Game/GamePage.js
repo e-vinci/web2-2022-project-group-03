@@ -6,6 +6,11 @@ import Navigate from "../../Router/Navigate";
 
 const GamePage = async () => {
     clearPage();
+
+    const audio = document.querySelector('audio');
+    audio.currentTime = 0;
+    audio.pause();
+
     if (isAuthenticated()) {
         await new Game();
         document.querySelector("canvas").focus();

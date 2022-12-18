@@ -1,5 +1,7 @@
 import {Color3, PointLight, SceneLoader, StandardMaterial, Vector3} from "@babylonjs/core";
-import damien from '../../models/seinecourt1.glb';
+import level1 from '../../models/seinecourt1.glb';
+import level2 from '../../models/seineplateform1.glb';
+import level3 from '../../models/seinecourt2.glb';
 
 export default class Environment {
     scene;
@@ -23,7 +25,10 @@ export default class Environment {
                 assets = await Environment.loadAssetLevel1();
                 break;
             case 2:
-                assets = await Environment.loadAssetLevel2()
+                assets = await Environment.loadAssetLevel2();
+                break;
+            case 3:
+                assets = await Environment.loadAssetLevel3();
                 break;
             default :
                 assets = await Environment.loadAssetLevel1();
@@ -76,9 +81,14 @@ export default class Environment {
      * @returns the environment and all the meshes
      */
     static async loadAssetLevel1() {
-        const result = await SceneLoader.ImportMeshAsync(null, damien);
+        const result = await SceneLoader.ImportMeshAsync(null, level1);
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
+
+        /*
+        const sound = new Sound("musicLevel1", musicLevel1, this.scene, null, { loop: true, autoplay: true });
+        console.log(sound);
+        */
 
         return {
             env,
@@ -91,7 +101,22 @@ export default class Environment {
      * @returns the environment and all the meshes
      */
     static async loadAssetLevel2() {
-        const result = await SceneLoader.ImportMeshAsync(null, damien);
+        const result = await SceneLoader.ImportMeshAsync(null, level2);
+        const env = result.meshes[0];
+        const allMeshes = env.getChildMeshes();
+
+        return {
+            env,
+            allMeshes
+        }
+    }
+
+    /**
+     * loads the mesh for the thrid level
+     * @returns the environment and all the meshes
+     */
+    static async loadAssetLevel3() {
+        const result = await SceneLoader.ImportMeshAsync(null, level3);
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
 
