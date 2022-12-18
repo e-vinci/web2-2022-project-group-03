@@ -8,3 +8,4 @@ package-lock.json
 .env
 # ignore all dist directories files (and subdirectories) from .gitignore
 dist/*
+.idea
