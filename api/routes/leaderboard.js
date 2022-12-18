@@ -6,7 +6,7 @@ const { parse, serialize } = require("../utils/json");
 const router = express.Router();
 const jsonDbPath = path.join(__dirname, '/../data/leaderboard.json');
 
-const MAX_LEVEL = 3;
+const MAX_LEVEL = 4;
 
 /**
  * @returns the leaderboard sorted by time or an error if there is no time registered in the leaderboard

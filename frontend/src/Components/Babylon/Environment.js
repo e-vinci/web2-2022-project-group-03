@@ -2,6 +2,7 @@ import {Color3, PointLight, SceneLoader, StandardMaterial, Vector3} from "@babyl
 import level1 from '../../models/seinecourt1.glb';
 import level2 from '../../models/seineplateform1.glb';
 import level3 from '../../models/seinecourt2.glb';
+import level4 from '../../models/seineplateform2.glb';
 
 export default class Environment {
     scene;
@@ -30,7 +31,10 @@ export default class Environment {
             case 3:
                 assets = await Environment.loadAssetLevel3();
                 break;
-            default :
+            case 4:
+                assets = await Environment.loadAssetLevel4();
+                break;
+            default:
                 assets = await Environment.loadAssetLevel1();
                 break;
         }
@@ -117,6 +121,21 @@ export default class Environment {
      */
     static async loadAssetLevel3() {
         const result = await SceneLoader.ImportMeshAsync(null, level3);
+        const env = result.meshes[0];
+        const allMeshes = env.getChildMeshes();
+
+        return {
+            env,
+            allMeshes
+        }
+    }
+
+    /**
+     * loads the mesh for the fourth
+     * @returns the environment and all the meshes
+     */
+    static async loadAssetLevel4() {
+        const result = await SceneLoader.ImportMeshAsync(null, level4);
         const env = result.meshes[0];
         const allMeshes = env.getChildMeshes();
 
