@@ -1,4 +1,55 @@
-@baseUrl = http://localhost:3000
+### Test 1 test /get with a know user who hasn"t played yet, it should return level 1
 
-### Read all users
-GET {{baseUrl}}/users
+### Test 1.1 register the user
+# @name nitroc
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "nitroc",
+  "password": "NZnNOotA"
+}
+
+### define a variable to ease the loading of the token 
+@nitrocToken = {{nitroc.response.body.token}}
+
+### Test 1.2 check his level
+POST http://localhost:3000/users/get
+Content-Type: application/json
+Authorization: {{nitrocToken}}
+
+### Test 2 test /get with a know user who has finished lvl 1, it should return level 2
+
+###Test 2.1 get the user to finish the level 1
+POST http://localhost:3000/users/set
+Content-Type: application/json
+Authorization: {{nitrocToken}}
+
+###Test 2.2 check his level
+POST http://localhost:3000/users/get
+Content-Type: application/json
+Authorization: {{nitrocToken}}
+
+### Test with a know user
+POST http://localhost:3000/users/reset
+Content-Type: application/json
+
+{
+  "username": "nitroc"
+}
+
+### Test with an unknow user
+POST http://localhost:3000/users/reset
+Content-Type: application/json
+
+{
+  "username": "unknown"
+}
+
+### Test with an empty user
+POST http://localhost:3000/users/reset
+Content-Type: application/json
+
+{
+  "username": ""
+}

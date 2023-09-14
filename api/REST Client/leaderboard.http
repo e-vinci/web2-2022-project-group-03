@@ -1,0 +1,46 @@
+### Test with a know user, good level and time
+POST http://localhost:3000/leaderboard/add
+Content-Type: application/json
+
+{
+  "username": "nitroc",
+  "level": 1,
+  "time": 99
+}
+
+###log in a existing user
+# @name michele
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"michele",
+  "password":"michele"
+}
+
+### define a variable to ease the loading of the token 
+@micheleToken = {{michele.response.body.token}}
+
+###check if the logged user can ad a new time to the leaderboard
+POST http://localhost:3000/leaderboard/add
+Content-Type: application/json
+Authorization: {{micheleToken}}
+
+{
+  "username": "michele",
+  "level": 1,
+  "time": 100
+}
+
+###check if the non existing user can ad a new time to the leaderboard (he shouldn't be able to)
+POST http://localhost:3000/leaderboard/add
+Content-Type: application/json
+
+{
+  "username": "michele",
+  "level": 1,
+  "time": 100
+}
+
+### Test get leaderboard sorted
+POST http://localhost:3000/leaderboard

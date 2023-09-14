@@ -1,0 +1,63 @@
+### Register an unknown user - OK
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username":"ethels",
+  "password":"1234"
+}
+
+### Register an already existing user - KO
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username":"ethels",
+  "password":"1234"
+}
+
+### Register with invalid username - KO
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username":"",
+  "password":"1234"
+}
+
+### Register with invalid password - KO
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username":"ethels",
+  "password":""
+}
+
+### Register with invalid data - KO
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username":"",
+  "password":""
+}
+
+### Login an unknown user - KO
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"nobody",
+  "password":"nobody"
+}
+
+### Login default user - OK
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username":"michele",
+  "password":"michele"
+}
+

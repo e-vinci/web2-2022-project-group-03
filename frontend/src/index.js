@@ -1,9 +1,15 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './stylesheets/main.css';
 
-import Navbar from './Components/Navbar/Navbar';
 import Router from './Components/Router/Router';
-
-Navbar();
+import music from "./sounds/mainMenu.mp3";
 
 Router();
+
+const body = document.querySelector("body");
+const audio = document.createElement("audio");
+
+audio.setAttribute("autoplay", "");
+audio.setAttribute("loop", "");
+audio.setAttribute("src", music);
+
+body.appendChild(audio);
